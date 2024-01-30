@@ -1,0 +1,10 @@
+﻿
+<div class=" rz-text-align-left">
+    <RadzenTextArea @bind-Value="text" Style="width:100%; display: block" Name="SComment" />
+    <RadzenCheckBox TValue="bool" Value=@value Change=@(args => value = args) Name="CheckBox2" />
+    <RadzenLabel Text="Copy to Bell" Component="CheckBox2" Style="margin-left: 8px; vertical-align: middle;" />
+</div>
+@code {
+    bool value;
+    string text;
+}

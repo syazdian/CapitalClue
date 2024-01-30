@@ -1,0 +1,40 @@
+﻿@inject IFetchData FetchData
+@inject IJSRuntime JS;
+@inject UrlKeeper url
+@attribute [Authorize]
+
+<RadzenButton ButtonStyle="ButtonStyle.Success" Text="Open In New Page" Click="opennewtab" Icon="open_in_new"></RadzenButton>
+<br />
+
+<div id="jsoneditor" style="width: 800px; height: 400px;"></div>
+
+
+@code {
+
+  
+    [Parameter]
+    public string title { get; set; }
+    [Parameter]
+    public string value { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            string jsonString = await FetchData.GetDetails(title, value);
+            await JS.InvokeVoidAsync("GetJson", jsonString);
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            
+            throw;
+        }
+       
+    }   
+    private void opennewtab()
+    {
+        JS.InvokeAsync<object>("open", $"{url.BaseUrl}detail/{title}/{value}", "_blank");
+    }
+}

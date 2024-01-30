@@ -1,0 +1,82 @@
+﻿@page "/ErrorLog"
+
+@using CapitalClue.Frontend.Shared.ServiceInterfaces;
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.Extensions.Logging
+
+@inject ILogger<ErrorLogPage> _logger
+@inject ILocalDbRepository Localdb
+@inject ISyncData syncData
+
+@attribute [Authorize]
+
+<div class="container marketing">
+    <button onclick=@ThrowEx>CLICK ME for test error</button>
+    <h4>Errors</h4> 
+    <RadzenButton ButtonStyle="ButtonStyle.Success" Text="Upload To Database" Click="UploadErrorsToServer" Icon="open_in_browser"></RadzenButton>
+    <RadzenDataGrid AllowVirtualization="true" @ref="ErrorLogGrid" AllowFiltering="true" AllowPaging="true" PageSize="40" AllowSorting="true"
+                    Data="@ErrorLogs" TItem="ErrorLogDto" ColumnWidth="430px">
+        <Columns>
+
+            <RadzenDataGridColumn TItem="ErrorLogDto" Property="Id" Title="Id" Width="70px"/>
+            <RadzenDataGridColumn TItem="ErrorLogDto" Property="CreatedDate" Title="CreatedDate" Width="200px" />
+            <RadzenDataGridColumn TItem="ErrorLogDto" Property="UserId" Title="UserId" Width="120px" />
+            <RadzenDataGridColumn TItem="ErrorLogDto" Property="LogLevel" Title="LogLevel" Width="120px" />
+            <RadzenDataGridColumn TItem="ErrorLogDto" Property="Source" Title="Source" Width="100px" />
+            <RadzenDataGridColumn TItem="ErrorLogDto" Property="EventName" Title="EventName" Width="200px" />
+            <RadzenDataGridColumn TItem="ErrorLogDto" Property="ExceptionMessage" Title="ExceptionMessage"  />
+            <RadzenDataGridColumn TItem="ErrorLogDto" Property="StackTrace" Title="StackTrace" />
+            <RadzenDataGridColumn TItem="ErrorLogDto" Property="UploadedDate" Title="UploadedDate" Width="200px" />
+
+        </Columns>
+    </RadzenDataGrid>
+</div>
+@code {
+    public string FromServer { get; set; }
+    RadzenDataGrid<ErrorLogDto> ErrorLogGrid = new RadzenDataGrid<ErrorLogDto>();
+    public IEnumerable<ErrorLogDto> ErrorLogs { get; set; }
+    public async Task ThrowEx()
+    {
+        try
+        {
+            throw new Exception("this is a TesError");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"{ex.Message}");
+            throw;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        ErrorLogs = await Localdb.GetAllErrorLogs();
+
+        StateHasChanged();
+
+    }
+
+    protected async void UploadErrorsToServer()
+    {
+        try
+        {
+            var errorLogs = await Localdb.GetErrorLogsNotUploaded();
+            if (errorLogs.Any())
+            {
+
+                await syncData.SendErrorLogs(errorLogs);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"UploadErrorsToServer: {ex.Message}");
+            throw;
+        }
+      
+
+    }
+
+}

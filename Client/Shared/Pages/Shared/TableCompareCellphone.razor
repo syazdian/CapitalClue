@@ -1,0 +1,403 @@
+﻿@using Bell.Reconciliation.Common.Models
+@using Bell.Reconciliation.Common.Models.Enums;
+@using Bell.Reconciliation.Frontend.Shared.ServiceInterfaces;
+@using Bell.Reconciliation.Frontend.Shared.Pages.Components;
+@using Microsoft.EntityFrameworkCore;
+@inject IFetchData SyncData
+@inject ILocalDbRepository Localdb
+@inject DialogService dialogService
+
+
+<h2>
+    Cell Phone
+</h2>
+<RadzenTabs RenderMode="Radzen.TabRenderMode.Client" @bind-SelectedIndex=@selectedIndex>
+    <Tabs>
+        <RadzenTabsItem Text="Only in Staples">
+            <RadzenDataGrid @ref="StapleGrid" AllowVirtualization="true" ColumnWidth="150px" AllowFiltering="true" AllowPaging="true" PageSize="8" AllowSorting="true" CellDoubleClick="OnCellDoubleClickStaples"
+                            Data="@StaplesSources" TItem="StaplesSourceDto" RowUpdate="@OnStapleUpdateRow">
+                <Columns>
+                    <RadzenDataGridColumn Width="75px" Title="Edit"
+                                          TItem="StaplesSourceDto" Context="record" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+                        <Template Context="StapleRecord">
+                            <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditStapleRow(StapleRecord))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                        </Template>
+                        <EditTemplate Context="StapleRecord">
+                            <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Small" Click="@((args) => SaveStapleRow(StapleRecord))">
+                            </RadzenButton>
+                            <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Small" class="my-1 ms-1" Click="@((args) => CancelStapleEdit(StapleRecord))">
+                            </RadzenButton>
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="StaplesSourceDto" Property="RebateType" Title="RebateType" />
+
+                    <RadzenDataGridColumn TItem="StaplesSourceDto" Property="OrderNumber" Title="OrderNumber" />
+                    <RadzenDataGridColumn TItem="StaplesSourceDto" Property="Phone" Title="Phone" />
+                    <RadzenDataGridColumn TItem="StaplesSourceDto" Property="Imei" Title="IMEI" />
+                    <RadzenDataGridColumn TItem="StaplesSourceDto" Property="Product" Title="Product" />
+                    <RadzenDataGridColumn Width="100px" TItem="StaplesSourceDto" Property="Amount" Title="Amount" TextAlign="TextAlign.Right" />
+                    <RadzenDataGridColumn TItem="StaplesSourceDto" Property="Comments" Title="Comments">
+                        <EditTemplate Context="record">
+                            <div class=" rz-text-align-left">
+                                <RadzenTextArea @bind-Value="record.Comments" Style="width:100%; display: block" Name="SComment" />
+                            </div>
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="StaplesSourceDto" Property="TransactionDate" Title="TransactionDate" FormatString="{0:d}" />
+                    <RadzenDataGridColumn TItem="StaplesSourceDto" Property="CustomerName" Title="CustomerName"  />
+                    <RadzenDataGridColumn TItem="StaplesSourceDto" Property="Brand" Title="Brand" />
+                    <RadzenDataGridColumn TItem="StaplesSourceDto" Property="Location" Title="Location" />
+                    <RadzenDataGridColumn TItem="StaplesSourceDto" Property="Lob" Title="Lob" />
+                    <RadzenDataGridColumn TItem="StaplesSourceDto" Property="SubLob" Title="SubLob" />
+                </Columns>
+            </RadzenDataGrid>
+        </RadzenTabsItem>
+        <RadzenTabsItem Text="In both">
+            <RadzenDataGrid @ref="CompareGrid" ColumnWidth="150px" SelectionMode="DataGridSelectionMode.Single" AllowFiltering="true"
+                            AllowPaging="true" PageSize="8" AllowSorting="true" Data="@CompareBellStaple" RowUpdate="@OnCompareUpdateRow"
+                            TItem="CompareBellStapleCellPhone" CellRender="@CellRender" CellClick="OnCellDoubleClickBoth">
+                <Columns>
+                    <RadzenDataGridColumn Width="75px" Title="Edit"
+                                          TItem="CompareBellStapleCellPhone" Context="record" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+                        <Template Context="compareRecord">
+                            <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(compareRecord))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                        </Template>
+                        <EditTemplate Context="compareRecord">
+                            <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Small" Click="@((args) => SaveRow(compareRecord))">
+                            </RadzenButton>
+                            <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Small" class="my-1 ms-1" Click="@((args) => CancelEdit(compareRecord))">
+                            </RadzenButton>
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="CompareBellStapleCellPhone" Property="SRebateType" Title="RebateType" />
+                    <RadzenDataGridColumn TItem="CompareBellStapleCellPhone" Property="MatchStatus" Title="Consolidate">
+                        <EditTemplate Context="record">
+                            <RadzenDropDown @bind-Value="record.MatchStatus" Data="@matchStatus" TextProperty="Value" ValueProperty="Key" Style="width:100%; display: block;" />
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="CompareBellStapleCellPhone" Property="SPhone" Title="S.Phone"/>
+                    <RadzenDataGridColumn TItem="CompareBellStapleCellPhone" Property="SImei" Title="S.IMEI" />
+                    <RadzenDataGridColumn TItem="CompareBellStapleCellPhone" Property="SOrderNumber" Title="S.Order" />
+                    <RadzenDataGridColumn TItem="CompareBellStapleCellPhone" Width="100px" Property="SAmount" Title="S.Amount" TextAlign="TextAlign.Right" />
+                    <RadzenDataGridColumn TItem="CompareBellStapleCellPhone" Property="SComments" Title="S.Comments ">
+                        <EditTemplate Context="record">
+                            <div class=" rz-text-align-left">
+                                <RadzenTextArea @bind-Value="record.SComments" Style="width:100%; display: block" Name="SComment" />
+                                <RadzenButton Icon="content_copy" Text="copy to bell" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => CopyToBellButtonClicked(record))" @onclick:stopPropagation="true">
+                                </RadzenButton>
+                            </div>
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="CompareBellStapleCellPhone" Property="SCustomerName" Title="S.CustomerName " />
+
+
+                    <RadzenDataGridColumn TItem="CompareBellStapleCellPhone" Property="BPhone" Title="B.Phone" />
+                    <RadzenDataGridColumn TItem="CompareBellStapleCellPhone" Property="BImei" Title="B.IMEI" />
+                    <RadzenDataGridColumn TItem="CompareBellStapleCellPhone" Property="BOrderNumber" Title="B.Order" />
+                    <RadzenDataGridColumn TItem="CompareBellStapleCellPhone" Width="100px" Property="BAmount" Title="B.Amount" TextAlign="TextAlign.Right" />
+                    <RadzenDataGridColumn TItem="CompareBellStapleCellPhone" Property="BComments" Title="B.Comments ">
+                        <EditTemplate Context="record">
+                            <RadzenTextArea @bind-Value="record.BComments" Style="width:100%; display: block" Name="BComment" />
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="CompareBellStapleCellPhone" Property="BCustomerName" Title="B.CustomerName " />
+                </Columns>
+            </RadzenDataGrid>
+        </RadzenTabsItem>
+        <RadzenTabsItem Text="Only in Bell">
+            <RadzenDataGrid AllowVirtualization="true" ColumnWidth="150px" AllowFiltering="true" AllowPaging="true" PageSize="8" AllowSorting="true" CellDoubleClick="OnCellDoubleClickBell"
+                            Data="@BellSources" @ref="BellGrid" TItem="BellSourceDto" RowUpdate="@OnBellUpdateRow">
+                <Columns>
+                    <RadzenDataGridColumn Width="75px" Title="Edit"
+                                          TItem="BellSourceDto" Context="record" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+                        <Template Context="BellRecord">
+                            <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditBellRow(BellRecord))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                        </Template>
+                        <EditTemplate Context="BellRecord">
+                            <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Small" Click="@((args) => SaveBellRow(BellRecord))">
+                            </RadzenButton>
+                            <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Small" class="my-1 ms-1" Click="@((args) => CancelBellEdit(BellRecord))">
+                            </RadzenButton>
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="BellSourceDto" Property="OrderNumber" Title="OrderNumber" />
+                    <RadzenDataGridColumn TItem="BellSourceDto" Property="Phone" Title="Phone" />
+                    <RadzenDataGridColumn TItem="BellSourceDto" Property="Imei" Title="IMEI" />
+                    <RadzenDataGridColumn Width="100px" TItem="BellSourceDto" Property="Amount" Title="Amount" TextAlign="TextAlign.Right" />
+                    <RadzenDataGridColumn TItem="BellSourceDto" Property="Comments" Title="Comments">
+                        <EditTemplate Context="record">
+                            <div class=" rz-text-align-left">
+                                <RadzenTextArea @bind-Value="record.Comments" Style="width:100%; display: block" Name="SComment" />
+                            </div>
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="BellSourceDto" Property="CustomerName" Title="CustomerName" />
+                    <RadzenDataGridColumn TItem="BellSourceDto" Property="Lob" Title="Lob" />
+                </Columns>
+            </RadzenDataGrid>
+        </RadzenTabsItem>
+    </Tabs>
+
+</RadzenTabs>
+
+<hr class="featurette-divider">
+
+@code {
+    int selectedIndex = 0;
+    [Parameter]
+    public List<BellSourceDto> BellSources { get; set; } 
+    [Parameter]
+    public List<StaplesSourceDto> StaplesSources { get; set; }
+    [Parameter]
+    public List<CompareBellStapleCellPhone> CompareBellStaple { get; set; }
+
+    RadzenDataGrid<CompareBellStapleCellPhone> CompareGrid = new RadzenDataGrid<CompareBellStapleCellPhone>();
+    RadzenDataGrid<BellSourceDto> BellGrid = new RadzenDataGrid<BellSourceDto>();
+    RadzenDataGrid<StaplesSourceDto> StapleGrid = new RadzenDataGrid<StaplesSourceDto>();
+
+    Dictionary<MatchStatus, MatchStatus> matchStatus;
+    CompareBellStapleCellPhone CompareRecordToUpdate;
+    BellSourceDto bellRecordToUpdate;
+    StaplesSourceDto stapleRecordToUpdate;
+
+    bool copyToBell;
+
+    //void CopyToBell(bool args)
+    //{
+    // if (copyToBell == args)
+    //     record.BComment = record.SComment; })
+
+    //}
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        matchStatus = Enum.GetValues(typeof(MatchStatus))
+               .Cast<MatchStatus>()
+               .ToDictionary(t => t, t => t);
+
+        StateHasChanged();
+
+    }
+
+    void CopyToBellButtonClicked(CompareBellStapleCellPhone record)
+    {
+        record.BComments = record.SComments;
+    }
+
+    #region Details
+   void ShowDetailDialog(string title, string value)
+    {
+        var options = new DialogOptions();
+        string additionalStyle = "min-width:fit-content;min-height:fit-content;height:fit-content;width:fit-content;border: 1px solid black;";
+        options.Style += additionalStyle;
+        Dictionary<string, object> parameters = new();
+        parameters.Add("title", title);
+        parameters.Add("value", value );
+
+        dialogService.Open<DetailDialog>($"{title} : {value}" ,parameters:parameters, options: options);
+    }
+
+    void OnCellDoubleClickBoth(DataGridCellMouseEventArgs<CompareBellStapleCellPhone> args)
+    {
+
+        switch  (args.Column.Title) 
+        {
+            case "S.Order":
+                ShowDetailDialog(DetailType.OrderNumber.ToString(), args.Data.SOrderNumber) ; 
+                break;
+            case "B.Order":
+                ShowDetailDialog(DetailType.OrderNumber.ToString(), args.Data.BOrderNumber);
+                break;
+            case "S.IMEI":
+                ShowDetailDialog(DetailType.Imei.ToString(), args.Data.SImei);
+                break;
+            case "B.IMEI":
+                ShowDetailDialog(DetailType.Imei.ToString(), args.Data.BImei);
+                break;
+            case "S.Phone":
+                ShowDetailDialog(DetailType.PhoneNumber.ToString(), args.Data.SPhone?.ToString());
+                break;
+            case "B.Phone":
+                ShowDetailDialog(DetailType.PhoneNumber.ToString(), args.Data.BPhone?.ToString());
+                break;
+            default:
+                return;
+        }    
+    }
+
+    void OnCellDoubleClickBell(DataGridCellMouseEventArgs<BellSourceDto> args)
+    {
+        switch  (args.Column.Title) 
+        {
+            case "OrderNumber":
+                ShowDetailDialog(DetailType.OrderNumber.ToString(), args.Data.OrderNumber?.ToString());
+                break;
+            case "IMEI":
+                ShowDetailDialog(DetailType.Imei.ToString(), args.Data.Imei);
+                break;
+            case "Phone":
+                ShowDetailDialog(DetailType.PhoneNumber.ToString(), args.Data.Phone?.ToString());
+                break;
+            default:
+                return;
+        }    
+    }
+
+    void OnCellDoubleClickStaples(DataGridCellMouseEventArgs<StaplesSourceDto> args)
+    {
+         switch  (args.Column.Title) 
+        {
+            case "OrderNumber":
+                ShowDetailDialog(DetailType.OrderNumber.ToString(), args.Data.OrderNumber?.ToString());
+                break;
+            case "IMEI":
+                ShowDetailDialog(DetailType.Imei.ToString(), args.Data.Imei);
+                break;
+            case "Phone":
+                ShowDetailDialog(DetailType.PhoneNumber.ToString(), args.Data.Phone?.ToString());
+                break;
+            default:
+                return;
+        }    
+    }
+
+    #endregion
+
+    void CellRender(DataGridCellRenderEventArgs<CompareBellStapleCellPhone> args)
+    {
+        if (args.Column.Property == "SAmount" || args.Column.Property == "BAmount")
+        {
+            args.Attributes.Add("style", $"background-color: {(args.Data.SAmount != args.Data.BAmount ? "var(--rz-warning)" : "var(--rz-base-background-color)")};");
+        }
+
+        if (args.Column.Property == "BCustomerName" || args.Column.Property == "SCustomerName")
+        {
+            args.Attributes.Add("style", $"background-color: {(args.Data.BCustomerName != args.Data.SCustomerName ? "var(--rz-warning)" : "var(--rz-base-background-color)")};");
+        }
+
+        if (args.Column.Property == "STransactionDate" || args.Column.Property == "BTransactionDate")
+        {
+            args.Attributes.Add("style", $"background-color: {(args.Data.STransactionDate != args.Data.BTransactionDate ? "var(--rz-warning)" : "var(--rz-base-background-color)")};");
+        }
+
+        if (args.Column.Property == "BIMEI" || args.Column.Property == "SIMEI")
+        {
+            args.Attributes.Add("style", $"background-color: {(args.Data.BImei != args.Data.SImei ? "var(--rz-warning)" : "var(--rz-base-background-color)")};");
+        }
+
+        if (args.Column.Property == "BPhone" || args.Column.Property == "SPhone")
+        {
+            args.Attributes.Add("style", $"background-color: {(args.Data.BPhone != args.Data.SPhone ? "var(--rz-warning)" : "var(--rz-base-background-color)")};");
+        }
+        if (args.Column.Property == "BProduct" || args.Column.Property == "SProduct")
+        {
+            args.Attributes.Add("style", $"background-color: {(args.Data.BProduct != args.Data.SProduct ? "var(--rz-warning)" : "var(--rz-base-background-color)")};");
+        }
+    }
+
+    async Task EditRow(CompareBellStapleCellPhone record)
+    {
+        CompareRecordToUpdate = record;
+        await CompareGrid.EditRow(record);
+    }
+
+    async Task EditBellRow(BellSourceDto record)
+    {
+        bellRecordToUpdate = record;
+        await BellGrid.EditRow(record);
+    }
+
+    async Task EditStapleRow(StaplesSourceDto record)
+    {
+        stapleRecordToUpdate = record;
+        await StapleGrid.EditRow(record);
+    }
+
+    void OnCompareUpdateRow(CompareBellStapleCellPhone record)
+    {
+        bellRecordToUpdate = null;
+
+        Localdb.UpdateBellSource(record.BId, record.BComments);
+        Localdb.UpdateStapleSource(record.SId, record.SComments);
+    }
+
+    void OnBellUpdateRow(BellSourceDto record)
+    {
+        bellRecordToUpdate = null;
+
+        var result = Localdb.UpdateBellSource(record);
+    }
+
+    void OnStapleUpdateRow(StaplesSourceDto record)
+    {
+        bellRecordToUpdate = null;
+
+        var result = Localdb.UpdateStapleSource(record);
+    }
+
+    async Task SaveRow(CompareBellStapleCellPhone record)
+    {
+        Console.WriteLine(record.MatchStatus);
+
+        var resultStaple = await Localdb.UpdateStapleSource(record.SId, record.SComments);
+        var resultBell = await Localdb.UpdateBellSource(record.BId, record.BComments);
+        await CompareGrid.UpdateRow(record);
+    }
+
+    async Task SaveBellRow(BellSourceDto record)
+    {
+        Console.WriteLine(record.MatchStatus);
+
+        var result = await Localdb.UpdateBellSource(record);
+        await BellGrid.UpdateRow(record);
+    }
+
+    async Task SaveStapleRow(StaplesSourceDto record)
+    {
+        Console.WriteLine(record.MatchStatus);
+
+        var result = await Localdb.UpdateStapleSource(record);
+        await StapleGrid.UpdateRow(record);
+    }
+
+    void CancelEdit(CompareBellStapleCellPhone record)
+    {
+        CompareRecordToUpdate = null;
+
+        CompareGrid.CancelEditRow(record);
+    }
+
+    void CancelBellEdit(BellSourceDto record)
+    {
+        bellRecordToUpdate = null;
+
+        BellGrid.CancelEditRow(record);
+    }
+
+    void CancelStapleEdit(StaplesSourceDto record)
+    {
+        stapleRecordToUpdate = null;
+
+        StapleGrid.CancelEditRow(record);
+    }
+
+    //private async Task FetchData()
+    //{
+    //    await SyncData.FetchDataFromServerDb();
+    //}
+
+    //private async Task LoadFromLocalDB()
+    //{
+    //    bellSources = await Localdb.GetBellSourceFromLocalDb();
+    //    staplesSources = await Localdb.GetStapleSourceFromLocalDb();
+    //}
+
+
+
+}

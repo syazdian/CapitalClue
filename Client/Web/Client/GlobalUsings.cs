@@ -1,0 +1,11 @@
+﻿global using CapitalClue.Client;
+global using CapitalClue.Frontend.Shared.Pages;
+global using CapitalClue.Frontend.Shared.ServiceInterfaces;
+global using CapitalClue.Frontend.Web.Database;
+global using CapitalClue.Frontend.Web.Services;
+global using Microsoft.AspNetCore.Components.Web;
+global using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+global using Microsoft.EntityFrameworkCore;
+global using Bit.Besql;
+global using Microsoft.Extensions.DependencyInjection;
+global using CapitalClue.Frontend.Web.Services.Database;

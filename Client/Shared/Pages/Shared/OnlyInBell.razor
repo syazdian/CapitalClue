@@ -1,0 +1,267 @@
+﻿@page "/OnlyInBell"
+
+@using CapitalClue.Common.Models
+@using CapitalClue.Common.Models.Enums;
+@using CapitalClue.Frontend.Shared.Pages.Components
+@using CapitalClue.Frontend.Shared.Pages.Shared.MultipleEdit;
+@using CapitalClue.Frontend.Shared.ServiceInterfaces;
+@using Microsoft.EntityFrameworkCore;
+@inject ISyncData SyncData
+@inject DialogService dialogService
+@inject ICsvExport CsvExport
+@inject ILocalDbRepository Localdb
+@inject IJSRuntime JS
+@inject IStateContainer StateContainer
+
+<div style="float:right">
+    <RadzenButton Click=@(MakeMultipleDelete) Visible=@visibleMultipleDelete Text="Delete Items" Shade="Shade.Darker" ButtonStyle="ButtonStyle.Light" Icon="delete_forever" style="color:red" />
+    <RadzenButton Click=@(MakeMultipleEdit) Visible=@visibleMultipleEdit Text="Edit Items" Shade="Shade.Darker" ButtonStyle="ButtonStyle.Light" Icon="copy_all" style="color:green" />
+    <RadzenButton Click=@(ExportCsv) Text="CSV" Shade="Shade.Darker" ButtonStyle="ButtonStyle.Light" Icon="assignment_returned" style="color:green" />
+</div>
+<br />
+<br />
+<RadzenDataGrid ColumnWidth="150px" AllowFiltering="true" AllowPaging="true" PageSize="10" AllowSorting="true" CellDoubleClick="OnCellDoubleClickBell"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowVirtualization="true"
+                Data="@BellSources" @ref="BellGrid" TItem="OnlyInBellDto" RowUpdate="@OnBellUpdateRow" CellRender="@BellCellRender"
+                SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@selectedBell>
+    <Columns>
+        <RadzenDataGridColumn TItem="OnlyInBellDto" Width="60px" Sortable="false" Filterable="false">
+           @* <HeaderTemplate>
+                <RadzenCheckBox TriState="false" TValue="bool?"
+                                Value="@(selectedBell == null || selectedBell?.Any() != true ? false : !BellSources.All(i => selectedBell.Contains(i)) ? null : BellSources.Any(i => selectedBell.Contains(i)))"
+                                Change="@(args => CheckAllBellRecords(args))" />
+            </HeaderTemplate>*@
+            <Template Context="bellRecord">
+                <RadzenCheckBox TriState="false" Disabled="bellRecord.IsEditMode" Value="@(selectedBell != null && selectedBell.Contains(bellRecord))"
+                                TValue="bool" Change=@(args => CheckRecord(args,bellRecord)) />
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="OnlyInBellDto" Property="RebateType" Title="RebateType" />
+        <RadzenDataGridColumn TItem="OnlyInBellDto" Property="TransactionDate" Title="TransactionDate" FormatString="{0:d}" />
+        <RadzenDataGridColumn TItem="OnlyInBellDto" Property="OrderNumber" Title="Order #" />
+        <RadzenDataGridColumn TItem="OnlyInBellDto" Property="Phone" Title="Phone" />
+        <RadzenDataGridColumn TItem="OnlyInBellDto" Property="Amount" Title="Amount" TextAlign="TextAlign.Right" FormatString="{0:0.00}" Sortable="false" Width="100px" />
+        <RadzenDataGridColumn TItem="OnlyInBellDto" Property="Reconciled" Title="Reconciled" Width="130px"/>
+        <RadzenDataGridColumn TItem="OnlyInBellDto" Property="Comments" Title="Comments"/>
+        <RadzenDataGridColumn TItem="OnlyInBellDto" Property="Imei" Title="IMEI" />
+        <RadzenDataGridColumn TItem="OnlyInBellDto" Property="Product" Title="Product" />
+        <RadzenDataGridColumn TItem="OnlyInBellDto" Property="StoreNumber" Title="StoreNumber" Width="100px" />
+        <RadzenDataGridColumn TItem="OnlyInBellDto" Property="Lob" Title="Lob" Width="100px" />
+        <RadzenDataGridColumn TItem="OnlyInBellDto" Property="SubLob" Title="SubLob" Width="100px" />
+        <RadzenDataGridColumn TItem="OnlyInBellDto" Property="Brand" Title="Brand" Width="100px" />
+        <RadzenDataGridColumn TItem="OnlyInBellDto" Property="CustomerName" Title="CustomerName" />
+        <RadzenDataGridColumn TItem="OnlyInBellDto" Property="UpdatedBy" Title="UpdatedBy" />
+        <RadzenDataGridColumn TItem="OnlyInBellDto" Property="ReconciledDate" Title="ReconciledDate" />
+        <RadzenDataGridColumn TItem="OnlyInBellDto" Property="ReconciledBy" Title="ReconciledBy" />
+    </Columns>
+</RadzenDataGrid>
+
+@code {
+
+    [Parameter]
+    public IEnumerable<OnlyInBellDto> BellSources { get; set; }
+
+    IList<OnlyInBellDto> selectedBell;
+
+    RadzenDataGrid<OnlyInBellDto> BellGrid = new RadzenDataGrid<OnlyInBellDto>();
+    bool visibleMultipleEdit = false;
+    bool visibleMultipleDelete = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        BellSources = await Localdb.GetBellSourceFromLocalDb(StateContainer.filterItemDto);
+
+        dialogService.OnClose += CloseDialogeAndSaveData;
+    }
+
+    public async Task appliyFilterClicked()
+    {
+        BellSources = await Localdb.GetBellSourceFromLocalDb(StateContainer.filterItemDto);
+        await BellGrid.Reload();
+        StateHasChanged();
+    }
+
+    void BellCellRender(DataGridCellRenderEventArgs<OnlyInBellDto> args)
+    {
+        try
+        {
+            if (args.Column.Property?.ToLower() == "SubLob".ToLower())
+            {
+                if (args.Data.Lob?.ToLower() == "Wireless".ToLower() && string.IsNullOrEmpty(args.Data.SubLob?.Trim()))
+                {
+                    args.Data.SubLob = "Wireless";
+                }
+            }
+
+            //if (nameof(args.Column.Property).Equals("SubLob", StringComparison.OrdinalIgnoreCase) && (nameof(args.Data.Lob).Equals("Wireless", StringComparison.OrdinalIgnoreCase) && string.IsNullOrEmpty(args.Data.SubLob?.Trim())))
+            //{
+            //    args.Data.SubLob = "Wireless";
+            //}
+        }
+        catch (Exception ex)
+        {
+
+            throw;
+        }
+
+    }
+
+    void OnCellDoubleClickBell(DataGridCellMouseEventArgs<OnlyInBellDto> args)
+    {
+        switch (args.Column.Title)
+        {
+            case "Order #":
+                ShowDetailDialog(DetailType.OrderNumber.ToString(), args.Data.OrderNumber?.ToString());
+                break;
+            case "IMEI":
+                ShowDetailDialog(DetailType.Imei.ToString(), args.Data.Imei);
+                break;
+            case "Phone":
+                ShowDetailDialog(DetailType.PhoneNumber.ToString(), args.Data.Phone?.ToString());
+                break;
+            default:
+                return;
+        }
+    }
+
+    void ShowDetailDialog(string title, string value)
+    {
+        var options = new DialogOptions();
+        string additionalStyle = "min-width:fit-content;min-height:fit-content;height:fit-content;width:fit-content;border: 1px solid black;";
+        options.Style += additionalStyle;
+        Dictionary<string, object> parameters = new();
+        parameters.Add("title", title);
+        parameters.Add("value", value);
+
+        dialogService.Open<DetailDialog>($"{title} : {value}", parameters: parameters, options: options);
+    }
+
+    void OnBellUpdateRow(OnlyInBellDto record)
+    {
+        var result = Localdb.UpdateBellSource(record);
+    }
+
+    void CheckAllBellRecords(bool? isAllSelected)
+    {
+        selectedBell = isAllSelected == true ? BellGrid.View.ToList() : null;
+
+        foreach (var item in BellGrid.View.ToList())
+            item.IsSelected = isAllSelected.HasValue ? isAllSelected.Value : false;
+        HandleMultipleEditVisiblity();
+        HandleMultipleDeleteVisiblity();
+    }
+
+    void CheckRecord(bool isSelected, OnlyInBellDto bellRecord)
+    {
+        bellRecord.IsSelected = isSelected;
+
+        HandleMultipleEditVisiblity();
+        HandleMultipleDeleteVisiblity();
+    }
+
+    async Task SaveBellRow(OnlyInBellDto record)
+    {
+        record.IsEditMode = false;
+        await BellGrid.UpdateRow(record);
+        OnBellUpdateRow(record);
+    }
+
+    void HandleMultipleEditVisiblity()
+    {
+        var selectedBellCount = BellSources.Count(c => c.IsSelected == true);
+        if (selectedBellCount > 0)
+            visibleMultipleEdit = true;
+        else
+            visibleMultipleEdit = false;
+    }
+
+    void HandleMultipleDeleteVisiblity()
+    {
+        var bellSelectedCount = BellSources.Count(c => c.IsSelected == true);
+
+        if (bellSelectedCount > 0)
+            visibleMultipleDelete = true;
+        else
+            visibleMultipleDelete = false;
+    }
+
+    public async Task ExportCsv()
+    {
+        string filename = String.Empty;
+        Stream fileStream = Stream.Null;
+       
+        fileStream = CsvExport.ToCsv(BellGrid.View.ToList());
+        filename = "OnlyBell";               
+
+        using var streamRef = new DotNetStreamReference(stream: fileStream);
+
+        await JS.InvokeVoidAsync("downloadFileFromStream", $"{filename}_{DateTime.Now.ToString()}.csv", streamRef);
+
+    }
+
+    void MakeMultipleEdit()
+    {
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("BellEditModeCount", BellSources.Count(c => c.IsSelected == true));
+
+        dialogService.Open<MultipleEditBellSources>("Bell Edit Records", parameters: parameters, null);
+    }
+    void MakeMultipleDelete()
+    {
+        dialogService.Confirm("Are You Sure Delete Selected Items?", "Delete Selected Items", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
+    }
+
+    private async void CloseDialogeAndSaveData(dynamic obj)
+    {
+        if (obj != null)
+        {
+            var type = obj.GetType();
+            if (type == typeof(MultipleEditBellSourceResult))
+            {
+                var dataToSave = (MultipleEditBellSourceResult)obj;
+
+                foreach (var item in BellSources.Where(c => c.IsSelected == true))
+                {
+                    item.Comments = dataToSave.Comment;
+                    item.Reconciled = dataToSave.Reconciled;
+
+                    await SaveBellRow(item);
+                }
+                CheckAllBellRecords(false);
+            }
+            else if (type == typeof(bool))
+            {
+                var acceptToDelete = (bool)obj;
+                if (acceptToDelete)
+                {
+                    DeleteSelectedItems();
+                }
+            }
+            StateHasChanged();
+        }
+
+    }
+
+    async Task DeleteSelectedItems()
+    {
+        ToDeleteItemsDto toDeleteItemsDto = new ToDeleteItemsDto();
+
+        var isSelectedBellItems = BellSources.Where(c => c.IsSelected == true);
+        foreach (var item in isSelectedBellItems)
+            toDeleteItemsDto.BellIds.Add(item.Id);
+
+        SyncData.DeleteItems(toDeleteItemsDto);
+
+        foreach (var item in toDeleteItemsDto.BellIds)
+            await Localdb.DeleteBellSource(item);
+
+        BellSources = BellSources.Where(c => !toDeleteItemsDto.BellIds.Contains(c.Id)).ToList();
+
+        HandleMultipleDeleteVisiblity();
+        HandleMultipleEditVisiblity();
+
+        await BellGrid.Reload();
+    }
+
+}

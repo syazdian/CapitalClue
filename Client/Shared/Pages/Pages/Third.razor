@@ -1,0 +1,20 @@
+﻿@page "/third"
+
+@using CapitalClue.Frontend.Shared.ServiceInterfaces;
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@inject IFilterService filterService
+@attribute [Authorize]
+
+<h1>THIRD PAGE</h1>
+
+@code {
+    public string FromServer { get; set; }
+
+    
+    public async Task CallApi()
+    {
+       // FromServer =await filterService.GetHello();
+    }
+}

@@ -1,0 +1,29 @@
+﻿@inject IJSRuntime JS;
+
+<div id="jsoneditor" style="width: 800px; height: 400px;"></div>
+
+
+@code {
+
+  
+    [Parameter]
+    public string errorlog { get; set; }
+   
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("GetJson", errorlog);
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            
+            throw;
+        }
+       
+    }   
+  
+}

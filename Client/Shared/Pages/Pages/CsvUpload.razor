@@ -1,0 +1,416 @@
+﻿@page "/CsvUpload"
+@using System.Text;
+@using CsvHelper;
+@using Microsoft.Extensions.Logging
+
+@inject IStateContainer _stateContainer
+@inject ISyncData SyncData
+@inject ILocalDbRepository _localdb
+@inject IFetchData fetchData
+@inject DialogService dialogService
+@inject ILogger<CsvUpload> _logger
+
+<RadzenRow JustifyContent="JustifyContent.Right" AlignItems="AlignItems.Center" class="rz-border-color-primary-darker">
+    <RadzenButton Visible=@(!showloading) Click=@(()=>{ dialogService.Close(loadDatabaseInUi);}) Icon="close" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Dark">
+    </RadzenButton>
+</RadzenRow>
+@if (!st5FetchData)
+{
+    <h3>Upload CSV to Bell</h3>
+}
+<div class="col-md-12  min-height-100">
+    <RadzenRow JustifyContent="JustifyContent.Center" AlignItems="AlignItems.Center" class=" rz-background-color-primary-lighter">
+        <RadzenColumn Size="12" class="rz-text-align-center rz-p-2">
+
+            @*  STEP 0 Show Browse Button*@
+            <RadzenCard Visible="stp0ShowBrowseButton">
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">CSV Bell file upload</RadzenText>
+                <RadzenFileInput Accept=".csv" TValue="string" Change=@ReadMapUpload @bind-FileName=@fileName />
+            </RadzenCard>
+            <RadzenCard Visible="showloading">
+                <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+            </RadzenCard>
+            @*  STEP 1 READING FILE *@
+            <RadzenCard Visible="st1ReadingFileMsg">
+                <RadzenAlert AllowClose="false" AlertStyle="st1AlertStyleReadingFile" Variant="st1VariantReadingFile" Shade="Shade.Light" Size="AlertSize.ExtraSmall">
+                    Reading CSV File
+                </RadzenAlert>
+            </RadzenCard>
+            @*  STEP 2 Ask To Upload *@
+            <RadzenCard Visible="st2AskToUpload">
+                <RadzenAlert AllowClose="false" AlertStyle="st2AlertStyleAskToUpload" Variant="st2VariantAskToUpload" Shade="Shade.Light" Size="AlertSize.ExtraSmall">
+                    @St2MessageInAlert
+                </RadzenAlert>
+                <RadzenTree Style="width:100%">
+                    @foreach (var item in csvFileBellRecordsAnalysis.AnalysedRecords.Where(c => c.IsSuccessful == false))
+                    {
+                        var tempText = "LineNumber:" + item.LineNumber.ToString();
+                        <RadzenTreeItem Text="@tempText">
+                            <ChildContent>
+                                @foreach (var message in item.Errors)
+                                {
+                                    <RadzenTreeItem Text="@message" />
+                                }
+                            </ChildContent>
+                        </RadzenTreeItem>
+                    }
+                </RadzenTree>
+            </RadzenCard>
+            @*  STEP 3 Show buttons *@
+            <RadzenCard Visible="stp3ShowButtons">
+                <RadzenLabel Text="Do you want to save successful records?" Style="width:fit-content" />
+                <RadzenButton Click="@CancelUpload" Text="No" Icon="cancel" Shade="Shade.Darker" ButtonStyle="ButtonStyle.Light" />
+                <RadzenButton Click="@AcceptUpload" Text="Yes" Icon="check_circle" Shade="Shade.Darker" ButtonStyle="ButtonStyle.Info" />
+            </RadzenCard>
+            @*  STEP 4 UploadToServer *@
+            <RadzenCard Visible="st4UploadToServer">
+                <RadzenAlert AllowClose="false" AlertStyle="st4AlertStyleUploadToServer" Variant="st4VariantUploadToServer" Shade="Shade.Light" Size="AlertSize.ExtraSmall">
+                    Uploading the CSV items to SERVER ReconBell Table.
+                </RadzenAlert>
+            </RadzenCard>
+            @*  STEP 5 FetchData *@
+            <RadzenCard Visible="st5FetchData">
+                <RadzenAlert AllowClose="false" AlertStyle="st5AlertStyleFetchData" Variant="Variant.Flat" Shade="Shade.Light" Size="AlertSize.ExtraSmall">
+                    Remove local DB dates from @startDate?.Date.ToString("d") to @endDate?.Date.ToString("d") and fetch from server
+                </RadzenAlert>
+            </RadzenCard>
+
+        </RadzenColumn>
+    </RadzenRow>
+
+</div>
+
+
+
+@code {
+    DateTime? startDate;
+    DateTime? endDate;
+
+    string fileName;
+    bool showloading = false;
+
+    bool stp0ShowBrowseButton = true;
+    bool st1ReadingFileMsg = false;
+    AlertStyle st1AlertStyleReadingFile;
+    Variant st1VariantReadingFile;
+
+    bool st2AskToUpload = false;
+    AlertStyle st2AlertStyleAskToUpload;
+    Variant st2VariantAskToUpload;
+    bool stp3ShowButtons = false;
+    string St2MessageInAlert = "";
+
+    bool st4UploadToServer = false;
+    AlertStyle st4AlertStyleUploadToServer;
+    Variant st4VariantUploadToServer;
+
+    bool st5FetchData = false;
+    AlertStyle st5AlertStyleFetchData;
+
+    bool loadDatabaseInUi = false;
+
+    CsvFileBellRecordsAnalysisDto csvFileBellRecordsAnalysis = new CsvFileBellRecordsAnalysisDto();
+
+    async Task ReadMapUpload(string csvValue)
+    {
+        if (csvValue is null) return;
+
+        stp0ShowBrowseButton = false;
+        showloading = true;
+        StateHasChanged();
+
+        try
+        {
+            st1ReadingFileMsg = true;
+            st1AlertStyleReadingFile = AlertStyle.Success;
+
+            var base64Data = csvValue.Substring(csvValue.IndexOf(",") + 1);
+            var data = Convert.FromBase64String(base64Data);
+            var csvString = Encoding.UTF8.GetString(data);
+
+
+            csvFileBellRecordsAnalysis = await ReadCSVFile(csvString);
+
+            showloading = false;
+            st2AskToUpload = true;
+
+            csvFileBellRecordsAnalysis.FailRowCount = csvFileBellRecordsAnalysis.AnalysedRecords.Count(c => c.IsSuccessful == false);
+            csvFileBellRecordsAnalysis.SuccessRowCount = csvFileBellRecordsAnalysis.AnalysedRecords.Count(c => c.IsSuccessful == true);
+
+            st1ReadingFileMsg = true;
+            st1AlertStyleReadingFile = AlertStyle.Light;
+            st1VariantReadingFile = Variant.Outlined;
+            if (!csvFileBellRecordsAnalysis.headerValid)
+            {
+                st2AlertStyleAskToUpload = AlertStyle.Danger;
+                St2MessageInAlert = string.Join(", ", csvFileBellRecordsAnalysis.HeaderErrorMessaed);
+            }
+            else
+            {
+                if (csvFileBellRecordsAnalysis.FailRowCount == 0)
+                {
+                    st2AlertStyleAskToUpload = AlertStyle.Success;
+                    St2MessageInAlert = $"Your Csv File has {csvFileBellRecordsAnalysis.SuccessRowCount} rows without any error. The dates are from from {startDate?.Date.ToString("d")} to {endDate?.Date.ToString("d")}.";
+                }
+                else
+                {
+                    st2AlertStyleAskToUpload = AlertStyle.Danger;
+                    St2MessageInAlert = $"Your Csv File has {csvFileBellRecordsAnalysis.FailRowCount} error(s) and {csvFileBellRecordsAnalysis.SuccessRowCount} correct rows. The dates are from from {startDate?.Date.ToString("d")} to {endDate?.Date.ToString("d")}.";
+                }
+
+                if (csvFileBellRecordsAnalysis.SuccessRowCount > 0)
+                    stp3ShowButtons = true;
+            }
+
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"ReadMapUpload: {ex.Message}");
+            throw;
+        }
+    }
+
+    public async Task<CsvFileBellRecordsAnalysisDto> ReadCSVFile(string csvFile)
+    {
+        try
+        {
+            List<string> errorMessages;
+            var dealers = await fetchData.GetRefDealersAsync();
+            CsvFileBellRecordsAnalysisDto csvFileBellRecordsAnalysis = new();
+            csvFileBellRecordsAnalysis.FileName = fileName;
+            csvFileBellRecordsAnalysis.UploadBy = _stateContainer.UserId ?? "USER";
+
+            var lines = csvFile.Split('\n').ToList();
+
+            //if a row has less than a character length, that row is not valid and should be removed
+            if (lines[lines.Count - 1].Length < 2)
+            {
+                lines.RemoveAt(lines.Count - 1);
+            }
+
+            string firstLine = lines[0].TrimEnd('\r');
+            string[] columnNames = firstLine.ToLower().Split(',');
+            columnNames = columnNames.Select(s => s.Trim()).Select(s => s.Replace("\uFEFF", "")).ToArray();
+            lines.RemoveAt(0);
+
+
+            errorMessages = new List<string>();
+            if (Array.IndexOf(columnNames, "transaction date") == -1) errorMessages.Add("column name TRANSACTION DATE not found");
+            if (Array.IndexOf(columnNames, "dealer") == -1) errorMessages.Add("column name DEALER not found");
+            if (Array.IndexOf(columnNames, "ctn") == -1) errorMessages.Add("column name CTN not found");
+            if (Array.IndexOf(columnNames, "esn/imei") == -1) errorMessages.Add("column name ESN/IMEI not found");
+            if (Array.IndexOf(columnNames, "sim card number") == -1)errorMessages.Add("column name SIM CARD NUMBER not found");
+            if (Array.IndexOf(columnNames, "product description") == -1)errorMessages.Add("column name PRODUCT DESCRIPTION not found");
+            if (Array.IndexOf(columnNames, "amount") == -1)errorMessages.Add("column name AMOUNT not found");
+            if (Array.IndexOf(columnNames, "commission group") == -1)errorMessages.Add("column name COMMISSION GROUP not found");
+            if (Array.IndexOf(columnNames, "account number") == -1)errorMessages.Add("column name ACCOUNT NUMBER not found");
+            if (Array.IndexOf(columnNames, "surname") == -1)errorMessages.Add("column name SURNAME not found");
+            if (Array.IndexOf(columnNames, "given name") == -1)errorMessages.Add("column name GIVEN NAME not found");
+            if (Array.IndexOf(columnNames, "lob") == -1)errorMessages.Add("column name LOB not found");
+            if (Array.IndexOf(columnNames, "subscriber id") == -1)errorMessages.Add("column name SUBSCRIBER ID not found");
+            if (Array.IndexOf(columnNames, "order #") == -1)errorMessages.Add("column name Order # not found");
+            if (Array.IndexOf(columnNames, "sublob") == -1)errorMessages.Add("column name SubLob not found");
+            if (Array.IndexOf(columnNames, "brand") == -1)errorMessages.Add("column name Brand not found");
+            if (Array.IndexOf(columnNames, "product description") == -1)errorMessages.Add("column name PRODUCT DESCRIPTION not found");
+
+            if (errorMessages.Count>0)
+            {
+                csvFileBellRecordsAnalysis.HeaderErrorMessaed = errorMessages;
+                return csvFileBellRecordsAnalysis;
+            }
+
+
+
+            int lineNumnber = 0;
+            int errorCounter = 0;
+            foreach (var line in lines)
+            {
+                errorMessages = new List<string>();
+
+                BellRecordAnalysis bellRecordAnalysis = new();
+                bellRecordAnalysis.LineNumber = lineNumnber + 2;
+                string[] values = line.Split(',');
+
+                values[columnNames.Length - 1] = values[columnNames.Length - 1].TrimEnd('\r');
+                values = values.Select(s => s.Trim()).ToArray();
+
+
+                if (!DateTime.TryParse(values[Array.IndexOf(columnNames, "transaction date")].Trim(), out DateTime transactionDate))
+                {
+                    errorMessages.Add("TRANSACTION DATE is invalid");
+                }
+                else
+                {
+                    bellRecordAnalysis.BellRecord.TransactionDate = transactionDate;
+                }
+
+
+                bellRecordAnalysis.BellRecord.DealerCode = values[Array.IndexOf(columnNames, "dealer")].Trim() ?? null;
+
+                if (bellRecordAnalysis.BellRecord.DealerCode is null)
+                {
+                    errorMessages.Add("Dealer code is invalid");
+                }
+                else
+                {
+                    var dealer = dealers.Where(X => X.DealerCode == bellRecordAnalysis.BellRecord.DealerCode).FirstOrDefault(); ;
+                    bellRecordAnalysis.BellRecord.StoreNumber = dealer?.StoreId.ToString();
+                }
+
+                if (long.TryParse(values[Array.IndexOf(columnNames, "ctn")].Trim(), out long ctn))
+                {
+                    bellRecordAnalysis.BellRecord.Phone = ctn;
+                }
+
+                bellRecordAnalysis.BellRecord.Imei = values[Array.IndexOf(columnNames, "esn/imei")].Trim();
+                bellRecordAnalysis.BellRecord.Simserial = values[Array.IndexOf(columnNames, "sim card number")].Trim();
+                bellRecordAnalysis.BellRecord.Product = values[Array.IndexOf(columnNames, "product description")].Trim();
+                string amountStr = values[Array.IndexOf(columnNames, "amount")].Replace("$", "").Replace("(", "-").Replace(")", "").Trim();
+                if (!decimal.TryParse(amountStr, out decimal amnt))
+                {
+                    errorMessages.Add("AMOUNT is invalid");
+                }
+                else
+                {
+                    bellRecordAnalysis.BellRecord.Amount = amnt;
+                }
+
+                bellRecordAnalysis.BellRecord.RebateType = values[Array.IndexOf(columnNames, "commission group")]
+                .Replace("Financing Taxes", "Tax Rebate")
+                .Replace("Bonus", "Gift Card")
+                .Trim();
+
+
+                bellRecordAnalysis.BellRecord.CustomerAccount = values[Array.IndexOf(columnNames, "account number")].Trim();
+
+                if (Array.IndexOf(columnNames, "surname") > 0 && Array.IndexOf(columnNames, "given name") > 0)
+                {
+                    bellRecordAnalysis.BellRecord.CustomerName = $"{values[Array.IndexOf(columnNames, "given name")].Trim()} {values[Array.IndexOf(columnNames, "surname")].Trim()}";
+                }
+
+                bellRecordAnalysis.BellRecord.Lob = values[Array.IndexOf(columnNames, "lob")].Trim().ToLower();
+
+                if (bellRecordAnalysis.BellRecord.Lob == "wireless")
+                {
+                    bellRecordAnalysis.BellRecord.OrderNumber = values[Array.IndexOf(columnNames, "subscriber id")].Trim();
+                }
+                else
+                {
+                    bellRecordAnalysis.BellRecord.OrderNumber = values[Array.IndexOf(columnNames, "order #")].Trim();
+                }
+
+
+                bellRecordAnalysis.BellRecord.SubLob
+                = values[Array.IndexOf(columnNames, "sublob")]
+                .Replace("HP", "Home Phone")
+                .Replace("TV", "Home Television")
+                .Replace("INT", "Home Internet")
+                .Replace("SMB", "SMB Internet")
+                .Trim();
+
+                if (String.IsNullOrWhiteSpace(values[Array.IndexOf(columnNames, "brand")].Trim()))
+                {
+                    errorMessages.Add("Value of Brand is empty");
+                }
+                else
+                {
+                    bellRecordAnalysis.BellRecord.Brand = values[Array.IndexOf(columnNames, "brand")].Trim();
+                }
+
+                bellRecordAnalysis.BellRecord.Product = values[Array.IndexOf(columnNames, "product description")].Trim();
+                bellRecordAnalysis.BellRecord.CreateDate = DateTime.UtcNow;
+                bellRecordAnalysis.BellRecord.UpdatedBy = _stateContainer.UserId ?? "USER";
+                bellRecordAnalysis.BellRecord.UpdateDate = null;
+                bellRecordAnalysis.BellRecord.ReconciledBy = null;
+
+                if (errorMessages.Count > 0)
+                {
+                    errorCounter++;
+                    bellRecordAnalysis.Errors = errorMessages;
+                }
+
+                csvFileBellRecordsAnalysis.AnalysedRecords.Add(bellRecordAnalysis);
+                lineNumnber++;
+                await Task.Delay(1);
+
+                if (errorCounter == 10)
+                {
+                    st2AlertStyleAskToUpload = AlertStyle.Danger;
+                    St2MessageInAlert = $"Your Csv File has error(s). Please fix them and try again.";
+                    break;
+                }
+
+            }
+
+            // _stateContainer.StoreNumberDisplay = stores;
+            csvFileBellRecordsAnalysis.AnalysedRecords = csvFileBellRecordsAnalysis.AnalysedRecords.OrderBy(x => x.BellRecord.TransactionDate).ToList();
+
+            startDate = csvFileBellRecordsAnalysis.AnalysedRecords.Where(record => record.BellRecord.TransactionDate.HasValue)
+                      .Min(record => record.BellRecord.TransactionDate);
+            endDate = csvFileBellRecordsAnalysis.AnalysedRecords.Where(record => record.BellRecord.TransactionDate.HasValue)
+               .Max(record => record.BellRecord.TransactionDate);
+
+            return csvFileBellRecordsAnalysis;
+
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"ReadCSVFile: {ex.Message}");
+            throw;
+        }
+    }
+
+    private async Task CancelUpload()
+    {
+        dialogService.Close();
+        StateHasChanged();
+    }
+
+    private async Task AcceptUpload()
+    {
+        try
+        {
+            st2AlertStyleAskToUpload = AlertStyle.Light;
+            st2VariantAskToUpload = Variant.Outlined;
+            showloading = true;
+            stp3ShowButtons = false;
+
+            st4UploadToServer = true;
+            st4AlertStyleUploadToServer = AlertStyle.Success;
+
+            StateHasChanged();
+            var succssess = await SyncData.InsertBellSources(csvFileBellRecordsAnalysis); //28721
+
+            if (succssess)
+            {
+                st4AlertStyleUploadToServer = AlertStyle.Light;
+                st4VariantUploadToServer = Variant.Outlined;
+
+                st5FetchData = true;
+                st5AlertStyleFetchData = AlertStyle.Success;
+                StateHasChanged();
+
+                await _localdb.RemoveBellSourceFromLocalDbAsync(startDate, endDate);
+                await _localdb.RemoveStapleSourceFromLocalDbAsync(startDate, endDate);
+
+                await _localdb.RemoveFetchHistory(startDate, endDate);
+                
+                await _localdb.RemoveOnlyInBellFromLocalDbAsync(startDate, endDate);
+                await _localdb.RemoveOnlyInStaplesFromLocalDbAsync(startDate, endDate);
+                await _localdb.RemoveInBothFromLocalDbAsync(startDate, endDate);
+
+                var count = await fetchData.FetchDataFromServerDb(startDate, endDate);
+                loadDatabaseInUi = true;
+                StateHasChanged();
+            }
+            showloading = false;
+            StateHasChanged();
+            dialogService.Close(loadDatabaseInUi);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"AcceptUpload: {ex.Message}");
+            throw;
+        }
+    }
+}

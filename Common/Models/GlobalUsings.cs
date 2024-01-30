@@ -1,0 +1,1 @@
+﻿global using CapitalClue.Common.Models.Enums;

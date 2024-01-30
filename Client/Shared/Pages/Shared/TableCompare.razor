@@ -1,0 +1,56 @@
+﻿@using CapitalClue.Common.Models
+@using CapitalClue.Common.Models.Enums;
+@using CapitalClue.Frontend.Shared.Pages.Components
+@using CapitalClue.Frontend.Shared.ServiceInterfaces;
+@using Microsoft.EntityFrameworkCore;
+@inject ILocalDbRepository Localdb
+@inject ISyncData SyncData
+@inject ICsvExport CsvExport
+@inject DialogService dialogService
+@inject IJSRuntime JS
+
+<h2>
+    @TitleLob
+</h2>
+
+<RadzenTabs RenderMode="Radzen.TabRenderMode.Client" @bind-SelectedIndex=@selectedIndex>
+    <Tabs>
+        <RadzenTabsItem Text="Only in Staples">
+            <OnlyInStaples @ref="onlyInStaplesComponent"></OnlyInStaples>           
+        </RadzenTabsItem>
+        <RadzenTabsItem Text="In both">
+            <InBoth @ref="inBothComponent"></InBoth>
+        </RadzenTabsItem>
+        <RadzenTabsItem Text="Only in Bell">
+            <OnlyInBell @ref="onlyInBellComponent"></OnlyInBell>
+        </RadzenTabsItem>
+    </Tabs>
+</RadzenTabs>
+
+<hr class="featurette-divider">
+
+@code {
+    int selectedIndex = 0;
+    OnlyInStaples onlyInStaplesComponent;
+    InBoth inBothComponent;
+    OnlyInBell onlyInBellComponent;
+
+
+    [Parameter]
+    public string TitleLob { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        StateHasChanged();
+
+    }
+
+    public async Task appliyFilterClicked()
+    {
+        onlyInStaplesComponent.appliyFilterClicked();
+        inBothComponent.appliyFilterClicked();
+        onlyInBellComponent.appliyFilterClicked();
+    }
+}

@@ -1,0 +1,74 @@
+﻿@using Microsoft.Extensions.Logging;
+
+@inject DialogService dialogService
+@inject ILogger<MultipleEditDialog> _logger
+
+<RadzenStack Orientation="Orientation.Horizontal" Gap="50">
+    <RadzenText TextStyle="TextStyle.Body1"><b> InBoth selected records count :@(CompareBellStapleEditModeCount)</b></RadzenText>
+</RadzenStack>
+
+<RadzenCard>
+    <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Staples Comment</RadzenText>
+    <RadzenTextArea @bind-value=@sComment class="w-100" />
+
+    @if (CompareBellStapleEditModeCount > 0)
+    {
+        <RadzenButton Icon="content_copy" Text="copy to bell" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => CopyToBellButtonClicked())" @onclick:stopPropagation="true">
+        </RadzenButton>
+
+        <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Bell Comment</RadzenText>
+        <RadzenTextArea @bind-value=@bComment class="w-100" />
+    }
+    <RadzenCheckBox @bind-Value=@reconciled Name="ReconciledCheckBox" />
+    <RadzenLabel Text="Reconciled" Component="ReconciledCheckBox" Style="margin-left: 8px; vertical-align: middle;" />
+</RadzenCard>
+
+<RadzenCard>
+    <RadzenButton Click="@CancelEdit" Text="Cancel" Icon="cancel" Shade="Shade.Darker" ButtonStyle="ButtonStyle.Light" />
+    <RadzenButton Click="@DoEdit" Text="Edit Item(s)" Icon="check_circle" Shade="Shade.Darker" ButtonStyle="ButtonStyle.Info" />
+</RadzenCard>
+
+@code {
+    [Parameter]
+    public int CompareBellStapleEditModeCount { get; set; }
+
+    string bComment;
+    string sComment;
+    bool reconciled;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        StateHasChanged();
+    }
+
+    private async Task CancelEdit()
+    {
+        dialogService.Close();
+        StateHasChanged();
+    }
+
+    private async Task DoEdit()
+    {
+        MultipleEditDialogResult dataToSave = new MultipleEditDialogResult();
+        dataToSave.BComment = bComment;
+        dataToSave.SComment = sComment;
+        dataToSave.Reconciled = reconciled;
+        try
+        {
+            dialogService.Close(dataToSave);
+            StateHasChanged();
+
+        }
+        catch (Exception ex)
+        {
+            //_logger.LogError($"AcceptUpload: {ex.Message}");
+            throw;
+        }
+    }
+
+    void CopyToBellButtonClicked()
+    {
+        bComment = sComment;
+    }
+}
