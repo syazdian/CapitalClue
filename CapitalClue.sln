@@ -27,13 +27,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Models", "Common\Com
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Utilities", "Common\Common.Utilities\Common.Utilities.csproj", "{495D8061-E3A1-49A9-8888-2578B25922C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Client", "Client\Web\Web.Client\Web.Client.csproj", "{E111AF77-04AB-484C-960D-6C358FA9A454}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web.Client", "Client\Web\Web.Client\Web.Client.csproj", "{E111AF77-04AB-484C-960D-6C358FA9A454}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web.Services", "Client\Web\Web.Services\Web.Services.csproj", "{86314D1A-B945-4C9C-ACF9-D69759E5759A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Api", "Server\Server.Api\Server.Api.csproj", "{2ABD6CC2-FEC5-44EF-8BF8-0DAEF6C31CE7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server.Api", "Server\Server.Api\Server.Api.csproj", "{2ABD6CC2-FEC5-44EF-8BF8-0DAEF6C31CE7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Pages", "Client\Shared\Shared.Pages\Shared.Pages.csproj", "{56E01757-CE2F-4194-A127-3A30CECAD5D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared.Pages", "Client\Shared\Shared.Pages\Shared.Pages.csproj", "{56E01757-CE2F-4194-A127-3A30CECAD5D8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{495D8061-E3A1-49A9-8888-2578B25922C4} = {495D8061-E3A1-49A9-8888-2578B25922C4}
+		{D7A696F8-8232-48B1-BD72-C9F0367043D0} = {D7A696F8-8232-48B1-BD72-C9F0367043D0}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

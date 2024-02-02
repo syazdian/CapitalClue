@@ -1,5 +1,9 @@
 ﻿@inherits LayoutComponentBase
-<div class="page">
+@using Shared.Pages;
+@namespace Shared.Pages
+
+
+@* <div class="page">
     <div class="sidebar">
         <NavMenu />
     </div>
@@ -12,5 +16,13 @@
         <article class="content px-4">
             @Body
         </article>
+    </main>
+</div> *@
+
+<div class="page">
+    <main>
+        <div class="body-main-layout">
+            @Body
+        </div>
     </main>
 </div>
