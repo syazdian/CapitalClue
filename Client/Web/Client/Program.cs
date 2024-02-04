@@ -10,6 +10,7 @@ using CapitalClue.Common.Models;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Radzen;
+using Shared.Pages;
 
 namespace CapitalClue.Client;
 

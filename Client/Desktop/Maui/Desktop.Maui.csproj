@@ -96,7 +96,7 @@
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
         <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
-        <PackageReference Include="Radzen.Blazor" Version="4.24.2" />
+        <PackageReference Include="Radzen.Blazor" Version="4.24.5" />
     </ItemGroup>
 
     <ItemGroup>

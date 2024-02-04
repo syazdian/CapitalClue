@@ -1,0 +1,41 @@
+﻿@page "/TestSteps"
+
+<h3>TestSteps</h3>
+
+<RadzenSteps Change=@OnChange>
+    <Steps>
+        <RadzenStepsItem Text="Customers">
+            <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" class="rz-my-6">1. Select a Customer to continue</RadzenText>
+        </RadzenStepsItem>
+        <RadzenStepsItem Text="Orders">
+            <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" class="rz-my-6">2. Select an Order to continue</RadzenText>
+
+        </RadzenStepsItem>
+        <RadzenStepsItem Text="Order Details">
+            <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" class="rz-my-6">Order Details</RadzenText>
+
+        </RadzenStepsItem>
+    </Steps>
+</RadzenSteps>
+
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+
+    void OnChange(int index)
+    {
+
+        if (index == 1)
+        {
+
+        }
+        else if (index == 2)
+        {
+
+        }
+    }
+}

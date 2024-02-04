@@ -1,10 +1,6 @@
 ﻿using CapitalClue.Common.Models;
 using CapitalClue.Common.Models.Domain;
 using CapitalClue.Frontend.Desktop.Maui.Models;
-using CapitalClue.Frontend.Desktop.Maui.Utilities;
-using CapitalClue.Frontend.Desktop.Models;
-using CapitalClue.Frontend.Desktop.Services.Database;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Radzen;
@@ -71,21 +67,12 @@ public static class MauiProgram
 
         builder.Services.AddMauiBlazorWebView();
         builder.Services.AddRadzenComponents();
-        builder.Services.AddDbContext<StapleSourceContext>(a => a.UseSqlite(ProjectConfig.DatabasePath));
 
 #if DEBUG
         builder.Services.AddBlazorWebViewDeveloperTools();
         builder.Logging.AddDebug();
 #endif
 
-        builder.Services.AddScoped<DialogService>();
-        builder.Services.AddSingleton<IStateContainer, StateContainer>();
-        builder.Services.AddTransient<IFilterService, FilterService>();
-        builder.Services.AddTransient<ILocalDbRepository, LocalDbRepository>();
-        builder.Services.AddTransient<ISyncData, SyncData>();
-
-        builder.Services.AddTransient<IFetchData, FetchData>();
-        builder.Services.AddTransient<ICsvExport, CsvExport>();
 
         // builder.Services.AddTransient<IInjectBellSource, InjectBellSource>();
 
