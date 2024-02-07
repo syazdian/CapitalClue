@@ -23,82 +23,21 @@
           
         </RadzenStepsItem>
         <RadzenStepsItem Text="Your Data">
-            <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" class="rz-my-6">2. Tell Us Your Financial Data</RadzenText>
-
-            <RadzenStack Orientation="Orientation.Vertical">
-
-            <RadzenStack Orientation="Orientation.Horizontal">
-            <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">How much is the house you want to buy?</RadzenText>
-                <RadzenNumeric TValue="double" Format="c" @bind-Value=@houseCost InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
-            </RadzenStack>
-
-            <RadzenStack Orientation="Orientation.Horizontal">
-                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">How much downpayment are you paying?</RadzenText>
-                <RadzenNumeric TValue="double" Format="c" @bind-Value=@downpayment InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
-            </RadzenStack>
-
-            <RadzenStack Orientation="Orientation.Horizontal">
-                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">What is the interest rate?</RadzenText>
-                <RadzenNumeric TValue="double" Format="p" @bind-Value=@interestRate InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
-            </RadzenStack>
-
-            <RadzenStack Orientation="Orientation.Horizontal">
-                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">how much would be your monthly Mortgage payment?</RadzenText>
-                <RadzenNumeric TValue="double" Format="c" @bind-Value=@mortagePayment InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
-            </RadzenStack>
-
-                <RadzenStack Orientation="Orientation.Horizontal">
-                    <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">Is your mortgage payment 25 year or 30 year?</RadzenText>
-
-                    <RadzenRadioButtonList @bind-Value=@mortagePaymentPeriod TValue="int" class="mb-5">
-                        <Items>
-                            <RadzenRadioButtonListItem Text="25 year" Value="25" />
-                            <RadzenRadioButtonListItem Text="30 year" Value="30" />
-                        </Items>
-                    </RadzenRadioButtonList>
-
-                </RadzenStack>
-
-                <RadzenStack Orientation="Orientation.Horizontal">
-                    <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">how much are you paying monthly for rent?</RadzenText>
-                    <RadzenNumeric TValue="double" Format="c" @bind-Value=@montlyPaying InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
-                </RadzenStack>
-
-            </RadzenStack>
-
-            
+            @if(selectedStory == Story.Home)
+            {
+                <HouseChoice></HouseChoice>                
+            }  
+            else @if(selectedStory == Story.Stock)
+            {
+                <StockChoice></StockChoice>
+            }
+            else @if (selectedStory == Story.DontKhow)
+            {
+                <NotKhowChoice></NotKhowChoice>
+            }
         </RadzenStepsItem>
         <RadzenStepsItem Text="Prediction" >
-            <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" class="rz-my-6">Predictions Based On your Story and Your Financial Data </RadzenText>
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-12 my-5">
-                        <RadzenCard class="w-100 mb-4" Style="display: flex; align-items: center; gap: 0.5rem">
-                            <RadzenCheckBox @bind-Value="@smooth" Name="smooth"></RadzenCheckBox>
-                            <RadzenLabel Text="Smooth" Component="smooth" Style="margin-right: 1rem;" />
-                            <RadzenCheckBox @bind-Value="@showDataLabels" Name="dataLabels"></RadzenCheckBox>
-                            <RadzenLabel Text="Show Data Labels" Component="dataLabels" Style="margin-right: 1rem;" />
-                            <RadzenCheckBox @bind-Value="@showMarkers" Name="markers"></RadzenCheckBox>
-                            <RadzenLabel Text="Show Markers" Component="markers" />
-                        </RadzenCard>
-                        <RadzenChart>
-                            <RadzenLineSeries Smooth="@smooth" Data="@revenue2019" CategoryProperty="Date" Title="Stock" LineType="LineType.Dashed" ValueProperty="Revenue">
-                                <RadzenMarkers Visible="@showMarkers" MarkerType="MarkerType.Square" />
-                                <RadzenSeriesDataLabels Visible="@showDataLabels" />
-                            </RadzenLineSeries>
-                            <RadzenLineSeries Smooth="@smooth" Data="@revenue2020" CategoryProperty="Date" Title="Home" ValueProperty="Revenue">
-                                <RadzenMarkers Visible="@showMarkers" MarkerType="MarkerType.Circle" />
-                                <RadzenSeriesDataLabels Visible="@showDataLabels" />
-                            </RadzenLineSeries>
-                            <RadzenCategoryAxis Padding="20" Formatter="@FormatAsMonth" />
-                            <RadzenValueAxis Formatter="@FormatAsUSD">
-                                <RadzenGridLines Visible="true" />
-                                <RadzenAxisTitle Text="Revenue in USD" />
-                            </RadzenValueAxis>
-                        </RadzenChart>
-                    </div>
-                </div>
-            </div>
+            <Results></Results>
         </RadzenStepsItem>
     </Steps>
 </RadzenSteps>
@@ -111,16 +50,12 @@
         Stock,
         DontKhow
     }
+    Story selectedStory;
     bool toggleButtonHomeValue;
     bool toggleButtonStockValue;
     bool toggleButtonDontKhowValue;
 
-    double houseCost;
-    double downpayment;
-    double interestRate;
-    double mortagePayment;
-    int mortagePaymentPeriod;
-    double montlyPaying;
+    
 
     protected override async Task OnInitializedAsync()
     {
@@ -142,6 +77,8 @@
 
     private void StorySelect(Story story)
     {
+        selectedStory = story;
+
         toggleButtonHomeValue = false;
         toggleButtonStockValue = false;
         toggleButtonDontKhowValue = false;
@@ -159,154 +96,5 @@
         }
     }
 
-    bool smooth = false;
-    bool showDataLabels = false;
-    bool showMarkers = true;
-
-    class DataItem
-    {
-        public string Date { get; set; }
-        public double Revenue { get; set; }
-    }
-
-    string FormatAsUSD(object value)
-    {
-        return ((double)value).ToString("C0", CultureInfo.CreateSpecificCulture("en-US"));
-    }
-
-    string FormatAsMonth(object value)
-    {
-        if (value != null)
-        {
-            return Convert.ToDateTime(value).ToString("MMM");
-        }
-
-        return string.Empty;
-    }
-
-    DataItem[] revenue2019 = new DataItem[] {
-        new DataItem
-        {
-            Date = ("2019-01-01"),
-            Revenue = 234000
-        },
-        new DataItem
-        {
-            Date = ("2019-02-01"),
-            Revenue = 269000
-        },
-        new DataItem
-        {
-            Date = ("2019-03-01"),
-            Revenue = 233000
-        },
-        new DataItem
-        {
-            Date = ("2019-04-01"),
-            Revenue = 244000
-        },
-        new DataItem
-        {
-            Date = ("2019-05-01"),
-            Revenue = 214000
-        },
-        new DataItem
-        {
-            Date = ("2019-06-01"),
-            Revenue = 253000
-        },
-        new DataItem
-        {
-            Date = ("2019-07-01"),
-            Revenue = 274000
-        },
-        new DataItem
-        {
-            Date = ("2019-08-01"),
-            Revenue = 284000
-        },
-        new DataItem
-        {
-            Date = ("2019-09-01"),
-            Revenue = 273000
-        },
-        new DataItem
-        {
-            Date = ("2019-10-01"),
-            Revenue = 282000
-        },
-        new DataItem
-        {
-            Date = ("2019-11-01"),
-            Revenue = 289000
-        },
-        new DataItem
-        {
-            Date = ("2019-12-01"),
-            Revenue = 294000
-        }
-    };
-
-    DataItem[] revenue2020 = new DataItem[] {
-        new DataItem
-        {
-            Date = ("2019-01-01"),
-            Revenue = 334000
-        },
-        new DataItem
-        {
-            Date = ("2019-02-01"),
-            Revenue = 369000
-        },
-        new DataItem
-        {
-            Date = ("2019-03-01"),
-            Revenue = 333000
-        },
-        new DataItem
-        {
-            Date = ("2019-04-01"),
-            Revenue = 344000
-        },
-        new DataItem
-        {
-            Date = ("2019-05-01"),
-            Revenue = 314000
-        },
-        new DataItem
-        {
-            Date = ("2019-06-01"),
-            Revenue = 353000
-        },
-        new DataItem
-        {
-            Date = ("2019-07-01"),
-            Revenue = 374000
-        },
-        new DataItem
-        {
-            Date = ("2019-08-01"),
-            Revenue = 384000
-        },
-        new DataItem
-        {
-            Date = ("2019-09-01"),
-            Revenue = 373000
-        },
-        new DataItem
-        {
-            Date = ("2019-10-01"),
-            Revenue = 382000
-        },
-        new DataItem
-        {
-            Date = ("2019-11-01"),
-            Revenue = 389000
-        },
-        new DataItem
-        {
-            Date = ("2019-12-01"),
-            Revenue = 394000
-        }
-    };
+   
 }

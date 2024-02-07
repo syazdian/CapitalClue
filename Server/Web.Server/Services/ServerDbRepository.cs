@@ -259,44 +259,6 @@ namespace CapitalClue.Web.Server.Services
             }
         }
 
-        public async Task<string> InsertBellUploadHistory(CsvFileBellRecordsAnalysisDto uploadedPack)
-        {
-            try
-            {
-                var bellUploadHistory = new ReconBellUploadHistory();
-                if (uploadedPack.IsFirstChunk)
-                {
-                    bellUploadHistory.UploadedDate = DateTime.Now;
-                    bellUploadHistory.ProblemRowCount = uploadedPack.FailRowCount;
-                    bellUploadHistory.SuccessRowCount = uploadedPack.SuccessRowCount;
-                    bellUploadHistory.ProblemRows = uploadedPack.AnalysedRecords.Where(c => !c.IsSuccessful).Select(c => new { LineNumber = c.LineNumber, Errors = c.Errors }).ToJson();
-                    bellUploadHistory.UploadedBy = uploadedPack.UploadBy;
-                    bellUploadHistory.FileName = uploadedPack.FileName;
-                    bellUploadHistory.UploadedDate = DateTime.UtcNow;
-                    await _bellDbContext.ReconBellUploadHistories.AddAsync(bellUploadHistory);
-                    await _bellDbContext.SaveChangesAsync();
-                }
-                bellUploadHistory = _bellDbContext.ReconBellUploadHistories.OrderByDescending(x => x.UploadedDate).FirstOrDefault() ?? new ReconBellUploadHistory();
-                var bellRecords = uploadedPack.AnalysedRecords.Where(c => c.IsSuccessful == true).Select(c => c.BellRecord).ToList();
-                var res = await InsertBellSources(bellRecords, bellUploadHistory.Id);
-                if (uploadedPack.IsLastChunk)
-                {
-                    //RUN SP
-                    _bellDbContext.Database.ExecuteSqlRaw($"EXEC [_code].[prc_UpsertReconBell] @UploadHistoryId ={bellUploadHistory.Id}");
-                }
-                if (res)
-                {
-                    return "success";
-                }
-                return "fail";
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"error in InsertBellUploadHistory: {ex.Message}");
-
-                throw;
-            }
-        }
 
         public async Task DeleteReconBell(long id)
         {

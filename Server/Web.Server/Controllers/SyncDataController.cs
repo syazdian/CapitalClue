@@ -31,20 +31,6 @@ public class SyncDataController : Controller
         }
     }
 
-    [HttpPost("InsertBellSources")]
-    public async Task<IActionResult> InsertBellSources(CsvFileBellRecordsAnalysisDto bellSourceChanges)
-    {
-        try
-        {
-            var msg = await _dbRepo.InsertBellUploadHistory(bellSourceChanges);
-            return Ok(msg);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError($"InsertBellSources : {ex.Message}");
-            throw;
-        }
-    }
 
     [HttpPost("DeleteItems")]
     public async Task<IActionResult> DeleteItems(ToDeleteItemsDto toDeleteItemsDto)

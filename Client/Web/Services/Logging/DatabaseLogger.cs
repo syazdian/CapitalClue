@@ -43,6 +43,6 @@ public class DatabaseLogger : ILogger
         log.CreatedDate = DateTime.UtcNow;
         log.UserId = username;
 
-        _localDb.InsertErrorLogs(log);
+        //TODO _localDb.InsertErrorLogs(log);
     }
 }

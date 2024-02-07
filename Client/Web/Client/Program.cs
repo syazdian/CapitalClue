@@ -1,14 +1,6 @@
 using CapitalClue.Common.Models;
-using CapitalClue.Common.Models.Domain;
-using CapitalClue.Frontend.Shared.ServiceInterfaces;
-using CapitalClue.Frontend.Web.Logging;
 using CapitalClue.Frontend.Web.Models;
 using CapitalClue.Frontend.Web.Services.Services;
-
-using CapitalClue.Common.Models;
-
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Radzen;
 using Shared.Pages;
 
@@ -73,16 +65,10 @@ public class Program
         builder.Services.AddSingleton<IStateContainer, StateContainer>();
         builder.Services.AddScoped<DialogService>();
 
-        var filterItems = GetFilterItems(builder);
-        builder.Services.AddSingleton(filterItems);
-
         builder.Services.AddBesqlDbContextFactory<StapleSourceContext>(opts => opts.UseSqlite("Data Source=StapleSource.sqlite3"));
-
-        builder.Services.AddTransient<IFilterService, FilterService>();
         builder.Services.AddTransient<ILocalDbRepository, LocalDbRepository>();
         builder.Services.AddTransient<IFetchData, FetchData>();
         builder.Services.AddTransient<ISyncData, SyncData>();
-        builder.Services.AddTransient<ICsvExport, CsvExport>();
 
         builder.Services.AddLogging(logging =>
         {
@@ -104,28 +90,4 @@ public class Program
         await app.RunAsync();
     }
 
-    private static FilterItemsDisplay GetFilterItems(WebAssemblyHostBuilder builder)
-    {
-        FilterItemsDisplay filterItems = new FilterItemsDisplay();
-
-        LoB loBWireless = new LoB()
-        {
-            Name = "Wireless",
-            SubLoBs = builder.Configuration.GetSection("FilterItems:LoB:Wireless").Get<List<string>>()
-        };
-
-        filterItems.LoBs.Add(loBWireless);
-        LoB loBWireline = new LoB()
-        {
-            Name = "Wireline",
-            SubLoBs = builder.Configuration.GetSection("FilterItems:LoB:Wireline").Get<List<string>>()
-        };
-        filterItems.LoBs.Add(loBWireline);
-        filterItems.Brands = builder.Configuration.GetSection("FilterItems:Brand").Get<List<string>>();
-        filterItems.RebateTypes = builder.Configuration.GetSection("FilterItems:RebateType").Get<List<string>>();
-
-        // filterItems.Locations = builder.Configuration.GetSection("FilterItems:Location").Get<List<string>>();
-
-        return filterItems;
-    }
 }

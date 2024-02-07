@@ -1,0 +1,176 @@
+﻿@using System.Globalization
+<RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" class="rz-my-6">Predictions Based On your Story and Your Financial Data </RadzenText>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 my-5">
+            <RadzenChart>
+                <RadzenLineSeries Smooth="true" Data="@revenueStock" CategoryProperty="Date" Title="Stock" LineType="LineType.Dashed" ValueProperty="Revenue">
+                    <RadzenMarkers Visible="true" MarkerType="MarkerType.Square" />
+                    <RadzenSeriesDataLabels Visible="false" />
+                </RadzenLineSeries>
+                <RadzenLineSeries Smooth="true" Data="@revenueHome" CategoryProperty="Date" Title="Home" ValueProperty="Revenue">
+                    <RadzenMarkers Visible="true" MarkerType="MarkerType.Circle" />
+                    <RadzenSeriesDataLabels Visible="false" />
+                </RadzenLineSeries>
+                <RadzenCategoryAxis Padding="20" Formatter="@FormatAsMonth" />
+                <RadzenValueAxis Formatter="@FormatAsUSD">
+                    <RadzenGridLines Visible="true" />
+                    <RadzenAxisTitle Text="Revenue in USD" />
+                </RadzenValueAxis>
+            </RadzenChart>
+        </div>
+    </div>
+</div>
+<RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" class="rz-my-6">Result</RadzenText>
+@resultText
+
+
+@code {
+    class DataItem
+    {
+        public string Date { get; set; }
+        public double Revenue { get; set; }
+    }
+    string resultText = "you purchased a property for $1500000 and paid $8800 monthly with $300000 downpayment";
+
+    string FormatAsUSD(object value)
+    {
+        return ((double)value).ToString("C0", CultureInfo.CreateSpecificCulture("en-US"));
+    }
+
+    string FormatAsMonth(object value)
+    {
+        if (value != null)
+        {
+            return Convert.ToDateTime(value).ToString("MMM");
+        }
+
+        return string.Empty;
+    }
+
+    DataItem[] revenueStock = new DataItem[] {
+        new DataItem
+        {
+            Date = ("2024-01-01"),
+            Revenue = 234000
+        },
+        new DataItem
+        {
+            Date = ("2024-02-01"),
+            Revenue = 269000
+        },
+        new DataItem
+        {
+            Date = ("2024-03-01"),
+            Revenue = 233000
+        },
+        new DataItem
+        {
+            Date = ("2024-04-01"),
+            Revenue = 244000
+        },
+        new DataItem
+        {
+            Date = ("2024-05-01"),
+            Revenue = 214000
+        },
+        new DataItem
+        {
+            Date = ("2024-06-01"),
+            Revenue = 253000
+        },
+        new DataItem
+        {
+            Date = ("2024-07-01"),
+            Revenue = 274000
+        },
+        new DataItem
+        {
+            Date = ("2024-08-01"),
+            Revenue = 284000
+        },
+        new DataItem
+        {
+            Date = ("2024-09-01"),
+            Revenue = 273000
+        },
+        new DataItem
+        {
+            Date = ("2024-10-01"),
+            Revenue = 282000
+        },
+        new DataItem
+        {
+            Date = ("2024-11-01"),
+            Revenue = 289000
+        },
+        new DataItem
+        {
+            Date = ("2024-12-01"),
+            Revenue = 294000
+        }
+    };
+
+    DataItem[] revenueHome = new DataItem[] {
+        new DataItem
+        {
+            Date = ("2024-01-01"),
+            Revenue = 334000
+        },
+        new DataItem
+        {
+            Date = ("2024-02-01"),
+            Revenue = 369000
+        },
+        new DataItem
+        {
+            Date = ("2024-03-01"),
+            Revenue = 333000
+        },
+        new DataItem
+        {
+            Date = ("2024-04-01"),
+            Revenue = 344000
+        },
+        new DataItem
+        {
+            Date = ("2024-05-01"),
+            Revenue = 314000
+        },
+        new DataItem
+        {
+            Date = ("2024-06-01"),
+            Revenue = 353000
+        },
+        new DataItem
+        {
+            Date = ("2024-07-01"),
+            Revenue = 374000
+        },
+        new DataItem
+        {
+            Date = ("2024-08-01"),
+            Revenue = 384000
+        },
+        new DataItem
+        {
+            Date = ("2024-09-01"),
+            Revenue = 373000
+        },
+        new DataItem
+        {
+            Date = ("2024-10-01"),
+            Revenue = 382000
+        },
+        new DataItem
+        {
+            Date = ("2024-11-01"),
+            Revenue = 389000
+        },
+        new DataItem
+        {
+            Date = ("2024-12-01"),
+            Revenue = 394000
+        }
+    };
+}
