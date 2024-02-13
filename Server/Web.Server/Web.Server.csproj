@@ -70,6 +70,11 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Client\Web\Client\Web.Client.csproj" />
     <ProjectReference Include="..\..\Common\Models\Common.Models.csproj" />
+    <ProjectReference Include="..\ML\Property\PropertModelBuilder\PropertModelBuilder.csproj" />
+    <ProjectReference Include="..\ML\Property\PropertyPrediction\PropertyPrediction.csproj" />
+    <ProjectReference Include="..\ML\Stock\StockModelBuiler\StockModelBuiler.csproj" />
+    <ProjectReference Include="..\ML\Stock\StockPrediction\StockPrediction.csproj" />
+    <ProjectReference Include="..\ML\WealthCalculator\WealthCalculator.csproj" />
   </ItemGroup>
 
   <ItemGroup>
