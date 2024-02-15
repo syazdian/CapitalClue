@@ -65,8 +65,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Stock", "Stock", "{AECBECCF-E033-4958-8695-FC28677760EC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockModelBuiler", "Server\ML\Stock\StockModelBuiler\StockModelBuiler.csproj", "{728F18DF-CAF4-4FED-9932-6911E1407351}"
+	ProjectSection(ProjectDependencies) = postProject
+		{840BDF87-8BDF-432C-9DB4-11C271ADB6FF} = {840BDF87-8BDF-432C-9DB4-11C271ADB6FF}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockPrediction", "Server\ML\Stock\StockPrediction\StockPrediction.csproj", "{CC452893-F987-4CF1-863B-DE56CEF3128D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{840BDF87-8BDF-432C-9DB4-11C271ADB6FF} = {840BDF87-8BDF-432C-9DB4-11C271ADB6FF}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

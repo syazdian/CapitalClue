@@ -28,8 +28,8 @@ public class FetchDataController : Controller
             if (endDateTicks.HasValue && endDateTicks.Value > 0)
                 endDate = new DateTime(endDateTicks.Value);
 
-            var bellStapleCountDto = await _dbRepo.CountBellStapleRows(startDate, endDate);
-            return Ok(bellStapleCountDto);
+            //var bellStapleCountDto = await _dbRepo.CountBellStapleRows(startDate, endDate);
+            return Ok();
         }
         catch (Exception ex)
         {
@@ -52,8 +52,8 @@ public class FetchDataController : Controller
             if (endDateTicks.HasValue && endDateTicks.Value > 0)
                 endDate = new DateTime(endDateTicks.Value);
 
-            var items = await _dbRepo.GetBellSource(startCount: startCount, endCount: endCount, startDate: startDate, endDate: endDate);
-            return Ok(items);
+            //var items = await _dbRepo.GetBellSource(startCount: startCount, endCount: endCount, startDate: startDate, endDate: endDate);
+            return Ok();
         }
         catch (Exception ex)
         {
@@ -75,8 +75,8 @@ public class FetchDataController : Controller
             if (endDateTicks.HasValue && endDateTicks.Value > 0)
                 endDate = new DateTime(endDateTicks.Value);
 
-            var items = await _dbRepo.GetStaplesSource(startCount: startCount, endCount: endCount, startDate: startDate, endDate: endDate);
-            return Ok(items);
+            //var items = await _dbRepo.GetStaplesSource(startCount: startCount, endCount: endCount, startDate: startDate, endDate: endDate);
+            return Ok();
         }
         catch (Exception ex)
         {
@@ -105,8 +105,8 @@ public class FetchDataController : Controller
     {
         try
         {
-            var items = await _dbRepo.GetStores();
-            return Ok(items);
+            //var items = await _dbRepo.GetStores();
+            return Ok();
         }
         catch (Exception ex)
         {

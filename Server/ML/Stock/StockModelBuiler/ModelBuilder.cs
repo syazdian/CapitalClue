@@ -1,4 +1,5 @@
-﻿using Microsoft.ML;
+﻿using CapitalClue.Common.Models;
+using Microsoft.ML;
 using Microsoft.ML.Transforms.TimeSeries;
 using System;
 using System.Collections.Generic;
@@ -13,18 +14,18 @@ public class ModelBuilder
 {
     MLContext context;
     IDataView data;
-    TimeSeriesPredictionEngine<StockData,ResultModel> ForeCastEngein;
-    public ModelBuilder(IEnumerable<StockData> stockData)
+    TimeSeriesPredictionEngine<StockValueIndex, ResultModel> ForeCastEngein;
+    public ModelBuilder(StockModelDto stockData)
     {
         context = new MLContext();
-        data = context.Data.LoadFromEnumerable<StockData>(stockData);
+        data = context.Data.LoadFromEnumerable<StockValueIndex>(stockData.StockValueIndices);
     }
 
-    public TimeSeriesPredictionEngine<StockData, ResultModel> Build()
+    public TimeSeriesPredictionEngine<StockValueIndex, ResultModel> Build()
     {
         var pipline = context.Forecasting.ForecastBySsa(
                 outputColumnName: nameof(ResultModel.ForeCastIndex),
-                inputColumnName: nameof(StockData.SP500),
+                inputColumnName: nameof(StockValueIndex.Value),
                 confidenceLevel: 0.95F,
                 confidenceLowerBoundColumn: nameof(ResultModel.ConfidenceLowerBound),
                 confidenceUpperBoundColumn: nameof(ResultModel.ConfidenceUpperBound),
@@ -35,7 +36,7 @@ public class ModelBuilder
 
         var model = pipline.Fit(data);
 
-        ForeCastEngein = model.CreateTimeSeriesEngine<StockData, ResultModel>(context);
+        ForeCastEngein = model.CreateTimeSeriesEngine<StockValueIndex, ResultModel>(context);
         return ForeCastEngein;
        
     }
@@ -49,7 +50,7 @@ public class ModelBuilder
             modelBytes = stream.ToArray();
 
             string filePath = Directory.GetCurrentDirectory(); ;
-            string fileName = "edfdfdsdt.txt";
+            string fileName = "StockModel";
             DirectoryInfo info = new DirectoryInfo(filePath);
             if (!info.Exists)
             {
