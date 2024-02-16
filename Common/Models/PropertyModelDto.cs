@@ -16,5 +16,5 @@ public class PropertyModelDto
 public class PropertyValueIndex
 {
     public DateTime DateTime { get; set; } = DateTime.MinValue;
-    public double Value { get; set; } = 0;
+    public float Value { get; set; } = 0;
 }

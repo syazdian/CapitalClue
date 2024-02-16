@@ -28,4 +28,8 @@
     <ProjectReference Include="..\..\Shared\ServiceInterfaces\Shared.ServiceInterfaces.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Database\Seeding\" />
+  </ItemGroup>
+
 </Project>

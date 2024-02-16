@@ -1,18 +1,19 @@
-﻿using CapitalClue.Web.Server.Ml.Stock.ModelBuilder;
+﻿using CapitalClue.Web.Server.Ml.Property.ModelBuilder;
+using CapitalClue.Web.Server.Ml.Property.PropertyPrediction;
 using CapitalClue.Web.Server.Ml.Stock.StockPrediction;
 
 namespace CapitalClue.Web.Server.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class StockController : Controller
+public class PropertyController : Controller
 {
     [HttpPost("TrainAndMakeModel")]
-    public async Task<IActionResult> TrainAndMakeModel(StockModelDto stockModelDto)
+    public async Task<IActionResult> TrainAndMakeModel(PropertyModelDto propertyModelDto)
     {
         try
         {
-            var modelBulder = new StockModelBuilder(stockModelDto);
+            var modelBulder = new PropertyModelBuilder(propertyModelDto);
             modelBulder.Build();
             return Ok();
         }
@@ -23,12 +24,12 @@ public class StockController : Controller
         }
     }
 
-    [HttpGet("Predict/{StockName}/{Currency}")]
-    public async Task<IActionResult> Predict([FromRoute] string StockName, string Currency)
+    [HttpGet("Predict/{City}/{PropertyType}")]
+    public async Task<IActionResult> Predict([FromRoute] string City, string PropertyType)
     {
         try
         {
-            var predictor = new StockPredictor(StockName, Currency);
+            var predictor = new PropertyPrediction(City, PropertyType);
             var result = predictor.GetPrediction();
             return Ok(result);
         }

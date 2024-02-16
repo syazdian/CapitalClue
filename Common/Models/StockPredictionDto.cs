@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CapitalClue.Web.Server.Ml.Stock.ModelBuilder;
+namespace CapitalClue.Common.Models;
 
-public class ResultModel
+public class StockPredictionDto
 {
     public float[] ForeCastIndex { get; set; }
     public float[] ConfidenceLowerBound { get; set; }
