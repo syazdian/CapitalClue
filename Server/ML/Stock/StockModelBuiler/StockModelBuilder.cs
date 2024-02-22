@@ -1,4 +1,5 @@
 ﻿using CapitalClue.Common.Models;
+using CapitalClue.Web.Server.ML.Entities;
 using Microsoft.ML;
 
 namespace CapitalClue.Web.Server.Ml.Stock.ModelBuilder;
@@ -20,15 +21,15 @@ public class StockModelBuilder
     public void Build()
     {
         var pipline = context.Forecasting.ForecastBySsa(
-                outputColumnName: nameof(StockPredictionDto.ForeCastIndex),
+                outputColumnName: nameof(StockPredictionEntiy.ForeCastIndex),
                 inputColumnName: nameof(StockValueIndex.Value),
                 confidenceLevel: 0.95F,
-                confidenceLowerBoundColumn: nameof(StockPredictionDto.ConfidenceLowerBound),
-                confidenceUpperBoundColumn: nameof(StockPredictionDto.ConfidenceUpperBound),
-                windowSize: 365,
-        seriesLength: 365 * 3,
-                trainSize: 365 * 3,
-                horizon: 365);
+                confidenceLowerBoundColumn: nameof(StockPredictionEntiy.ConfidenceLowerBound),
+                confidenceUpperBoundColumn: nameof(StockPredictionEntiy.ConfidenceUpperBound),
+                windowSize: 250,
+        seriesLength: 250 * 10,
+                trainSize: 250 * 10,
+                horizon: 250*5);
 
         var model = pipline.Fit(data);
         context.Model.Save(model, data.Schema, Directory +"/"+ ModelFileName);

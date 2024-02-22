@@ -1,4 +1,5 @@
 ﻿using CapitalClue.Common.Models;
+using CapitalClue.Web.Server.ML.Entities;
 using Microsoft.ML;
 
 namespace CapitalClue.Web.Server.Ml.Property.ModelBuilder;
@@ -21,15 +22,15 @@ public class PropertyModelBuilder
     public void Build()
     {
         var pipline = context.Forecasting.ForecastBySsa(
-                outputColumnName: nameof(PropertyPredictionDto.ForeCastIndex),
+                outputColumnName: nameof(PropertyPredictionEntity.ForeCastIndex),
                 inputColumnName: nameof(PropertyValueIndex.Value),
                 confidenceLevel: 0.95F,
-                confidenceLowerBoundColumn: nameof(PropertyPredictionDto.ConfidenceLowerBound),
-                confidenceUpperBoundColumn: nameof(PropertyPredictionDto.ConfidenceUpperBound),
-                windowSize: 365,
-        seriesLength: 365 * 10,
-                trainSize: 365 * 10,
-                horizon: 365);
+                confidenceLowerBoundColumn: nameof(PropertyPredictionEntity.ConfidenceLowerBound),
+                confidenceUpperBoundColumn: nameof(PropertyPredictionEntity.ConfidenceUpperBound),
+                windowSize: 28,
+        seriesLength: 28 * 24,
+                trainSize: 28*24,
+                horizon: 28*5);
 
         var model = pipline.Fit(data);
         context.Model.Save(model, data.Schema, Directory + "/" + ModelFileName);

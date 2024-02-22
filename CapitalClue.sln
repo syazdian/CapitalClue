@@ -71,7 +71,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockPrediction", "Server\M
 		{840BDF87-8BDF-432C-9DB4-11C271ADB6FF} = {840BDF87-8BDF-432C-9DB4-11C271ADB6FF}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PropertyModelBuilder", "Server\ML\Property\PropertModelBuilder\PropertyModelBuilder\PropertyModelBuilder.csproj", "{79A83AE2-9800-4DC1-9A6F-5123750A85C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PropertyModelBuilder", "Server\ML\Property\PropertModelBuilder\PropertyModelBuilder\PropertyModelBuilder.csproj", "{79A83AE2-9800-4DC1-9A6F-5123750A85C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ML.Entities", "Server\ML\ME.Entities\ML.Entities\ML.Entities.csproj", "{06F7001C-FB7A-41BA-899C-1A2D878F630E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -141,6 +143,10 @@ Global
 		{79A83AE2-9800-4DC1-9A6F-5123750A85C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79A83AE2-9800-4DC1-9A6F-5123750A85C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79A83AE2-9800-4DC1-9A6F-5123750A85C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06F7001C-FB7A-41BA-899C-1A2D878F630E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06F7001C-FB7A-41BA-899C-1A2D878F630E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06F7001C-FB7A-41BA-899C-1A2D878F630E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06F7001C-FB7A-41BA-899C-1A2D878F630E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -167,6 +173,7 @@ Global
 		{728F18DF-CAF4-4FED-9932-6911E1407351} = {AECBECCF-E033-4958-8695-FC28677760EC}
 		{CC452893-F987-4CF1-863B-DE56CEF3128D} = {AECBECCF-E033-4958-8695-FC28677760EC}
 		{79A83AE2-9800-4DC1-9A6F-5123750A85C6} = {7C1D785A-D71A-4303-890B-EEC03496778B}
+		{06F7001C-FB7A-41BA-899C-1A2D878F630E} = {4B9E46CA-F1B3-4470-9E3D-F3A003F1DC33}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4FD2BB4C-7525-4652-9A57-BBF313ECFD88}

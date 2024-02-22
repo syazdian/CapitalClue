@@ -2,6 +2,7 @@
 using Microsoft.ML.Transforms.TimeSeries;
 using CapitalClue.Common.Models;
 using System.Security.Cryptography.X509Certificates;
+using CapitalClue.Web.Server.ML.Entities;
 
 namespace CapitalClue.Web.Server.Ml.Property.PropertyPrediction;
 
@@ -21,12 +22,30 @@ public class PropertyPrediction
         trainedModel = context.Model.Load(Directory + "/" + ModelFileName, out modelSchema);
     }
 
-    public PropertyPredictionDto GetPrediction()
+    public PropertyPredictionEntity GetPrediction()
     {
-        var ForeCastEngein = trainedModel.CreateTimeSeriesEngine<PropertyValueIndex, PropertyPredictionDto>(context);
+        var ForeCastEngein = trainedModel.CreateTimeSeriesEngine<PropertyValueIndex, PropertyPredictionEntity>(context);
         var result = ForeCastEngein.Predict();
 
         return result;
+
+    }
+
+    public PropertyPredictionDto GetPredictionYearByYear()
+    {
+        var ForeCastEngein = trainedModel.CreateTimeSeriesEngine<PropertyValueIndex, PropertyPredictionEntity>(context);
+        var result = ForeCastEngein.Predict();
+
+        int CurrentYear = DateTime.Now.Year;
+        PropertyPredictionDto propertyPredictionDto = new PropertyPredictionDto();
+        for (int i = 1; i <= 5; i++)
+        {
+            propertyPredictionDto.ConfidenceLowerBound.Add(CurrentYear + i, result.ConfidenceLowerBound[28 * i-1]);
+            propertyPredictionDto.ConfidenceUpperBound.Add(CurrentYear + i, result.ConfidenceUpperBound[28 * i-1]);
+            propertyPredictionDto.ForeCastIndex.Add(CurrentYear + i, result.ForeCastIndex[28 * i-1]);
+        }
+
+        return propertyPredictionDto;
 
     }
 }

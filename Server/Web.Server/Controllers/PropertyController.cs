@@ -39,4 +39,20 @@ public class PropertyController : Controller
             throw;
         }
     }
+
+    [HttpGet("PredictYearByYear/{City}/{PropertyType}")]
+    public async Task<IActionResult> PredictYearByYear([FromRoute] string City, string PropertyType)
+    {
+        try
+        {
+            var predictor = new PropertyPrediction(City, PropertyType);
+            var result = predictor.GetPredictionYearByYear();
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            //_logger.LogError($"PredictStock : {ex.Message}");
+            throw;
+        }
+    }
 }
