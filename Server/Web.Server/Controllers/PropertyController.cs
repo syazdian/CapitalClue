@@ -8,8 +8,8 @@ namespace CapitalClue.Web.Server.Controllers;
 [Route("api/[controller]")]
 public class PropertyController : Controller
 {
-    [HttpPost("TrainAndMakeModel")]
-    public async Task<IActionResult> TrainAndMakeModel(PropertyModelDto propertyModelDto)
+    [HttpPost("TrainAndCreateModel")]
+    public async Task<IActionResult> TrainAndCreateModel(PropertyModelDto propertyModelDto)
     {
         try
         {
@@ -20,22 +20,6 @@ public class PropertyController : Controller
         catch (Exception ex)
         {
             //_logger.LogError($"TrainAndMakeModelStock : {ex.Message}");
-            throw;
-        }
-    }
-
-    [HttpGet("Predict/{City}/{PropertyType}")]
-    public async Task<IActionResult> Predict([FromRoute] string City, string PropertyType)
-    {
-        try
-        {
-            var predictor = new PropertyPrediction(City, PropertyType);
-            var result = predictor.GetPrediction();
-            return Ok(result);
-        }
-        catch (Exception ex)
-        {
-            //_logger.LogError($"PredictStock : {ex.Message}");
             throw;
         }
     }

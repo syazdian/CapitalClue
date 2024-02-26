@@ -39,9 +39,13 @@ public class StockPredictor
         StockPredictionDto stockPredictionDto = new StockPredictionDto();
         for (int i = 1; i <= 5; i++)
         {
-            stockPredictionDto.ConfidenceLowerBound.Add(CurrentYear + i, result.ConfidenceLowerBound[250 * i - 1]);
-            stockPredictionDto.ConfidenceUpperBound.Add(CurrentYear + i, result.ConfidenceUpperBound[250 * i - 1]);
-            stockPredictionDto.ForeCastIndex.Add(CurrentYear + i, result.ForeCastIndex[250 * i - 1]);
+            var lowerboundPercent = (result.ConfidenceLowerBound[28 * i - 1] - result.ConfidenceLowerBound[28 * (i - 1)]) / result.ConfidenceLowerBound[28 * i - 1] * 100;
+            var upperBoundPercent = (result.ConfidenceUpperBound[28 * i - 1] - result.ConfidenceUpperBound[28 * (i - 1)]) / result.ConfidenceUpperBound[28 * i - 1] * 100;
+            var indexPercent = (result.ForeCastIndex[28 * i - 1] - result.ForeCastIndex[28 * (i - 1)]) / result.ForeCastIndex[28 * i - 1] * 100;
+
+            stockPredictionDto.ConfidenceLowerBound.Add(CurrentYear + i, lowerboundPercent);
+            stockPredictionDto.ConfidenceUpperBound.Add(CurrentYear + i, upperBoundPercent);
+            stockPredictionDto.ForeCastIndex.Add(CurrentYear + i, indexPercent);
         }
 
         return stockPredictionDto;

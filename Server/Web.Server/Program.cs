@@ -1,5 +1,3 @@
-using CapitalClue.Web.Server.Logging;
-using CapitalClue.Web.Server.Model;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -27,19 +25,11 @@ public class Program
         builder.Services.AddControllersWithViews();
         builder.Services.AddRazorPages();
 
-        builder.Services.AddTransient<CallApi>();
-        builder.Services.AddTransient<TokenService>();
 
-        var constring = builder.Configuration.GetConnectionString("SqlServer");
-        builder.Services.AddDbContext<Data.Sqlserver.BellRecContext>(options =>
-             options.UseSqlServer(constring));
 
-        builder.Services.AddTransient<ServerDbRepository>();
         var app = builder.Build();
 
-        var dbRepo = builder.Services.BuildServiceProvider().GetRequiredService<ServerDbRepository>();
         var lf = app.Services.GetRequiredService<ILoggerFactory>();
-        lf.AddProvider(new ApplicationLoggerProvider(dbRepo));
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment() || app.Environment.IsProduction())

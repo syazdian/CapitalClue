@@ -8,8 +8,8 @@ namespace CapitalClue.Web.Server.Controllers;
 [Route("api/[controller]")]
 public class StockController : Controller
 {
-    [HttpPost("TrainAndMakeModel")]
-    public async Task<IActionResult> TrainAndMakeModel(StockModelDto stockModelDto)
+    [HttpPost("TrainAndCreateModel")]
+    public async Task<IActionResult> TrainAndCreateModel(StockModelDto stockModelDto)
     {
         try
         {
@@ -20,22 +20,6 @@ public class StockController : Controller
         catch (Exception ex)
         {
             //_logger.LogError($"TrainAndMakeModelStock : {ex.Message}");
-            throw;
-        }
-    }
-
-    [HttpGet("Predict/{StockName}/{Currency}")]
-    public async Task<IActionResult> Predict([FromRoute] string StockName, string Currency)
-    {
-        try
-        {
-            var predictor = new StockPredictor(StockName, Currency);
-            var result = predictor.GetPrediction();
-            return Ok(result);
-        }
-        catch (Exception ex)
-        {
-            //_logger.LogError($"PredictStock : {ex.Message}");
             throw;
         }
     }
