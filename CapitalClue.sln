@@ -14,10 +14,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{F1DB3CDE-B724-4AD3-8A88-7C0BA51C68A4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared.Pages", "Client\Shared\Pages\Shared.Pages.csproj", "{B0E8D56E-68DB-4703-B90A-EA8CD782181E}"
-	ProjectSection(ProjectDependencies) = postProject
-		{21833F4D-1F0E-4981-A33E-88D4D89F9C07} = {21833F4D-1F0E-4981-A33E-88D4D89F9C07}
-		{52BCCF87-7141-4ED3-8CB3-E71843187D8C} = {52BCCF87-7141-4ED3-8CB3-E71843187D8C}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared.ServiceInterfaces", "Client\Shared\ServiceInterfaces\Shared.ServiceInterfaces.csproj", "{52BCCF87-7141-4ED3-8CB3-E71843187D8C}"
 EndProject
@@ -30,18 +26,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Utilities", "Common\Utilities\Common.Utilities.csproj", "{21833F4D-1F0E-4981-A33E-88D4D89F9C07}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web.Server", "Server\Web.Server\Web.Server.csproj", "{03454547-CD92-46C0-96EA-08254CC4D060}"
-	ProjectSection(ProjectDependencies) = postProject
-		{149EACD5-4950-43DC-AB01-671A2A73A8E5} = {149EACD5-4950-43DC-AB01-671A2A73A8E5}
-		{2967B1E5-4C72-4B76-94E3-54E54211D5DC} = {2967B1E5-4C72-4B76-94E3-54E54211D5DC}
-		{728F18DF-CAF4-4FED-9932-6911E1407351} = {728F18DF-CAF4-4FED-9932-6911E1407351}
-		{CC452893-F987-4CF1-863B-DE56CEF3128D} = {CC452893-F987-4CF1-863B-DE56CEF3128D}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{548C9E7F-01E2-4CDE-AA68-8AD08CE7128E}"
-	ProjectSection(SolutionItems) = preProject
-		azure-pipelines.yml = azure-pipelines.yml
-		reconciliation-template.yaml = reconciliation-template.yaml
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Desktop", "Desktop", "{A8A22AAE-192E-4D7B-BB91-30BCFE2E6B6B}"
 EndProject
@@ -62,18 +48,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Stock", "Stock", "{AECBECCF-E033-4958-8695-FC28677760EC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockModelBuiler", "Server\ML\Stock\StockModelBuiler\StockModelBuiler.csproj", "{728F18DF-CAF4-4FED-9932-6911E1407351}"
-	ProjectSection(ProjectDependencies) = postProject
-		{840BDF87-8BDF-432C-9DB4-11C271ADB6FF} = {840BDF87-8BDF-432C-9DB4-11C271ADB6FF}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockPrediction", "Server\ML\Stock\StockPrediction\StockPrediction.csproj", "{CC452893-F987-4CF1-863B-DE56CEF3128D}"
-	ProjectSection(ProjectDependencies) = postProject
-		{840BDF87-8BDF-432C-9DB4-11C271ADB6FF} = {840BDF87-8BDF-432C-9DB4-11C271ADB6FF}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PropertyModelBuilder", "Server\ML\Property\PropertModelBuilder\PropertyModelBuilder\PropertyModelBuilder.csproj", "{79A83AE2-9800-4DC1-9A6F-5123750A85C6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ML.Entities", "Server\ML\ME.Entities\ML.Entities\ML.Entities.csproj", "{06F7001C-FB7A-41BA-899C-1A2D878F630E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreateCSV", "Server\CreateCSV\CreateCSV.csproj", "{A63FD6F3-5DD0-47B1-BA38-F2D660AE92C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -147,6 +129,10 @@ Global
 		{06F7001C-FB7A-41BA-899C-1A2D878F630E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06F7001C-FB7A-41BA-899C-1A2D878F630E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06F7001C-FB7A-41BA-899C-1A2D878F630E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A63FD6F3-5DD0-47B1-BA38-F2D660AE92C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A63FD6F3-5DD0-47B1-BA38-F2D660AE92C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A63FD6F3-5DD0-47B1-BA38-F2D660AE92C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A63FD6F3-5DD0-47B1-BA38-F2D660AE92C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -174,6 +160,7 @@ Global
 		{CC452893-F987-4CF1-863B-DE56CEF3128D} = {AECBECCF-E033-4958-8695-FC28677760EC}
 		{79A83AE2-9800-4DC1-9A6F-5123750A85C6} = {7C1D785A-D71A-4303-890B-EEC03496778B}
 		{06F7001C-FB7A-41BA-899C-1A2D878F630E} = {4B9E46CA-F1B3-4470-9E3D-F3A003F1DC33}
+		{A63FD6F3-5DD0-47B1-BA38-F2D660AE92C8} = {B2D5937B-C0C1-40DB-9E3D-E2558AEC222D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4FD2BB4C-7525-4652-9A57-BBF313ECFD88}
