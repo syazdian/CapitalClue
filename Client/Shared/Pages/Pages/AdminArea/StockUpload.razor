@@ -1,0 +1,265 @@
+﻿@page "/StockUpload"
+@using System.Text
+@using CapitalClue.Common.Models.Domain
+@using CapitalClue.Frontend.Shared.ServiceInterfaces
+@using Microsoft.Extensions.Logging
+
+@inject IFilterService filterService
+@inject DialogService dialogService
+@inject ILogger<StockUpload> _logger
+@inject ISyncData SyncData
+
+<RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem" Class="rz-p-4 rz-mb-6 rz-border-radius-1" Style="border: var(--rz-grid-cell-border);">
+    <RadzenFormField Text="Stock" Variant=@variantStyle Style="flex: 1;">
+        <RadzenDropDown Data=@stocks @bind-Value="@stocksValue" AllowClear=true />
+    </RadzenFormField>
+    <RadzenFormField Text="Currnecy" Variant=@variantStyle Style="flex: 1;">
+        <RadzenDropDown Data=@currnecies @bind-Value="@currneciesValue" AllowClear=true />
+    </RadzenFormField>
+</RadzenStack>
+
+<RadzenRow JustifyContent="JustifyContent.Right" AlignItems="AlignItems.Center" class="rz-border-color-primary-darker">
+    <RadzenButton Visible=@(!showloading) Click=@(()=>{ dialogService.Close(loadDatabaseInUi);}) Icon="close" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Dark">
+    </RadzenButton>
+</RadzenRow>
+
+
+    <h3>Upload STOCK CSV </h3>
+
+
+<div class="col-md-12  min-height-100">
+    <RadzenRow JustifyContent="JustifyContent.Center" AlignItems="AlignItems.Center" class=" rz-background-color-primary-lighter">
+        <RadzenColumn Size="12" class="rz-text-align-center rz-p-2">
+
+            @*  STEP 0 Show Browse Button*@
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">CSV Property file upload</RadzenText>
+                <RadzenFileInput Accept=".csv" TValue="string" Change=@ReadMapUpload @bind-FileName=@fileName />
+            </RadzenCard>
+            <RadzenCard Visible="showloading">
+                <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+            </RadzenCard>
+            @*  STEP 1 READING FILE *@
+            <RadzenCard Visible="st1ReadingFileMsg">
+                <RadzenAlert AllowClose="false" AlertStyle="st1AlertStyleReadingFile" Variant="st1VariantReadingFile" Shade="Shade.Light" Size="AlertSize.ExtraSmall">
+                    Reading CSV File
+                </RadzenAlert>
+            </RadzenCard>
+            @*  STEP 2 Ask To Upload *@
+            <RadzenCard Visible="st2AskToUpload">
+                <RadzenAlert AllowClose="false" AlertStyle="st2AlertStyleAskToUpload" Variant="st2VariantAskToUpload" Shade="Shade.Light" Size="AlertSize.ExtraSmall">
+                    @St2MessageInAlert
+                </RadzenAlert>
+            </RadzenCard>
+            @*  STEP 4 UploadToServer *@
+            <RadzenCard Visible="st4UploadToServer">
+                <RadzenAlert AllowClose="false" AlertStyle="st4AlertStyleUploadToServer" Variant="st4VariantUploadToServer" Shade="Shade.Light" Size="AlertSize.ExtraSmall">
+                    Uploading the CSV items to server and building model.
+                </RadzenAlert>
+            </RadzenCard>
+
+
+        </RadzenColumn>
+    </RadzenRow>
+
+</div>
+
+@code {
+    Variant variantStyle = Variant.Flat;
+
+    string fileName;
+    bool showloading = false;
+
+    bool stp0ShowBrowseButton = true;
+    bool st1ReadingFileMsg = false;
+    AlertStyle st1AlertStyleReadingFile;
+    Variant st1VariantReadingFile;
+
+    bool st2AskToUpload = false;
+    AlertStyle st2AlertStyleAskToUpload;
+    Variant st2VariantAskToUpload;
+    bool stp3ShowButtons = false;
+    string St2MessageInAlert = "";
+
+    bool st4UploadToServer = false;
+    AlertStyle st4AlertStyleUploadToServer;
+    Variant st4VariantUploadToServer;
+
+    bool st5FetchData = false;
+    AlertStyle st5AlertStyleFetchData;
+
+    bool loadDatabaseInUi = false;
+
+    string stocksValue;
+    List<string> stocks = new();
+
+    string currneciesValue;
+    List<string> currnecies = new();
+
+    StockModelDto stckModel = new StockModelDto();
+    FilterItemsDisplay filterItems = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        filterItems = await filterService.GetFilterItems();
+        stocks = filterItems.StockFilterDisplayObj.Stocks;
+        currnecies = filterItems.StockFilterDisplayObj.Currencies;
+
+        StateHasChanged();
+    }
+
+    async Task ReadMapUpload(string csvValue)
+    {
+        if (csvValue is null) return;
+
+        stp0ShowBrowseButton = false;
+        showloading = true;
+        StateHasChanged();
+
+        try
+        {
+            st1ReadingFileMsg = true;
+            st1AlertStyleReadingFile = AlertStyle.Success;
+
+            var base64Data = csvValue.Substring(csvValue.IndexOf(",") + 1);
+            var data = Convert.FromBase64String(base64Data);
+            var csvString = Encoding.UTF8.GetString(data);
+
+
+            stckModel.StockValueIndices = await ReadCSVFile(csvString);
+            var stckCurrnecy = fileName.Replace(".csv","").Split('-');
+
+            stckModel.StockName = "SP500";// stckCurrnecy[0];
+            stckModel.Currency = "USD";// stckCurrnecy[1];
+
+            showloading = false;
+            st2AskToUpload = true;
+
+
+
+            st1ReadingFileMsg = true;
+            st1AlertStyleReadingFile = AlertStyle.Light;
+            st1VariantReadingFile = Variant.Outlined;
+           await AcceptUpload();
+
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"ReadMapUpload: {ex.Message}");
+            throw;
+        }
+    }
+
+    public async Task<List<StockValueIndex>> ReadCSVFile(string csvFile)
+    {
+        try
+        {
+            List<string> errorMessages;
+
+            List<StockValueIndex> StockValueIndices = new();
+            var lines = csvFile.Split('\n').ToList();
+
+            //if a row has less than a character length, that row is not valid and should be removed
+            if (lines[lines.Count - 1].Length < 2)
+            {
+                lines.RemoveAt(lines.Count - 1);
+            }
+
+            string firstLine = lines[0].TrimEnd('\r');
+            string[] columnNames = firstLine.ToLower().Split(',');
+            columnNames = columnNames.Select(s => s.Trim()).Select(s => s.Replace("\uFEFF", "")).ToArray();
+            lines.RemoveAt(0);
+
+
+            errorMessages = new List<string>();
+            if (Array.IndexOf(columnNames, "date") == -1) errorMessages.Add("column name DATE not found");
+            if (Array.IndexOf(columnNames, "price") == -1) errorMessages.Add("column name Price not found");
+
+
+            int lineNumnber = 0;
+            int errorCounter = 0;
+            foreach (var line in lines)
+            {
+                errorMessages = new List<string>();
+
+                StockValueIndex stockValueIndex = new();
+                string[] values = line.Split(',');
+
+                values[columnNames.Length - 1] = values[columnNames.Length - 1].TrimEnd('\r');
+                values = values.Select(s => s.Trim()).ToArray();
+
+
+                if (!DateTime.TryParse(values[Array.IndexOf(columnNames, "date")].Trim(), out DateTime transactionDate))
+                {
+                    errorMessages.Add("TRANSACTION DATE is invalid");
+                }
+                else
+                {
+                    stockValueIndex.DateTime = transactionDate;
+                }
+
+
+                if (float.TryParse(values[Array.IndexOf(columnNames, "price")].Trim(), out float price))
+                {
+                    stockValueIndex.Value = price;
+                }
+
+
+
+                StockValueIndices.Add(stockValueIndex);
+                lineNumnber++;
+                await Task.Delay(1);
+
+                // if (errorCounter == 10)
+                // {
+                //     st2AlertStyleAskToUpload = AlertStyle.Danger;
+                //     St2MessageInAlert = $"Your Csv File has error(s). Please fix them and try again.";
+                //     break;
+                // }
+
+            }
+
+            // _stateContainer.StoreNumberDisplay = stores;
+
+
+            return StockValueIndices;
+
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"ReadCSVFile: {ex.Message}");
+            throw;
+        }
+    }
+
+   
+
+    private async Task AcceptUpload()
+    {
+        try
+        {
+            st2AlertStyleAskToUpload = AlertStyle.Light;
+            st2VariantAskToUpload = Variant.Outlined;
+            showloading = true;
+            stp3ShowButtons = false;
+
+            st4UploadToServer = true;
+            st4AlertStyleUploadToServer = AlertStyle.Success;
+
+            StateHasChanged();
+             await SyncData.SendStockDto(stckModel); //28721
+
+           
+            showloading = false;
+            StateHasChanged();
+            dialogService.Close(loadDatabaseInUi);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"AcceptUpload: {ex.Message}");
+            throw;
+        }
+    }
+}

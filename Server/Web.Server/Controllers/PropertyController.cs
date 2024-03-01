@@ -8,7 +8,7 @@ namespace CapitalClue.Web.Server.Controllers;
 [Route("api/[controller]")]
 public class PropertyController : Controller
 {
-    [HttpPost("TrainAndCreateModel")]
+    [HttpGet("TrainAndCreateModel")]
     public async Task<IActionResult> TrainAndCreateModel(PropertyModelDto propertyModelDto)
     {
         try

@@ -28,11 +28,14 @@ public class SyncData : ISyncData
 
     public async Task SendPropertyDto(PropertyModelDto property)
     {
+        var jsn = property.ToJson();
+        //  await _httpClient.PostAsJsonAsync($"{baseAddress}api/Property/TrainAndCreateModel", property);
         await _httpClient.PostAsJsonAsync($"{baseAddress}api/Property/TrainAndCreateModel", property);
     }
 
-    public Task SendStockDto(StockModelDto stock)
+    public async Task SendStockDto(StockModelDto stock)
     {
-        throw new NotImplementedException();
+        var jsn = stock.ToJson();
+        await _httpClient.PostAsJsonAsync($"{baseAddress}api/Stock/TrainAndCreateModel", stock);
     }
 }

@@ -21,7 +21,10 @@ public class Program
         baseaddress = builder.Configuration["baseUrlLocal"];
 
         builder.Services.AddSingleton(new UrlKeeper() { BaseUrl = baseaddress });
-        builder.Services.AddHttpClient();
+        // builder.Services.AddHttpClient();
+
+        //   builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("WasmBFF1.ServerAPI"));
+        builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
         var filterItems = GetFilterItems(builder);
         builder.Services.AddSingleton(filterItems);

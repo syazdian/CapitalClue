@@ -85,11 +85,11 @@ namespace CreateCSV
             try
             {
                 // Create the directory if it doesn't exist
-                Directory.CreateDirectory($"C:\\csv\\{cityName}");
+                Directory.CreateDirectory($"C:\\csv");
 
                 for (int i = 0; i < houseTypes.Count; i++)
                 {
-                    string fileName = Path.Combine($"C:\\csv\\{cityName}", houseTypes[i] + ".csv");
+                    string fileName = Path.Combine($"C:\\csv", $"{cityName}-{houseTypes[i]}.csv");
 
                     using (StreamWriter writer = new StreamWriter(fileName))
                     {

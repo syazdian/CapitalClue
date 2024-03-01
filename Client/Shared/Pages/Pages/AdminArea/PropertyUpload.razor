@@ -1,11 +1,12 @@
-﻿@page "/propertyUpload"
+﻿@page "/PropertyUpload"
 @using System.Text
 @using CapitalClue.Common.Models.Domain
 @using CapitalClue.Frontend.Shared.ServiceInterfaces
 @using Microsoft.Extensions.Logging
+
 @inject IFilterService filterService
 @inject DialogService dialogService
-@inject ILogger<UploadPropertyModel> _logger
+@inject ILogger<PropertyUpload> _logger
 @inject ISyncData SyncData
 
 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem" Class="rz-p-4 rz-mb-6 rz-border-radius-1" Style="border: var(--rz-grid-cell-border);">
@@ -23,7 +24,7 @@
 </RadzenRow>
 
 
-    <h3>Upload CSV </h3>
+    <h3>Upload Property CSV </h3>
 
 
 <div class="col-md-12  min-height-100">
@@ -49,31 +50,11 @@
                 <RadzenAlert AllowClose="false" AlertStyle="st2AlertStyleAskToUpload" Variant="st2VariantAskToUpload" Shade="Shade.Light" Size="AlertSize.ExtraSmall">
                     @St2MessageInAlert
                 </RadzenAlert>
-                <RadzenTree Style="width:100%">
-                 @*    @foreach (var item in stockModel.AnalysedRecords.Where(c => c.IsSuccessful == false))
-                    {
-                        var tempText = "LineNumber:" + item.LineNumber.ToString();
-                        <RadzenTreeItem Text="@tempText">
-                            <ChildContent>
-                                @foreach (var message in item.Errors)
-                                {
-                                    <RadzenTreeItem Text="@message" />
-                                }
-                            </ChildContent>
-                        </RadzenTreeItem>
-                    } *@
-                </RadzenTree>
-            </RadzenCard>
-            @*  STEP 3 Show buttons *@
-            <RadzenCard Visible="stp3ShowButtons">
-                <RadzenLabel Text="Do you want to save successful records?" Style="width:fit-content" />
-             @*    <RadzenButton Click="@CancelUpload" Text="No" Icon="cancel" Shade="Shade.Darker" ButtonStyle="ButtonStyle.Light" />
-                <RadzenButton Click="@AcceptUpload" Text="Yes" Icon="check_circle" Shade="Shade.Darker" ButtonStyle="ButtonStyle.Info" /> *@
             </RadzenCard>
             @*  STEP 4 UploadToServer *@
             <RadzenCard Visible="st4UploadToServer">
                 <RadzenAlert AllowClose="false" AlertStyle="st4AlertStyleUploadToServer" Variant="st4VariantUploadToServer" Shade="Shade.Light" Size="AlertSize.ExtraSmall">
-                    Uploading the CSV items to SERVER ReconBell Table.
+                    Uploading the CSV items to server and building model.
                 </RadzenAlert>
             </RadzenCard>
 
@@ -124,7 +105,6 @@
 
         filterItems = await filterService.GetFilterItems();
         cities = filterItems.PropertyFilterObj.Cities;
-
         properties = filterItems.PropertyFilterObj.PropertyType;
 
         StateHasChanged();
@@ -149,8 +129,10 @@
 
 
             prpModel.PropertyValueIndices = await ReadCSVFile(csvString);
-            prpModel.City = citiesValue;
-            prpModel.PropertyType = propertiesValue;
+            var cityPropery = fileName.Replace(".csv","").Split('-');
+
+            prpModel.City = cityPropery[0];
+            prpModel.PropertyType = cityPropery[1].Replace("homes", "houses");
 
             showloading = false;
             st2AskToUpload = true;
@@ -252,11 +234,7 @@
         }
     }
 
-    private async Task CancelUpload()
-    {
-        dialogService.Close();
-        StateHasChanged();
-    }
+   
 
     private async Task AcceptUpload()
     {
@@ -273,28 +251,7 @@
             StateHasChanged();
              await SyncData.SendPropertyDto(prpModel); //28721
 
-            // if (succssess)
-            // {
-            //     st4AlertStyleUploadToServer = AlertStyle.Light;
-            //     st4VariantUploadToServer = Variant.Outlined;
-
-            //     st5FetchData = true;
-            //     st5AlertStyleFetchData = AlertStyle.Success;
-            //     StateHasChanged();
-
-            //     // await _localdb.RemoveBellSourceFromLocalDbAsync(startDate, endDate);
-            //     // await _localdb.RemoveStapleSourceFromLocalDbAsync(startDate, endDate);
-
-            //     // await _localdb.RemoveFetchHistory(startDate, endDate);
-
-            //     // await _localdb.RemoveOnlyInBellFromLocalDbAsync(startDate, endDate);
-            //     // await _localdb.RemoveOnlyInStaplesFromLocalDbAsync(startDate, endDate);
-            //     // await _localdb.RemoveInBothFromLocalDbAsync(startDate, endDate);
-
-            //     // var count = await fetchData.FetchDataFromServerDb(startDate, endDate);
-            //     loadDatabaseInUi = true;
-            //     StateHasChanged();
-            // }
+           
             showloading = false;
             StateHasChanged();
             dialogService.Close(loadDatabaseInUi);

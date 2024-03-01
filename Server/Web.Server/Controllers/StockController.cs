@@ -24,12 +24,12 @@ public class StockController : Controller
         }
     }
 
-    [HttpGet("PredictYearByYear/{City}/{PropertyType}")]
-    public async Task<IActionResult> PredictYearByYear([FromRoute] string City, string PropertyType)
+    [HttpGet("PredictYearByYear/{StockName}/{Currency}")]
+    public async Task<IActionResult> PredictYearByYear([FromRoute] string StockName, string Currency)
     {
         try
         {
-            var predictor = new StockPredictor(City, PropertyType);
+            var predictor = new StockPredictor(StockName, Currency);
             var result = predictor.GetPredictionYearByYear();
             return Ok(result);
         }
