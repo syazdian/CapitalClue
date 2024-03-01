@@ -1,4 +1,7 @@
-﻿<RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" class="rz-my-6">2. Tell Us Your Financial Data</RadzenText>
+﻿@using CapitalClue.Frontend.Shared.ServiceInterfaces
+@inject IFetchData fetchData
+@inject IStateContainer stateContainer
+<RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" class="rz-my-6">2. Tell Us Your Financial Data</RadzenText>
 
 <RadzenStack Orientation="Orientation.Vertical">
 
@@ -38,6 +41,7 @@
         <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">how much are you paying monthly for rent?</RadzenText>
         <RadzenNumeric TValue="double" Format="c" @bind-Value=@montlyPaying InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
     </RadzenStack>
+    <RadzenButton Click=@FillChart Text="Predict" ButtonStyle="ButtonStyle.Primary" />
 
 </RadzenStack>
 
@@ -48,4 +52,55 @@
     double mortagePayment;
     int mortagePaymentPeriod;
     double montlyPaying;
+
+    //todo get it from user
+    double propertyBasePrice = 3000000;
+
+    ChartDataItem[] revenuePropertyArr;
+
+
+    public async Task FillChart()
+    {
+        //todo get city and type from user
+        var percents = await fetchData.GetPropertyPredicionPercent("Toronto", "Condo");
+
+        stateContainer.revenueProperty = new List<ChartDataItem>();
+        stateContainer.revenuePropertyUpperBound = new List<ChartDataItem>();
+        stateContainer.revenuePropertyLowerBound = new List<ChartDataItem>();
+
+        int i = 0;
+        foreach (var item in percents.ForeCastIndex)
+        {
+            double basePrice = 0;
+            if (i == 0)
+                basePrice = propertyBasePrice;
+            else
+                basePrice = stateContainer.revenueProperty[i - 1].Revenue;
+
+            stateContainer.revenueProperty.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = basePrice * (1 + item.Value / 100) });
+        }
+        revenuePropertyArr = stateContainer.revenueProperty.ToArray();
+
+        foreach (var item in percents.ConfidenceLowerBound)
+        {
+            double basePrice = 0;
+            if (i == 0)
+                basePrice = propertyBasePrice;
+            else
+                basePrice = stateContainer.revenuePropertyLowerBound[i - 1].Revenue;
+
+            stateContainer.revenuePropertyLowerBound.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = basePrice * (1 + item.Value / 100) });
+        }
+
+        foreach (var item in percents.ConfidenceUpperBound)
+        {
+            double basePrice = 0;
+            if (i == 0)
+                basePrice = propertyBasePrice;
+            else
+                basePrice = stateContainer.revenuePropertyUpperBound[i - 1].Revenue;
+
+            stateContainer.revenuePropertyUpperBound.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = basePrice * (1 + item.Value / 100) });
+        }
+    }
 }
