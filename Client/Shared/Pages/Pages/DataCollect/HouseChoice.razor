@@ -1,10 +1,10 @@
 ﻿<RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" class="rz-my-6">2. Tell Us Your Financial Data</RadzenText>
 
 <RadzenStack Orientation="Orientation.Vertical">
-
+<RadzenCard class="my-4">
     <RadzenStack Orientation="Orientation.Horizontal">
         <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">How much is the house you want to buy?</RadzenText>
-        <RadzenNumeric TValue="double" Format="c" @bind-Value=@houseCost InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+            <RadzenNumeric TValue="int" Step="50000" Format="c" @bind-Value=@houseCost />
     </RadzenStack>
 
     <RadzenStack Orientation="Orientation.Horizontal">
@@ -17,27 +17,32 @@
         <RadzenNumeric TValue="double" Format="p" @bind-Value=@interestRate InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
     </RadzenStack>
 
+        <RadzenStack Orientation="Orientation.Horizontal">
+            <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">Is your mortgage payment 25 year or 30 year?</RadzenText>
+
+            <RadzenRadioButtonList @bind-Value=@mortagePaymentPeriod TValue="int" class="mb-5">
+                <Items>
+                    <RadzenRadioButtonListItem Text="25 year" Value="25" />
+                    <RadzenRadioButtonListItem Text="30 year" Value="30" />
+                </Items>
+            </RadzenRadioButtonList>
+
+        </RadzenStack>
+
+        <RadzenButton ButtonStyle="ButtonStyle.Secondary" Text="Calculate Monthly Mortgage payment" Click="MortgageMonthlyCalc"></RadzenButton>
+
+</RadzenCard>
+<RadzenCard class="my-4">
     <RadzenStack Orientation="Orientation.Horizontal">
         <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">how much would be your monthly Mortgage payment?</RadzenText>
         <RadzenNumeric TValue="double" Format="c" @bind-Value=@mortagePayment InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
     </RadzenStack>
 
     <RadzenStack Orientation="Orientation.Horizontal">
-        <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">Is your mortgage payment 25 year or 30 year?</RadzenText>
-
-        <RadzenRadioButtonList @bind-Value=@mortagePaymentPeriod TValue="int" class="mb-5">
-            <Items>
-                <RadzenRadioButtonListItem Text="25 year" Value="25" />
-                <RadzenRadioButtonListItem Text="30 year" Value="30" />
-            </Items>
-        </RadzenRadioButtonList>
-
-    </RadzenStack>
-
-    <RadzenStack Orientation="Orientation.Horizontal">
         <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">how much are you paying monthly for rent?</RadzenText>
-        <RadzenNumeric TValue="double" Format="c" @bind-Value=@montlyPaying InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+        <RadzenNumeric TValue="double" Format="c" @bind-Value=@monthlyPayment InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
     </RadzenStack>
+    </RadzenCard>
 
 </RadzenStack>
 
@@ -47,5 +52,17 @@
     double interestRate;
     double mortagePayment;
     int mortagePaymentPeriod;
-    double montlyPaying;
+    double monthlyPayment;
+
+
+    private void MortgageMonthlyCalc()
+    {
+        double returnPayment = 0;
+        double monthlyInterest = interestRate / 12;
+        double loanAmt = houseCost - downpayment;
+        int monthsToPayLoan = mortagePaymentPeriod * 12;
+
+        monthlyPayment =  loanAmt *((monthlyInterest * Math.Pow((1 + monthlyInterest),
+        monthsToPayLoan)) / (Math.Pow(1 + monthlyInterest, monthsToPayLoan) - 1));
+    }
 }
