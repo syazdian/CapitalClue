@@ -24,7 +24,6 @@
                 </div>
             </RadzenColumn>
             <RadzenColumn class="rz-p-1">
-                <LoginDisplay />
             </RadzenColumn>
             <RadzenColumn class="rz-p-2">
                 @if (IsOnline && ShowSyncChanges)
@@ -58,11 +57,11 @@
     [Parameter]
     public bool ShowSyncChanges { get; set; } = true;
 
-    [Parameter]
-    public EventCallback<bool> RunLoadDatabaseInUi { get; set; }
+    // [Parameter]
+    // public EventCallback<bool> RunLoadDatabaseInUi { get; set; }
 
-    [Parameter]
-    public EventCallback<bool> FetchButtonClicked { get; set; }
+    // [Parameter]
+    // public EventCallback<bool> FetchButtonClicked { get; set; }
 
     public bool IsOnline { get; set; }
     public bool DisableButton { get; set; }

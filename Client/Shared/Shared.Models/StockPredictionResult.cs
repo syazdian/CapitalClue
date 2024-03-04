@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CapitalClue.Frontend.Web.Models;
+namespace CapitalClue.Frontend.Shared.Models;
 
 public class StockPredictionResult
 {

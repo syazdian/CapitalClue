@@ -5,7 +5,7 @@
 
 
 
-<RadzenSteps Change=@OnChangeSteps>
+<RadzenSteps Change=@OnChangeSteps Style="margin-bottom:100px;">
     <Steps>
         <RadzenStepsItem Text="Your Story"  >
             <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" class="rz-my-6">1. Tell Us Your Story </RadzenText>
@@ -27,11 +27,11 @@
             {
                 <HouseChoice></HouseChoice>                
             }  
-            else @if(selectedStory == Story.Stock)
+            else if(selectedStory == Story.Stock)
             {
                 <StockChoice></StockChoice>
             }
-            else @if (selectedStory == Story.DontKhow)
+            else if (selectedStory == Story.DontKhow)
             {
                 <NotKhowChoice></NotKhowChoice>
             }

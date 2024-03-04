@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CapitalClue.Frontend.Web.Models;
+namespace CapitalClue.Frontend.Shared.Models;
 
 public class PropertyPredictionResult
 {
@@ -28,7 +28,7 @@ public class PropertyPurchaseInfo
 {
     public float InterestRate { get; set; }
     public float PropertyPrice { get; set; }
-    public float MortgageMonthlyPayment { get; set; }
+    public float PropertyMonthlyPayment { get; set; }
     public float DownPayment { get; set; }
     public int MortgageTerm { get; set; }
 }
