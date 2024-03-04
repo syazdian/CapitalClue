@@ -1,4 +1,5 @@
-﻿using CapitalClue.Frontend.Web.Models;
+﻿using CapitalClue.Frontend.Shared.Models;
+using CapitalClue.Frontend.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CapitalClue.Frontend.Web.Services.Services;
 
-public class ProfitCalculations
+public class ProfitCalculations : IProfitCalculations
 {
     private readonly PropertyPredictionDto _propertyPredictionDto;
     private readonly StockPredictionDto _stockPredictionDto;
@@ -95,7 +96,7 @@ public class ProfitCalculations
         propertyPredictionResult = PropertyPrediction();
 
         //if the user rented a house and invested
-        var monthlyContribution = _propertyPurchaseInfo.MortgageMonthlyPayment - monthlyRent;
+        var monthlyContribution = _propertyPurchaseInfo.PropertyMonthlyPayment - monthlyRent;
         stockPredictionResult = StockPrediction(_propertyPurchaseInfo.DownPayment, monthlyContribution);
 
         return (propertyPredictionResult, stockPredictionResult);

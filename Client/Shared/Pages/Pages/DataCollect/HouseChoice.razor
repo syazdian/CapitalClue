@@ -10,10 +10,10 @@
 <RadzenStack Orientation="Orientation.Vertical">
     <RadzenCard>
         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem" Class="rz-p-4 rz-mb-6 rz-border-radius-1" Style="border: var(--rz-grid-cell-border);">
-            <RadzenFormField Text="City"  Style="flex: 1;">
+            <RadzenFormField Text="City" Style="flex: 1;">
                 <RadzenDropDown Data=@cities @bind-Value="@citiesValue" AllowClear=true />
             </RadzenFormField>
-            <RadzenFormField Text="Property Types"  Style="flex: 1;">
+            <RadzenFormField Text="Property Types" Style="flex: 1;">
                 <RadzenDropDown Data=@properties @bind-Value="@propertiesValue" AllowClear=true />
             </RadzenFormField>
         </RadzenStack>
@@ -135,7 +135,7 @@
         }
     }
     /*
-     
+
      */
 
     double houseCost;

@@ -39,6 +39,7 @@
 	<ItemGroup>
     <ProjectReference Include="..\..\..\Common\Models\Common.Models.csproj" />
     <ProjectReference Include="..\..\Shared\Pages\Shared.Pages.csproj" />
+    <ProjectReference Include="..\..\Shared\Shared.Models\Shared.Models.csproj" />
     <ProjectReference Include="..\Services\Web.Services.csproj" />
   </ItemGroup>
 

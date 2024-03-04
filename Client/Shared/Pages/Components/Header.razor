@@ -1,0 +1,154 @@
+﻿@using CapitalClue.Frontend.Shared.ServiceInterfaces
+@using Shared.Pages.Pages.AdminArea
+@implements IAsyncDisposable
+@inject ISyncData SyncData
+@inject DialogService dialogService
+@inject IFetchData FetchData
+@inject IStateContainer StateContainer
+@inject IJSRuntime _jsRuntime;
+@inject DialogService dialogService
+@inject UrlKeeper url
+
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-light ">
+        <div class="container-fluid" style="width:1440px">
+            <RadzenColumn class="rz-p-2">
+                <a class="navbar-brand" href="#">
+                    <img src="./Assets/logo.png" height="34" class="d-inline-block align-text-top" />
+
+                </a>
+            </RadzenColumn>
+            <RadzenColumn class="rz-p-5">
+                <div class="navbar-brand text-center text-black display-2">
+                 CAPITAL CLUE APP
+                </div>
+            </RadzenColumn>
+            <RadzenColumn class="rz-p-1">
+            </RadzenColumn>
+            <RadzenColumn class="rz-p-2">
+                @if (IsOnline && ShowSyncChanges)
+                {
+                    <RadzenMenu>
+                        <RadzenMenuItem Text="" Icon="settings">
+
+                            <RadzenMenuItem Click="OpenConfig" Text="Upload CSV" Icon="open_in_browser"></RadzenMenuItem>
+                            <RadzenMenuItem Click="SyncChanges" Text="Sync Changes" Icon="sync"></RadzenMenuItem>
+                            <RadzenMenuItem Click="OpenFetchDataDialog" Text="Fetch Data" Icon="construction"></RadzenMenuItem>
+                            <RadzenMenuItem Click="RedirectToError" Text="ErrorsLog Page" Icon="alarm_off"></RadzenMenuItem>
+                        </RadzenMenuItem>
+                    </RadzenMenu>
+                }
+                else if (IsOnline && !ShowSyncChanges)
+                {
+                    <RadzenButton ButtonStyle="ButtonStyle.Secondary" Text="Fetch Data from Server" Click="OpenFetchDataDialog" Icon="get_app"></RadzenButton>
+                }
+                else
+                {
+                    <span>You are offline!</span>
+                }
+            </RadzenColumn>
+
+            <hr />
+        </div>
+    </nav>
+</header>
+
+@code {
+    [Parameter]
+    public bool ShowSyncChanges { get; set; } = true;
+
+    // [Parameter]
+    // public EventCallback<bool> RunLoadDatabaseInUi { get; set; }
+
+    // [Parameter]
+    // public EventCallback<bool> FetchButtonClicked { get; set; }
+
+    public bool IsOnline { get; set; }
+    public bool DisableButton { get; set; }
+
+    [JSInvokable("ConnectivityChanged")]
+    public void OnConnectivityChanged(bool isOnline)
+    {
+        if (IsOnline != isOnline)
+        {
+            IsOnline = isOnline;
+        }
+
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        dialogService.OnClose += CloseDialoge;
+
+        await _jsRuntime.InvokeVoidAsync("connectivity.initialize", DotNetObjectReference.Create(this));
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await _jsRuntime.InvokeVoidAsync("connectivity.`dispose`");
+    }
+
+    public void RedirectToError()
+    {
+        _jsRuntime.InvokeAsync<object>("open", $"{url.BaseUrl}ErrorLog", "_blank");
+    }
+
+    public void OpenConfig()
+    {
+        //dialogService.Open<CsvUpload>("Upload CSV to Bell");
+        dialogService.OpenAsync<PropertyUpload>(null, null,
+        new DialogOptions() { ShowTitle = false, Width = "800px", Height = "450px", Left = "calc(50% - 350px)", Top = "calc(50% - 265px)" });
+    //     dialogService.OpenAsync<CsvUpload>("Upload CSV to Bell", null,
+    // new DialogOptions() { Width = "800px", Height = "530px", });
+      //  await InvokeAsync(() => { StateHasChanged(); });
+    }
+
+
+    private async Task SyncChanges()
+    {
+        DisableButton = true;
+       // await SyncData.StartSyncData();
+        await ShowDialogWithCustomCssClasses();
+        DisableButton = false;
+        ShowSyncChanges = true;
+    }
+    async Task ShowDialogWithCustomCssClasses()
+    {
+        await dialogService.OpenAsync("Sync Data", ds =>
+    @<div style="color:green">
+        Sync with Server was successfull.
+            </div>
+    );
+    }
+
+    private async Task OpenFetchDataDialog()
+    {
+
+        Dictionary<string, object> parameters = new();
+        parameters.Add("IsRefresh", true);
+
+       // dialogService.Open<FetchDataDialog>("Fetch Data", parameters: parameters,new DialogOptions {ShowTitle = false});
+    }
+
+    private async void CloseDialoge(dynamic obj)
+    {
+        if (obj != null)
+        {
+            var type = obj.GetType();
+            // if (type == typeof(FechDataDialogResult))
+            // {
+            //     var fechDataDialogResult = (FechDataDialogResult)obj;
+            //     if (fechDataDialogResult.loadDatabaseInUi == true)
+            //     {
+            //         await RunLoadDatabaseInUi.InvokeAsync(true);
+            //         StateHasChanged();
+            //     }
+            // }
+        }
+    }
+   
+}
+
