@@ -30,6 +30,7 @@ public class Program
         builder.Services.AddSingleton(filterItems);
 
         builder.Services.AddSingleton<IStateContainer, StateContainer>();
+        builder.Services.AddSingleton<IProfitCalculations, ProfitCalculations>();
         builder.Services.AddScoped<DialogService>();
 
         // builder.Services.AddBesqlDbContextFactory<StapleSourceContext>(opts => opts.UseSqlite("Data Source=StapleSource.sqlite3"));

@@ -1,8 +1,10 @@
 ﻿@using CapitalClue.Common.Models.Domain
+@using CapitalClue.Frontend.Shared.Models
 @using CapitalClue.Frontend.Shared.ServiceInterfaces
 @inject IStateContainer StateContainer
 @inject IFetchData FetchData;
 @inject IFilterService filterService
+@inject IProfitCalculations ProfitCalculations;
 
 
 <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" class="rz-my-6">2. What's your Financial Plan</RadzenText>
@@ -85,59 +87,6 @@
 </RadzenStack>
 
 @code {
-    //todo get it from user
-    double propertyBasePrice = 3000000;
-
-    ChartDataItem[] revenuePropertyArr;
-
-    public async Task FillChart()
-    {
-        //todo get city and type from user
-        var percents = await FetchData.GetPropertyPredicionPercent("Toronto", "Condo");
-
-        StateContainer.revenueProperty = new List<ChartDataItem>();
-        StateContainer.revenuePropertyUpperBound = new List<ChartDataItem>();
-        StateContainer.revenuePropertyLowerBound = new List<ChartDataItem>();
-
-        int i = 0;
-        foreach (var item in percents.ForeCastIndex)
-        {
-            double basePrice = 0;
-            if (i == 0)
-                basePrice = propertyBasePrice;
-            else
-                basePrice = StateContainer.revenueProperty[i - 1].Revenue;
-
-            StateContainer.revenueProperty.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = basePrice * (1 + item.Value / 100) });
-        }
-        revenuePropertyArr = StateContainer.revenueProperty.ToArray();
-
-        foreach (var item in percents.ConfidenceLowerBound)
-        {
-            double basePrice = 0;
-            if (i == 0)
-                basePrice = propertyBasePrice;
-            else
-                basePrice = StateContainer.revenuePropertyLowerBound[i - 1].Revenue;
-
-            StateContainer.revenuePropertyLowerBound.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = basePrice * (1 + item.Value / 100) });
-        }
-
-        foreach (var item in percents.ConfidenceUpperBound)
-        {
-            double basePrice = 0;
-            if (i == 0)
-                basePrice = propertyBasePrice;
-            else
-                basePrice = StateContainer.revenuePropertyUpperBound[i - 1].Revenue;
-
-            StateContainer.revenuePropertyUpperBound.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = basePrice * (1 + item.Value / 100) });
-        }
-    }
-    /*
-
-     */
-
     double houseCost;
     double downpayment;
     double monthlyPayment;
@@ -155,7 +104,9 @@
 
     string propertiesValue;
     List<string> properties = new();
+
     FilterItemsDisplay filterItems = new();
+
     private void MortgageMonthlyCalc()
     {
         double returnPayment = 0;
@@ -216,8 +167,6 @@
         StateHasChanged();
     }
 
-
-
     private void UpdateSum()
     {
         monthlyPayment = mortgagePayment + propertyTax + homeInsurance + maintananceFee;
@@ -226,5 +175,39 @@
         StateContainer.PropertyDownpayment = downpayment;
         StateContainer.PropertyMonthlyRent = rentPayment;
         StateHasChanged();
+    }
+
+    public async Task FillChart()
+    {
+        PropertyPurchaseInfo propertyPurchaseInfo = new PropertyPurchaseInfo
+            {
+                PropertyPrice = houseCost,
+                DownPayment = downpayment,
+                InterestRate = interestRate,
+                MortgageTerm = mortagePaymentPeriod,
+                PropertyMonthlyPayment = mortgagePayment
+            };
+
+        var propertyPredictionDto = await FetchData.GetPropertyPredicionPercent(citiesValue, propertiesValue);
+        var propertyPredictionResult = ProfitCalculations.PropertyPrediction(propertyPredictionDto, propertyPurchaseInfo);
+
+        StateContainer.revenueProperty = new List<ChartDataItem>();
+        StateContainer.revenuePropertyUpperBound = new List<ChartDataItem>();
+        StateContainer.revenuePropertyLowerBound = new List<ChartDataItem>();
+
+        foreach (var item in propertyPredictionResult.ForeCastIndex)
+        {
+            StateContainer.revenueProperty.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value });
+        }
+
+        foreach (var item in propertyPredictionResult.ConfidenceLowerBound)
+        {
+            StateContainer.revenuePropertyLowerBound.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value });
+        }
+
+        foreach (var item in propertyPredictionResult.ConfidenceUpperBound)
+        {
+            StateContainer.revenuePropertyUpperBound.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value });
+        }
     }
 }

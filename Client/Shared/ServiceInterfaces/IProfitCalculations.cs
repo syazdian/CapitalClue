@@ -6,7 +6,7 @@ public interface IProfitCalculations
 {
     (PropertyPredictionResult, StockPredictionResult) CompareHousePurchaseAndStock(float monthlyRent);
 
-    PropertyPredictionResult PropertyPrediction();
+    PropertyPredictionResult PropertyPrediction(PropertyPredictionDto _propertyPredictionDto, PropertyPurchaseInfo _propertyPurchaseInfo);
 
     StockPredictionResult StockPrediction(float downpayment, float monthlyContribute);
 }

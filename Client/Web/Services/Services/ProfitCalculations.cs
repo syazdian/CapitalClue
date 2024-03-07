@@ -10,18 +10,9 @@ namespace CapitalClue.Frontend.Web.Services.Services;
 
 public class ProfitCalculations : IProfitCalculations
 {
-    private readonly PropertyPredictionDto _propertyPredictionDto;
     private readonly StockPredictionDto _stockPredictionDto;
-    private readonly PropertyPurchaseInfo _propertyPurchaseInfo;
 
-    public ProfitCalculations(PropertyPredictionDto propertyPredictionDto, StockPredictionDto stockPredictionDto, PropertyPurchaseInfo propertyPurchaseInfo)
-    {
-        _propertyPredictionDto = propertyPredictionDto;
-        _stockPredictionDto = stockPredictionDto;
-        _propertyPurchaseInfo = propertyPurchaseInfo;
-    }
-
-    public PropertyPredictionResult PropertyPrediction()
+    public PropertyPredictionResult PropertyPrediction(PropertyPredictionDto _propertyPredictionDto, PropertyPurchaseInfo _propertyPurchaseInfo)
     {
         PropertyPredictionResult propertyPredictionResult = new PropertyPredictionResult();
 
@@ -92,12 +83,14 @@ public class ProfitCalculations : IProfitCalculations
         StockPredictionResult stockPredictionResult = new StockPredictionResult();
         PropertyPredictionResult propertyPredictionResult = new PropertyPredictionResult();
 
+        //todo correct input
         //If the user purchased house
-        propertyPredictionResult = PropertyPrediction();
+        //propertyPredictionResult = PropertyPrediction();
 
+        //todo correct input
         //if the user rented a house and invested
-        var monthlyContribution = _propertyPurchaseInfo.PropertyMonthlyPayment - monthlyRent;
-        stockPredictionResult = StockPrediction(_propertyPurchaseInfo.DownPayment, monthlyContribution);
+        //var monthlyContribution = _propertyPurchaseInfo.PropertyMonthlyPayment - monthlyRent;
+        //stockPredictionResult = StockPrediction(_propertyPurchaseInfo.DownPayment, monthlyContribution);
 
         return (propertyPredictionResult, stockPredictionResult);
     }
