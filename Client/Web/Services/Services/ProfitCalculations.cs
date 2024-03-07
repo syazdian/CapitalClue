@@ -19,7 +19,7 @@ public class ProfitCalculations : IProfitCalculations
         var firstPrice = _propertyPurchaseInfo.PropertyPrice;
         foreach (var item in _propertyPredictionDto.ForeCastIndex)
         {
-            firstPrice += (firstPrice * (1 + item.Value));
+            firstPrice = (firstPrice * (1 + item.Value));
             propertyPredictionResult.ForeCastIndex.Add(item.Key, firstPrice);
         }
         propertyPredictionResult.Gain = firstPrice - _propertyPurchaseInfo.PropertyPrice;
@@ -27,7 +27,7 @@ public class ProfitCalculations : IProfitCalculations
         firstPrice = _propertyPurchaseInfo.PropertyPrice;
         foreach (var item in _propertyPredictionDto.ConfidenceLowerBound)
         {
-            firstPrice += (firstPrice * (1 + item.Value));
+            firstPrice = (firstPrice * (1 + item.Value));
             propertyPredictionResult.ConfidenceLowerBound.Add(item.Key, firstPrice);
         }
         propertyPredictionResult.ConfidenceLowerGain = firstPrice - _propertyPurchaseInfo.PropertyPrice;
@@ -35,7 +35,7 @@ public class ProfitCalculations : IProfitCalculations
         firstPrice = _propertyPurchaseInfo.PropertyPrice;
         foreach (var item in _propertyPredictionDto.ConfidenceUpperBound)
         {
-            firstPrice += (firstPrice * (1 + item.Value));
+            firstPrice = (firstPrice * (1 + item.Value));
             propertyPredictionResult.ConfidenceUpperBound.Add(item.Key, firstPrice);
         }
         propertyPredictionResult.ConfidenceUpperGain = firstPrice - _propertyPurchaseInfo.PropertyPrice;
