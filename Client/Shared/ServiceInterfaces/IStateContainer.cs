@@ -1,10 +1,18 @@
-﻿namespace CapitalClue.Frontend.Shared.ServiceInterfaces;
+﻿using CapitalClue.Common.Models.Enums;
+
+namespace CapitalClue.Frontend.Shared.ServiceInterfaces;
 
 public interface IStateContainer
 {
+    public Story selectedStory { get; set; }
+
     public List<ChartDataItem> revenueProperty { get; set; }
     public List<ChartDataItem> revenuePropertyUpperBound { get; set; }
     public List<ChartDataItem> revenuePropertyLowerBound { get; set; }
+
+    public List<ChartDataItem> revenueStock { get; set; }
+    public List<ChartDataItem> revenueStockUpperBound { get; set; }
+    public List<ChartDataItem> revenueStockLowerBound { get; set; }
 
     public double PropertyDownpayment { get; set; }
     public double PropertyMonthlyPayment { get; set; }

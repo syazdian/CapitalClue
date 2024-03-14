@@ -8,5 +8,5 @@ public interface IProfitCalculations
 
     PropertyPredictionResult PropertyPrediction(PropertyPredictionDto _propertyPredictionDto, PropertyPurchaseInfo _propertyPurchaseInfo);
 
-    StockPredictionResult StockPrediction(float downpayment, float monthlyContribute);
+    StockPredictionResult StockPrediction(StockPredictionDto _stockPredictionDto, float downpayment, float monthlyContribute);
 }

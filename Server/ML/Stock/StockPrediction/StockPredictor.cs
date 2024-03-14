@@ -37,6 +37,10 @@ public class StockPredictor
 
         int CurrentYear = DateTime.Now.Year;
         StockPredictionDto stockPredictionDto = new StockPredictionDto();
+
+        stockPredictionDto.ConfidenceLowerBound.Add(CurrentYear, 0);
+        stockPredictionDto.ConfidenceUpperBound.Add(CurrentYear, 0);
+        stockPredictionDto.ForeCastIndex.Add(CurrentYear, 0);
         for (int i = 1; i <= 5; i++)
         {
             var lowerboundPercent = (result.ConfidenceLowerBound[28 * i - 1] - result.ConfidenceLowerBound[28 * (i - 1)]) / result.ConfidenceLowerBound[28 * i - 1] * 100;

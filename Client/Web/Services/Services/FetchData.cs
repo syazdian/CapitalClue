@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.Security.Cryptography.X509Certificates;
 
 namespace CapitalClue.Frontend.Web.Services;
 
@@ -23,6 +24,26 @@ public class FetchData : IFetchData
         var url = $"{baseAddress}api/Property/PredictYearByYear/{city}/{propertyType}";
 
         var result = await _httpClient.GetFromJsonAsync<PropertyPredictionDto>(url);
+
+        return result;
+    }
+
+    public async Task<StockPredictionDto> GetStockPredicionPercent(string StockName, string Currency)
+    {
+        var url = $"{baseAddress}api/Stock/PredictYearByYear/{StockName}/{Currency}";
+
+        var result = await _httpClient.GetFromJsonAsync<StockPredictionDto>(url);
+
+        return result;
+    }
+
+    public async Task<StockPredictionDto> GetStockPredicionPercent()
+    {
+        string StockName = "SP500";
+        string Currency = "US";
+        var url = $"{baseAddress}api/Stock/PredictYearByYear/{StockName}/{Currency}";
+
+        var result = await _httpClient.GetFromJsonAsync<StockPredictionDto>(url);
 
         return result;
     }

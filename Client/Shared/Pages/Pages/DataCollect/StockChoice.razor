@@ -1,5 +1,7 @@
 ﻿@using CapitalClue.Frontend.Shared.ServiceInterfaces
 @inject IStateContainer StateContainer
+@inject IFetchData FetchData;
+@inject IProfitCalculations ProfitCalculations;
 
 <h3>StockChoice</h3>
 <RadzenCard>
@@ -14,6 +16,7 @@
         <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">how much would you Monthly contribute in stock for next 5 years?</RadzenText>
         <RadzenNumeric Format="c" Step="50000" @oninput="Update" @bind-Value=@monthlyContribution InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
     </RadzenStack>
+    <RadzenButton Click=@FillChart Text="Predict" ButtonStyle="ButtonStyle.Primary" />
 
 </RadzenCard>
 
@@ -26,6 +29,32 @@
         StateContainer.StockDownpayment = downpayment;
         StateContainer.StockContribution = monthlyContribution;
         StateHasChanged();
+    }
+
+    public async Task FillChart()
+    {
+
+        var stockPredictionDto = await FetchData.GetStockPredicionPercent();
+        var stockPredictionResult = ProfitCalculations.StockPrediction(stockPredictionDto,downpayment, monthlyContribution);
+
+        StateContainer.revenueStock = new List<ChartDataItem>();
+        StateContainer.revenueStockUpperBound = new List<ChartDataItem>();
+        StateContainer.revenueStockLowerBound = new List<ChartDataItem>();
+
+        foreach (var item in stockPredictionResult.ForeCastIndex)
+        {
+            StateContainer.revenueStock.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value });
+        }
+
+        foreach (var item in stockPredictionResult.ConfidenceLowerBound)
+        {
+            StateContainer.revenueStockLowerBound.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value });
+        }
+
+        foreach (var item in stockPredictionResult.ConfidenceUpperBound)
+        {
+            StateContainer.revenueStockUpperBound.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value });
+        }
     }
 
 }

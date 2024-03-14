@@ -1,4 +1,5 @@
 ﻿@using System.Globalization
+@using CapitalClue.Common.Models.Enums
 @using CapitalClue.Frontend.Shared.ServiceInterfaces
 @inject IFetchData fetchData
 @inject IStateContainer stateContainer
@@ -8,18 +9,32 @@
     <div class="row">
         <div class="col-sm-12 my-5">
             <RadzenChart>
-                <RadzenLineSeries Smooth="true" Data="@stateContainer.revenuePropertyUpperBound" CategoryProperty="Date" Title="UpperBound" LineType="LineType.Dashed" ValueProperty="Revenue">
+                <RadzenLineSeries Visible="visiblePropery" Smooth="true" Data="@stateContainer.revenuePropertyUpperBound" CategoryProperty="Date" Title="UpperBound" LineType="LineType.Dashed" ValueProperty="Revenue">
                     <RadzenMarkers Visible="true" MarkerType="MarkerType.Square" />
                     <RadzenSeriesDataLabels Visible="false" />
                 </RadzenLineSeries>
-                <RadzenLineSeries Smooth="true" Data="@stateContainer.revenueProperty" CategoryProperty="Date" Title="Index" ValueProperty="Revenue">
+                <RadzenLineSeries Visible="visiblePropery" Smooth="true" Data="@stateContainer.revenueProperty" CategoryProperty="Date" Title="Index" ValueProperty="Revenue">
                     <RadzenMarkers Visible="true" MarkerType="MarkerType.Circle" />
                     <RadzenSeriesDataLabels Visible="false" />
                 </RadzenLineSeries>
-                <RadzenLineSeries Smooth="true" Data="@stateContainer.revenuePropertyLowerBound" CategoryProperty="Date" Title="LowerBound" LineType="LineType.Dotted" ValueProperty="Revenue">
+                <RadzenLineSeries Visible="visiblePropery" Smooth="true" Data="@stateContainer.revenuePropertyLowerBound" CategoryProperty="Date" Title="LowerBound" LineType="LineType.Dotted" ValueProperty="Revenue">
                     <RadzenMarkers Visible="true" MarkerType="MarkerType.Circle" />
                     <RadzenSeriesDataLabels Visible="false" />
                 </RadzenLineSeries>
+
+                <RadzenLineSeries Visible="visibleStock" Smooth="true" Data="@stateContainer.revenueStockUpperBound" CategoryProperty="Date" Title="UpperBound" LineType="LineType.Dashed" ValueProperty="Revenue">
+                    <RadzenMarkers Visible="true" MarkerType="MarkerType.Square" />
+                    <RadzenSeriesDataLabels Visible="false" />
+                </RadzenLineSeries>
+                <RadzenLineSeries Visible="visibleStock" Smooth="true" Data="@stateContainer.revenueStock" CategoryProperty="Date" Title="Index" ValueProperty="Revenue">
+                    <RadzenMarkers Visible="true" MarkerType="MarkerType.Circle" />
+                    <RadzenSeriesDataLabels Visible="false" />
+                </RadzenLineSeries>
+                <RadzenLineSeries Visible="visibleStock" Smooth="true" Data="@stateContainer.revenueStockLowerBound" CategoryProperty="Date" Title="LowerBound" LineType="LineType.Dotted" ValueProperty="Revenue">
+                    <RadzenMarkers Visible="true" MarkerType="MarkerType.Circle" />
+                    <RadzenSeriesDataLabels Visible="false" />
+                </RadzenLineSeries>
+
                 <RadzenCategoryAxis Padding="20" />
                 <RadzenValueAxis Formatter="@FormatAsUSD">
                     <RadzenGridLines Visible="true" />
@@ -34,8 +49,16 @@
 
 
 @code {
+    bool visibleStock = false;
+    bool visiblePropery = false;
+
     string resultText = "you purchased a property for $1500000 and paid $8800 monthly with $300000 downpayment";
 
+    protected override async Task OnInitializedAsync()
+    {
+        visibleStock = (stateContainer.selectedStory == Story.Stock) || (stateContainer.selectedStory == Story.DontKhow);
+        visiblePropery = (stateContainer.selectedStory == Story.House) || (stateContainer.selectedStory == Story.DontKhow);
+    }
     string FormatAsUSD(object value)
     {
         return ((double)value).ToString("C0", CultureInfo.CreateSpecificCulture("en-US"));
