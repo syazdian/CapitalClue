@@ -35,7 +35,7 @@ public class ProfitCalculations : IProfitCalculations
         return propertyPredictionResult;
     }
 
-    public StockPredictionResult StockPrediction(StockPredictionDto _stockPredictionDto,float downpayment, float monthlyContribute)
+    public StockPredictionResult StockPrediction(StockPredictionDto _stockPredictionDto,double downpayment, double monthlyContribute)
     {
         StockPredictionResult stockPredictionResult = new StockPredictionResult();
         var anualContribute = monthlyContribute * 12;
