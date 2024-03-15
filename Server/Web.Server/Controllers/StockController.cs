@@ -13,6 +13,7 @@ public class StockController : Controller
     {
         try
         {
+
             var modelBulder = new StockModelBuilder(stockModelDto);
             modelBulder.Build();
             return Ok();
