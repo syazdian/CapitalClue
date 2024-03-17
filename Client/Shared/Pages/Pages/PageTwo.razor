@@ -1,12 +1,12 @@
-﻿
-@using System.Globalization
+﻿@using System.Globalization
+@using CapitalClue.Frontend.Shared.Models
 @using CapitalClue.Frontend.Shared.ServiceInterfaces
 @using Shared.Pages.Pages.PageThree
-@using static CapitalClue.Frontend.Shared.Models.Enums
 
 @inject IStateContainer StateContainer
 
 
+@inject IStateContainer StateContainer
 <PageTitle>Home</PageTitle>
 
 
@@ -14,7 +14,7 @@
             <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" class="rz-my-6">1. Tell Us Your Story </RadzenText>
 
             <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="1rem" Wrap="FlexWrap.Wrap">
-                <RadzenToggleButton icon="home" @bind-Value=toggleButtonHomeValue Click=@(args => StorySelect(Story.Home)) Text="I want to purchase a house" ButtonStyle="ButtonStyle.Light" ToggleButtonStyle="ButtonStyle.Dark"
+                <RadzenToggleButton icon="home" @bind-Value=toggleButtonHomeValue Click=@(args => StorySelect(Story.House)) Text="I want to purchase a house" ButtonStyle="ButtonStyle.Light" ToggleButtonStyle="ButtonStyle.Dark"
                                     InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "Light button" }})" />
 
                 <RadzenToggleButton Icon="ssid_chart" @bind-Value=toggleButtonStockValue Click=@(args => StorySelect(Story.Stock)) Text="I want o invest in Stock market" ButtonStyle="ButtonStyle.Light" ToggleButtonStyle="ButtonStyle.Dark"
@@ -46,7 +46,7 @@
         toggleButtonHomeValue = false;
         toggleButtonStockValue = false;
         toggleButtonDontKhowValue = false;
-        if(story == Story.Home)
+        if(story == Story.House)
         {
             toggleButtonHomeValue = true;
         }

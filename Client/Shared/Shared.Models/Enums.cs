@@ -1,18 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace CapitalClue.Frontend.Shared.Models;
 
-namespace CapitalClue.Frontend.Shared.Models
+public enum Story
 {
-    public class Enums
-    {
-        public enum Story
-        {
-            Home,
-            Stock,
-            DontKhow
-        }
-    }
+    House,
+    Stock,
+    DontKhow
 }

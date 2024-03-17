@@ -1,17 +1,9 @@
 ﻿using CapitalClue.Frontend.Shared.Models;
-using CapitalClue.Frontend.Web.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CapitalClue.Frontend.Web.Services.Services;
 
 public class ProfitCalculations : IProfitCalculations
 {
-    private readonly StockPredictionDto _stockPredictionDto;
-
     public PropertyPredictionResult PropertyPrediction(PropertyPredictionDto _propertyPredictionDto, PropertyPurchaseInfo _propertyPurchaseInfo)
     {
         PropertyPredictionResult propertyPredictionResult = new PropertyPredictionResult();
@@ -43,7 +35,7 @@ public class ProfitCalculations : IProfitCalculations
         return propertyPredictionResult;
     }
 
-    public StockPredictionResult StockPrediction(float downpayment, float monthlyContribute)
+    public StockPredictionResult StockPrediction(StockPredictionDto _stockPredictionDto,double downpayment, double monthlyContribute)
     {
         StockPredictionResult stockPredictionResult = new StockPredictionResult();
         var anualContribute = monthlyContribute * 12;
@@ -51,7 +43,7 @@ public class ProfitCalculations : IProfitCalculations
         var firstPrice = downpayment;
         foreach (var item in _stockPredictionDto.ForeCastIndex)
         {
-            firstPrice += firstPrice * (1 + item.Value);
+            firstPrice += firstPrice * (item.Value);
             stockPredictionResult.ForeCastIndex.Add(item.Key, firstPrice);
             firstPrice += anualContribute;
         }
@@ -60,7 +52,7 @@ public class ProfitCalculations : IProfitCalculations
         firstPrice = downpayment;
         foreach (var item in _stockPredictionDto.ConfidenceLowerBound)
         {
-            firstPrice += (firstPrice * (1 + item.Value));
+            firstPrice += (firstPrice * (item.Value));
             stockPredictionResult.ConfidenceLowerBound.Add(item.Key, firstPrice);
             firstPrice += anualContribute;
         }
@@ -69,7 +61,7 @@ public class ProfitCalculations : IProfitCalculations
         firstPrice = downpayment;
         foreach (var item in _stockPredictionDto.ConfidenceUpperBound)
         {
-            firstPrice += (firstPrice * (1 + item.Value));
+            firstPrice += (firstPrice * (item.Value));
             stockPredictionResult.ConfidenceUpperBound.Add(item.Key, firstPrice);
             firstPrice += anualContribute;
         }

@@ -1,4 +1,4 @@
-﻿using static CapitalClue.Frontend.Shared.Models.Enums;
+﻿using CapitalClue.Frontend.Shared.Models;
 
 namespace CapitalClue.Frontend.Shared.ServiceInterfaces;
 
@@ -10,6 +10,10 @@ public interface IStateContainer
 
     public Story SelectedStory { get; set; }
     public int IndexPage { get; set; }
+
+    public List<ChartDataItem> revenueStock { get; set; }
+    public List<ChartDataItem> revenueStockUpperBound { get; set; }
+    public List<ChartDataItem> revenueStockLowerBound { get; set; }
 
     public double PropertyDownpayment { get; set; }
     public double PropertyMonthlyPayment { get; set; }
