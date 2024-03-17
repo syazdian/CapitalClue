@@ -95,8 +95,19 @@
     </RadzenCard>
     <RadzenButton Click=@FillChart Text="Predict" ButtonStyle="ButtonStyle.Primary" />
 </RadzenStack>
+<RadzenButton Text="Next" Click="@OnStepChange" />
 
 @code {
+   
+
+    [Parameter]
+    public EventCallback<int> StepChanged { get; set; }
+
+    private async Task OnStepChange()
+    {
+        await StepChanged.InvokeAsync(3);
+    }
+
     double houseCost;
     double downpayment;
     double monthlyPayment;

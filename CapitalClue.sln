@@ -57,7 +57,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ML.Entities", "Server\ML\ME
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreateCSV", "Server\CreateCSV\CreateCSV.csproj", "{A63FD6F3-5DD0-47B1-BA38-F2D660AE92C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Models", "Client\Shared\Shared.Models\Shared.Models.csproj", "{9421171B-3026-4678-92DD-05092F6C2873}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared.Models", "Client\Shared\Shared.Models\Shared.Models.csproj", "{9421171B-3026-4678-92DD-05092F6C2873}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

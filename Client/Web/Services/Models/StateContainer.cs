@@ -1,4 +1,5 @@
-﻿
+﻿using static CapitalClue.Frontend.Shared.Models.Enums;
+
 namespace CapitalClue.Frontend.Web.Models;
 
 public class StateContainer : IStateContainer
@@ -6,6 +7,9 @@ public class StateContainer : IStateContainer
     public List<ChartDataItem> revenueProperty { get; set; }
     public List<ChartDataItem> revenuePropertyUpperBound { get; set; }
     public List<ChartDataItem> revenuePropertyLowerBound { get; set; }
+
+    public Story SelectedStory { get; set; }
+    public int IndexPage { get; set; }
 
     public double PropertyDownpayment { get; set; }
     public double PropertyMonthlyPayment { get; set; }

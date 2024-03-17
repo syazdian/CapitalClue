@@ -1,13 +1,16 @@
 ﻿
 @using System.Globalization
-@using Shared.Pages.Pages.DataCollect
+@using CapitalClue.Frontend.Shared.ServiceInterfaces
+@using Shared.Pages.Pages.PageThree
+@using static CapitalClue.Frontend.Shared.Models.Enums
+
+@inject IStateContainer StateContainer
+
+
 <PageTitle>Home</PageTitle>
 
 
 
-<RadzenSteps Change=@OnChangeSteps Style="margin-bottom:100px;">
-    <Steps>
-        <RadzenStepsItem Text="Your Story"  >
             <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" class="rz-my-6">1. Tell Us Your Story </RadzenText>
 
             <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="1rem" Wrap="FlexWrap.Wrap">
@@ -20,36 +23,11 @@
                 <RadzenToggleButton Icon="question_mark" @bind-Value=toggleButtonDontKhowValue Click=@(args => StorySelect(Story.DontKhow)) Text="I am not sure about future" ButtonStyle="ButtonStyle.Light" ToggleButtonStyle="ButtonStyle.Dark"
                                     InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "Light button" }})" />
             </RadzenStack>
-          
-        </RadzenStepsItem>
-        <RadzenStepsItem Text="Your Data">
-            @if(selectedStory == Story.Home)
-            {
-                <HouseChoice></HouseChoice>                
-            }  
-            else if(selectedStory == Story.Stock)
-            {
-                <StockChoice></StockChoice>
-            }
-            else if (selectedStory == Story.DontKhow)
-            {
-                <NotKhowChoice></NotKhowChoice>
-            }
-        </RadzenStepsItem>
-        <RadzenStepsItem Text="Prediction" >
-            <Results></Results>
-        </RadzenStepsItem>
-    </Steps>
-</RadzenSteps>
+
 
 
 @code {
-    enum Story
-    {
-        Home,
-        Stock,
-        DontKhow
-    }
+
     Story selectedStory;
     bool toggleButtonHomeValue;
     bool toggleButtonStockValue;
@@ -57,27 +35,13 @@
 
     
 
-    protected override async Task OnInitializedAsync()
-    {
-    }
+    [Parameter]
+    public EventCallback<Story> StorySelected { get; set; }
 
-
-    void OnChangeSteps(int index)
-    {
-
-        if (index == 1)
-        {
-
-        }
-        else if (index == 2)
-        {
-
-        }
-    }
 
     private void StorySelect(Story story)
     {
-        selectedStory = story;
+        StateContainer.SelectedStory = story;
 
         toggleButtonHomeValue = false;
         toggleButtonStockValue = false;
@@ -94,6 +58,8 @@
         {
             toggleButtonDontKhowValue = true;
         }
+         StorySelected.InvokeAsync(story);
+        StateHasChanged();
     }
 
    
