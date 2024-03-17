@@ -76,7 +76,12 @@
 
     private async Task OnStepChange()
     {
-      
+        StateContainer.Age = age;
+        StateContainer.IsFirstTimeHomeBuyer = isFirstTimeHomeBuyer ;
+        StateContainer.UserFirstName = userFirstName;
+        StateContainer.YearToRetire =yearToRetire;
+        StateContainer.Income = income;
+
         await StepChanged.InvokeAsync(1);
     }
 

@@ -6,6 +6,15 @@
 @inject IFilterService filterService
 @inject IProfitCalculations ProfitCalculations;
 
+@if (StateContainer.IsFirstTimeHomeBuyer)
+{
+    <RadzenStack Orientation="Orientation.Vertical">
+        <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">How much are you paing rent?</RadzenText>
+        <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" @bind-Value=@rentPayment InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+    </RadzenStack>
+}
+
+
 <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" class="rz-my-6">
     If you want to purchase a property, how would it be?
 </RadzenText>
@@ -90,7 +99,7 @@
 
         <RadzenStack Orientation="Orientation.Vertical">
             <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">How much would be the rent of the same property?</RadzenText>
-            <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" @bind-Value=@rentPayment InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+            <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" @bind-Value=@newPropertyRent InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
         </RadzenStack>
     </RadzenCard>
     <RadzenButton Click=@FillChart Text="Predict" ButtonStyle="ButtonStyle.Primary" />
@@ -113,6 +122,7 @@
     double houseCost;
     double downpayment;
     double monthlyPayment;
+    double newPropertyRent;
     double rentPayment;
 
     double interestRate;
@@ -140,14 +150,14 @@
         mortgagePayment = loanAmount * monthlyInterestRate / (1 - Math.Pow(1 + monthlyInterestRate, -numberOfPayments));
         propertyTax = (houseCost * 0.007) / 12;
         homeInsurance = (houseCost * 0.001) / 12;
-        rentPayment = (houseCost * 0.04) / 12;
+        newPropertyRent = (houseCost * 0.04) / 12;
         maintananceFee = (houseCost * 0.01) / 12;
         monthlyPayment = mortgagePayment + propertyTax + homeInsurance + maintananceFee;
 
         StateContainer.houseCost = houseCost;
         StateContainer.PropertyDownpayment = downpayment;
         StateContainer.PropertyMonthlyPayment = monthlyPayment;
-        StateContainer.PropertyMonthlyRent = rentPayment;
+        StateContainer.PropertyMonthlyRent = newPropertyRent;
 
         StateContainer.interestRate = interestRate;
         StateContainer.mortgagePayment = mortgagePayment;
@@ -173,7 +183,7 @@
             houseCost = StateContainer.houseCost;
             downpayment = StateContainer.PropertyDownpayment;
             monthlyPayment = StateContainer.PropertyMonthlyPayment;
-            rentPayment = StateContainer.PropertyMonthlyRent;
+            newPropertyRent = StateContainer.PropertyMonthlyRent;
 
             interestRate = StateContainer.interestRate;
             mortgagePayment = StateContainer.mortgagePayment;
@@ -194,7 +204,7 @@
 
         StateContainer.PropertyMonthlyPayment = monthlyPayment;
         StateContainer.PropertyDownpayment = downpayment;
-        StateContainer.PropertyMonthlyRent = rentPayment;
+        StateContainer.PropertyMonthlyRent = newPropertyRent;
         StateHasChanged();
     }
 

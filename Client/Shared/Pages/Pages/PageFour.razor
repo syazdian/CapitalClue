@@ -2,6 +2,8 @@
 @using CapitalClue.Common.Models.Enums
 @using CapitalClue.Frontend.Shared.Models
 @using CapitalClue.Frontend.Shared.ServiceInterfaces
+@using System.Web
+@using System.Text.RegularExpressions;
 @inject IFetchData fetchData
 @inject IStateContainer StateContainer
 
@@ -46,22 +48,76 @@
     </div>
 </div>
 <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" class="rz-my-6">Result</RadzenText>
-@resultText
-
+<div>
+    @((MarkupString)Regex.Replace(
+        HttpUtility.HtmlEncode(@resultText), "\r?\n|\r", "<br />"))
+</div>
 
 @code {
     bool visibleStock = false;
     bool visiblePropery = false;
 
-    string resultText = "you purchased a property for $1500000 and paid $8800 monthly with $300000 downpayment";
+    string resultText;
+    //you purchased a property for $1500000 and paid $8800 monthly with $300000 downpayment";
 
     protected override async Task OnInitializedAsync()
     {
+        resultText = $"Welldone {StateContainer.UserFirstName}! this is your report:\n";
         visibleStock = (StateContainer.SelectedStory == Story.Stock) || (StateContainer.SelectedStory == Story.DontKhow);
         visiblePropery = (StateContainer.SelectedStory == Story.House) || (StateContainer.SelectedStory == Story.DontKhow);
+        TextGenerate();
+
     }
     string FormatAsUSD(object value)
     {
         return ((double)value).ToString("C0", CultureInfo.CreateSpecificCulture("en-US"));
     }
+
+    void TextGenerate()
+    {
+        if (StateContainer.SelectedStory == Story.Stock)
+        {
+            double costPaidIn5Years = StateContainer.StockDownpayment + (StateContainer.StockContribution * 60);
+            resultText += $"You started with ${StateContainer.StockDownpayment} and contributed ${StateContainer.StockContribution} monthly for 5 years\n";
+            resultText += $"The total amount you invested is ${costPaidIn5Years} \n";
+            resultText += $"Your assets worth ${StateContainer.StockDownpayment} in first year \n";
+            resultText += $"Your assets worth ${StateContainer.StockDownpayment} in second year \n";
+            resultText += $"Your assets worth ${StateContainer.StockDownpayment} in third year\n";
+            resultText += $"Your assets worth ${StateContainer.StockDownpayment} in fourth year\n";
+            resultText += $"Your assets worth ${StateContainer.StockDownpayment} in fifth year\n";
+            resultText += $"Your Profit is ${StateContainer.StockDownpayment - costPaidIn5Years} in fifth year\n";
+
+           // resultText = resultText.Replace("\n", "@" + System.Environment.NewLine);
+        }
+        if (StateContainer.SelectedStory == Story.House)
+        {
+            double costPaidIn5Years = StateContainer.PropertyDownpayment + ((StateContainer.mortgagePayment + StateContainer.propertyTax + StateContainer.maintananceFee) * 60);
+            resultText += $"You purchased a property for ${StateContainer.houseCost} \r\n";
+            resultText += $"Your downpayment for the property is ${StateContainer.PropertyDownpayment} and paid ${StateContainer.mortgagePayment} monthly for 5 years \n";
+            resultText += $"The total amount you paid for this property is {costPaidIn5Years} \r\n";
+            resultText += $"Your property worth ${StateContainer.StockDownpayment} in first year \r\n";
+            resultText += $"Your property worth ${StateContainer.StockDownpayment} in second year \r\n";
+            resultText += $"Your property worth ${StateContainer.StockDownpayment} in third year\n";
+            resultText += $"Your property worth ${StateContainer.StockDownpayment} in fourth year\n";
+            resultText += $"Your property worth ${StateContainer.StockDownpayment} in fifth year\n";
+            resultText += $"That means you ${StateContainer.StockDownpayment - StateContainer.houseCost - costPaidIn5Years} in fifth year\n";
+        }
+
+        if (StateContainer.SelectedStory == Story.DontKhow)
+        {
+            double costPaidIn5Years = StateContainer.PropertyDownpayment + ((StateContainer.mortgagePayment + StateContainer.propertyTax + StateContainer.maintananceFee) * 60);
+            resultText += $"You purchased a property for ${StateContainer.houseCost}  \n";
+            resultText += $"Your downpayment for the property is ${StateContainer.PropertyDownpayment} and paid ${StateContainer.mortgagePayment} monthly for 5 years \n";
+            resultText += $"The total amount you paid for this property is" +
+            $"{costPaidIn5Years}\\n";
+            resultText += $"Your property worth ${StateContainer.StockDownpayment} in first year\\n";
+            resultText += $"Your property worth ${StateContainer.StockDownpayment} in second year\\n";
+            resultText += $"Your property worth ${StateContainer.StockDownpayment} in third year\\n";
+            resultText += $"Your property worth ${StateContainer.StockDownpayment} in fourth year\\n";
+            resultText += $"Your property worth ${StateContainer.StockDownpayment} in fifth year\\n";
+            resultText += $"That means you ${StateContainer.StockDownpayment - StateContainer.houseCost - costPaidIn5Years} in fifth year\n";
+        }
+
+    }
+
 }

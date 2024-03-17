@@ -30,6 +30,9 @@
 
     private async Task OnStepChange()
     {
+        StateContainer.StockDownpayment = downpayment;
+        StateContainer.StockContribution = monthlyContribution;
+        StateHasChanged();
         await StepChanged.InvokeAsync(3);
     }
 
