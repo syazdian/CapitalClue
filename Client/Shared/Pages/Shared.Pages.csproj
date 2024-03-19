@@ -1,59 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
-  <PropertyGroup>
+	<PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyName>CapitalClue.Frontend.$(MSBuildProjectName)</AssemblyName>
-    <RootNamespace>CapitalClue.Frontend.$(MSBuildProjectName)</RootNamespace>
-  <PublishTrimmed>false</PublishTrimmed>
+    <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
   </PropertyGroup>
-  <ItemGroup>
-    <TrimmerRootAssembly Include="Microsoft.Authentication.WebAssembly.Msal" />
-    <TrimmerRootAssembly Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="wwwroot\**" />
-    <Content Remove="wwwroot\**" />
-    <EmbeddedResource Remove="wwwroot\**" />
-    <None Remove="wwwroot\**" />
-  </ItemGroup>
+
+	<ItemGroup>
+	  <Content Remove="Pages\HouseChoice.razor" />
+	</ItemGroup>
 
   <ItemGroup>
-    <Content Remove="Shared\Header\LoginDisplay.razor" />
-    <Content Remove="Shared\TableCompareCellphone.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <SupportedPlatform Include="browser" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Bit.Besql" Version="8.7.4" />
-    <PackageReference Include="CsvHelper" Version="30.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.1" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Authentication.WebAssembly.Msal" Version="8.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
-    <PackageReference Include="Radzen.Blazor" Version="4.24.2" />
-    <PackageReference Include="Texnomic.Blazor.JsonViewer" Version="0.1.0" />
+    <PackageReference Include="Radzen.Blazor" Version="4.24.4" />
   </ItemGroup>
-  
- 
 
-  
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Common\Utilities\Common.Utilities.csproj" />
+    <ProjectReference Include="..\..\..\Common\Models\Common.Models.csproj" />
     <ProjectReference Include="..\ServiceInterfaces\Shared.ServiceInterfaces.csproj" />
+    <ProjectReference Include="..\Shared.Models\Shared.Models.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="_Imports.razor">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-    </Content>
+    <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
   </ItemGroup>
 
 </Project>

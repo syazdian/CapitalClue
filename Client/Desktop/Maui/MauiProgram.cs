@@ -1,10 +1,6 @@
 ﻿using CapitalClue.Common.Models;
 using CapitalClue.Common.Models.Domain;
 using CapitalClue.Frontend.Desktop.Maui.Models;
-using CapitalClue.Frontend.Desktop.Maui.Utilities;
-using CapitalClue.Frontend.Desktop.Models;
-using CapitalClue.Frontend.Desktop.Services.Database;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Radzen;
@@ -71,21 +67,12 @@ public static class MauiProgram
 
         builder.Services.AddMauiBlazorWebView();
         builder.Services.AddRadzenComponents();
-        builder.Services.AddDbContext<StapleSourceContext>(a => a.UseSqlite(ProjectConfig.DatabasePath));
 
 #if DEBUG
         builder.Services.AddBlazorWebViewDeveloperTools();
         builder.Logging.AddDebug();
 #endif
 
-        builder.Services.AddScoped<DialogService>();
-        builder.Services.AddSingleton<IStateContainer, StateContainer>();
-        builder.Services.AddTransient<IFilterService, FilterService>();
-        builder.Services.AddTransient<ILocalDbRepository, LocalDbRepository>();
-        builder.Services.AddTransient<ISyncData, SyncData>();
-
-        builder.Services.AddTransient<IFetchData, FetchData>();
-        builder.Services.AddTransient<ICsvExport, CsvExport>();
 
         // builder.Services.AddTransient<IInjectBellSource, InjectBellSource>();
 
@@ -97,24 +84,10 @@ public static class MauiProgram
     private static FilterItemsDisplay GetFilterItems(MauiAppBuilder builder)
     {
         FilterItemsDisplay filterItems = new FilterItemsDisplay();
-
-        LoB loBWireless = new LoB()
-        {
-            Name = "Wireless",
-            SubLoBs = builder.Configuration.GetSection("FilterItems:LoB:Wireless").Get<List<string>>()
-        };
-
-        filterItems.LoBs.Add(loBWireless);
-        LoB loBWireline = new LoB()
-        {
-            Name = "Wireline",
-            SubLoBs = builder.Configuration.GetSection("FilterItems:LoB:Wireline").Get<List<string>>()
-        };
-        filterItems.LoBs.Add(loBWireline);
-        filterItems.Brands = builder.Configuration.GetSection("FilterItems:Brand").Get<List<string>>();
-        filterItems.RebateTypes = builder.Configuration.GetSection("FilterItems:RebateType").Get<List<string>>();
-
-        // filterItems.Locations = builder.Configuration.GetSection("FilterItems:Location").Get<List<string>>();
+        filterItems.StockFilterDisplayObj.Currencies = builder.Configuration.GetSection("Currency").Get<List<string>>();
+        filterItems.StockFilterDisplayObj.Stocks = builder.Configuration.GetSection("Stock").Get<List<string>>();
+        filterItems.PropertyFilterObj.Cities = builder.Configuration.GetSection("City").Get<List<string>>();
+        filterItems.PropertyFilterObj.PropertyType = builder.Configuration.GetSection("PropertyType").Get<List<string>>();
 
         return filterItems;
     }

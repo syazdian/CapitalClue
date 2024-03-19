@@ -1,5 +1,4 @@
 ﻿global using CapitalClue.Client;
-global using CapitalClue.Frontend.Shared.Pages;
 global using CapitalClue.Frontend.Shared.ServiceInterfaces;
 global using CapitalClue.Frontend.Web.Database;
 global using CapitalClue.Frontend.Web.Services;

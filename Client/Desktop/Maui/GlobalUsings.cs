@@ -1,8 +1,4 @@
 ﻿global using Microsoft.AspNetCore.Components.Web;
-global using CapitalClue.Frontend.Shared.Pages.Shared;
-global using CapitalClue.Frontend.Shared.Pages;
-global using CapitalClue.Frontend.Desktop.Data;
-global using CapitalClue.Frontend.Desktop.Services;
 global using CapitalClue.Frontend.Shared.ServiceInterfaces;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Logging;

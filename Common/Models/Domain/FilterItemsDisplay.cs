@@ -4,14 +4,34 @@ public class FilterItemsDisplay
 {
     public FilterItemsDisplay()
     {
-        LoBs = new List<LoB>();
-        StoreNumbers = new List<string>();
-        Brands = new List<string>();
-        RebateTypes = new List<string>();
+        StockFilterDisplayObj = new StockFilterDisplay();
+        PropertyFilterObj = new PropertyFilterDisplay();
     }
 
-    public List<LoB> LoBs { get; set; }
-    public List<string> StoreNumbers { get; set; }
-    public List<string> Brands { get; set; }
-    public List<string> RebateTypes { get; set; }
+    public StockFilterDisplay StockFilterDisplayObj { get; set; }
+    public PropertyFilterDisplay PropertyFilterObj { get; set; }
+
+    public class StockFilterDisplay
+    {
+        public StockFilterDisplay()
+        {
+            Currencies = new List<string>();
+            Stocks = new List<string>();
+        }
+
+        public List<string> Currencies { get; set; }
+        public List<string> Stocks { get; set; }
+    }
+
+    public class PropertyFilterDisplay
+    {
+        public PropertyFilterDisplay()
+        {
+            Cities = new List<string>();
+            PropertyType = new List<string>();
+        }
+
+        public List<string> Cities { get; set; }
+        public List<string> PropertyType { get; set; }
+    }
 }

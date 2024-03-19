@@ -1,11 +1,10 @@
 ﻿using CapitalClue.Frontend.Shared.ServiceInterfaces;
-using CapitalClue.Frontend.Web.Services.Database;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Net.Http;
 using System.Text.Json;
 
-namespace CapitalClue.Frontend.Web.Services;
+namespace Bell.Reconciliation.Frontend.Web.Services;
 
 public class FilterService : IFilterService
 {
@@ -13,14 +12,11 @@ public class FilterService : IFilterService
 
     private readonly string baseAddress;
     private readonly FilterItemsDisplay _filterItem;
-    private readonly ILocalDbRepository _localdbRepository;
 
-    public FilterService(HttpClient httpClient, FilterItemsDisplay filterItem, UrlKeeper url, ILocalDbRepository localDbRepository)
+    public FilterService(HttpClient httpClient, FilterItemsDisplay filterItem, UrlKeeper url)
     {
         _httpClient = httpClient;
         _filterItem = filterItem;
-        _localdbRepository = localDbRepository;
-
         baseAddress = url.BaseUrl;
     }
 
@@ -28,9 +24,6 @@ public class FilterService : IFilterService
     {
         try
         {
-             await _localdbRepository.GetStoreFromLocalDb();
-            //_filterItem.StoreNumbers = stores;
-          
             return _filterItem;
         }
         catch (Exception ex)

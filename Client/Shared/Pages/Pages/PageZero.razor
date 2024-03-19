@@ -1,0 +1,61 @@
+﻿
+@using System.Globalization
+@using CapitalClue.Frontend.Shared.Models
+@using CapitalClue.Frontend.Shared.ServiceInterfaces
+@using Shared.Pages.Pages.PageThree
+
+@inject IStateContainer StateContainer
+
+<style>
+    .rz-steps-buttons {
+        display: none;
+    }
+</style>
+
+<PageTitle>Home</PageTitle>
+
+
+
+<RadzenSteps @bind-SelectedIndex="@selectedIndex" Style="margin-bottom:100px;">
+    <Steps>
+        <RadzenStepsItem Text="Welcome to Capital Clue">
+            <PageOne StepChanged="(e)=>IndexChanged(e)"></PageOne>
+        </RadzenStepsItem>
+        <RadzenStepsItem Text="Your Story"  >
+            <PageTwo StorySelected="(e)=>StorySelectedChanged(e)"></PageTwo>
+        </RadzenStepsItem>
+        <RadzenStepsItem Text="Your Data">
+            @if (SelectedStory == Story.House)
+            {
+                <HouseChoice StepChanged="(e)=>IndexChanged(e)"></HouseChoice>
+            }  
+            else if (SelectedStory == Story.Stock)
+            {
+                <StockChoice StepChanged="(e)=>IndexChanged(e)"></StockChoice>
+            }
+            else if (SelectedStory == Story.DontKhow)
+            {
+                <NotKhowChoice StepChanged="(e)=>IndexChanged(e)"></NotKhowChoice>
+            }
+        </RadzenStepsItem>
+        <RadzenStepsItem Text="Prediction" >
+            <PageFour></PageFour>
+        </RadzenStepsItem>
+    </Steps>
+</RadzenSteps>
+
+@code {
+    private int selectedIndex = 0;
+    private Story SelectedStory;
+
+
+    public void IndexChanged(int SelectedIndex)
+    {
+        selectedIndex = SelectedIndex;
+    }
+    public void StorySelectedChanged(Story story)
+    {
+        SelectedStory=story;
+        selectedIndex = 2;
+    }
+}

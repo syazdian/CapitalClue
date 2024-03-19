@@ -1,0 +1,244 @@
+@using CapitalClue.Common.Models.Domain
+@using CapitalClue.Frontend.Shared.Models
+@using CapitalClue.Frontend.Shared.ServiceInterfaces
+@inject IStateContainer StateContainer
+@inject IFetchData FetchData;
+@inject IFilterService filterService
+@inject IProfitCalculations ProfitCalculations;
+
+@if (StateContainer.IsFirstTimeHomeBuyer)
+{
+    <RadzenStack Orientation="Orientation.Vertical">
+        <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">How much are you paing rent?</RadzenText>
+        <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" @bind-Value=@rentPayment InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+    </RadzenStack>
+}
+
+
+<RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" class="rz-my-6">
+    If you want to purchase a property, how would it be?
+</RadzenText>
+
+<RadzenStack Orientation="Orientation.Vertical">
+    <RadzenCard>
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4rem" Class="rz-p-4 rz-mb-6 rz-border-radius-1" Style="border: var(--rz-grid-cell-border);">
+            <RadzenStack Orientation="Orientation.Vertical" Gap="4px">
+                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">Where are you purchasing your property?</RadzenText>
+                <RadzenFormField Text="City" Style="flex: 1;">
+                    <RadzenDropDown Data=@cities @bind-Value="@citiesValue" AllowClear=true />
+                </RadzenFormField>
+            </RadzenStack>
+            <RadzenStack Orientation="Orientation.Vertical" Gap="4px">
+                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">  What type of property are you purchasing?</RadzenText>
+
+                <RadzenFormField Text="Property Types" Style="flex: 1;">
+                    <RadzenDropDown Data=@properties @bind-Value="@propertiesValue" AllowClear=true />
+                </RadzenFormField>
+            </RadzenStack>
+        </RadzenStack>
+    </RadzenCard>
+
+    <RadzenCard class="my-4">
+
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4rem" Class="rz-p-4 rz-mb-6 rz-border-radius-1" Style="border: var(--rz-grid-cell-border);">
+            <RadzenStack Orientation="Orientation.Vertical">
+                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">How much is the house you want to buy?</RadzenText>
+                <RadzenNumeric Min="0" Step="50000" Format="c" @bind-Value=@houseCost Style="width:140px;" />
+            </RadzenStack>
+            <RadzenStack Orientation="Orientation.Vertical">
+                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">How much downpayment are you paying?</RadzenText>
+                <RadzenNumeric Min="0" Format="c" Step="50000" Style="width:140px;" @bind-Value=@downpayment InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+            </RadzenStack>
+        </RadzenStack>
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4rem" Class="rz-p-4 rz-mb-6 rz-border-radius-1" Style="border: var(--rz-grid-cell-border);">
+
+            <RadzenStack Orientation="Orientation.Vertical">
+                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">What is the interest rate?</RadzenText>
+                <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Max="100" Step="0.005" Format="#.00 %" @bind-Value=@interestRate InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+            </RadzenStack>
+
+            <RadzenStack Orientation="Orientation.Vertical">
+                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">Is your mortgage payment 25 year or 30 year?</RadzenText>
+
+                <RadzenRadioButtonList @bind-Value=@mortagePaymentPeriod TValue="int" class="mb-5">
+                    <Items>
+                        <RadzenRadioButtonListItem Text="25 year" Value="25" />
+                        <RadzenRadioButtonListItem Text="30 year" Value="30" />
+                    </Items>
+                </RadzenRadioButtonList>
+            </RadzenStack>
+        </RadzenStack>
+
+        <RadzenButton ButtonStyle="ButtonStyle.Secondary" Text="Calculate Monthly Mortgage payment" Click="MortgageMonthlyCalc"></RadzenButton>
+    </RadzenCard>
+    <RadzenCard class="my-4">
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4rem" Class="rz-p-4 rz-mb-6 rz-border-radius-1" Style="border: var(--rz-grid-cell-border);">
+            <RadzenStack Orientation="Orientation.Vertical">
+                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">Principal & Interest monthly Mortgage payment:</RadzenText>
+                <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" @bind-Value=@mortgagePayment onchange="UpdateSum" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+            </RadzenStack>
+            <RadzenStack Orientation="Orientation.Vertical">
+                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">Property tax monthly payment:</RadzenText>
+                <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" @bind-Value=@propertyTax onchange="UpdateSum" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+            </RadzenStack>
+        </RadzenStack>
+        <RadzenStack Orientation="Orientation.Vertical">
+            <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">Homeowners Insurance payment:</RadzenText>
+            <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" @bind-Value=@homeInsurance oninput="UpdateSum" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+        </RadzenStack>
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4rem" Class="rz-p-4 rz-mb-6 rz-border-radius-1" Style="border: var(--rz-grid-cell-border);">
+            <RadzenStack Orientation="Orientation.Vertical">
+                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">Estimation of Maintanance fee:</RadzenText>
+                <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" @bind-Value=@homeInsurance oninput="UpdateSum" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+            </RadzenStack>
+            <RadzenStack Orientation="Orientation.Vertical">
+                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">Total Monthly payment:</RadzenText>
+                <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" @bind-Value=@monthlyPayment InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+            </RadzenStack>
+        </RadzenStack>
+
+        <RadzenStack Orientation="Orientation.Vertical">
+            <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">How much would be the rent of the same property?</RadzenText>
+            <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" @bind-Value=@newPropertyRent InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+        </RadzenStack>
+    </RadzenCard>
+    <RadzenButton Click=@FillChart Text="Predict" ButtonStyle="ButtonStyle.Primary" />
+</RadzenStack>
+<RadzenButton Text="Next" Click="@OnStepChange" />
+
+@code {
+      [Parameter]
+    public int SelectedIndex { get; set; }
+
+    [Parameter]
+    public EventCallback<int> StepChanged { get; set; }
+
+    private async Task OnStepChange()
+    {
+       
+        await StepChanged.InvokeAsync(3);
+    }
+
+    double houseCost;
+    double downpayment;
+    double monthlyPayment;
+    double newPropertyRent;
+    double rentPayment;
+
+    double interestRate;
+    double mortgagePayment;
+    double propertyTax;
+    double homeInsurance;
+    double maintananceFee;
+    int mortagePaymentPeriod;
+
+    string citiesValue;
+    List<string> cities = new();
+
+    string propertiesValue;
+    List<string> properties = new();
+
+    FilterItemsDisplay filterItems = new();
+
+    private void MortgageMonthlyCalc()
+    {
+        double returnPayment = 0;
+        double monthlyInterestRate = interestRate / 12;
+        double loanAmount = houseCost - downpayment;
+        int numberOfPayments = mortagePaymentPeriod * 12;
+
+        mortgagePayment = loanAmount * monthlyInterestRate / (1 - Math.Pow(1 + monthlyInterestRate, -numberOfPayments));
+        propertyTax = (houseCost * 0.007) / 12;
+        homeInsurance = (houseCost * 0.001) / 12;
+        newPropertyRent = (houseCost * 0.04) / 12;
+        maintananceFee = (houseCost * 0.01) / 12;
+        monthlyPayment = mortgagePayment + propertyTax + homeInsurance + maintananceFee;
+
+        StateContainer.houseCost = houseCost;
+        StateContainer.PropertyDownpayment = downpayment;
+        StateContainer.PropertyMonthlyPayment = monthlyPayment;
+        StateContainer.PropertyMonthlyRent = newPropertyRent;
+
+        StateContainer.interestRate = interestRate;
+        StateContainer.mortgagePayment = mortgagePayment;
+        StateContainer.propertyTax = propertyTax;
+        StateContainer.homeInsurance = homeInsurance;
+        StateContainer.maintananceFee = maintananceFee;
+        StateContainer.mortagePaymentPeriod = mortagePaymentPeriod;
+
+        StateContainer.City = citiesValue;
+        StateContainer.PropertyType = propertiesValue;
+
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        filterItems = await filterService.GetFilterItems();
+        cities = filterItems.PropertyFilterObj.Cities;
+        properties = filterItems.PropertyFilterObj.PropertyType;
+
+        if (StateContainer.houseCost > 0)
+        {
+            houseCost = StateContainer.houseCost;
+            downpayment = StateContainer.PropertyDownpayment;
+            monthlyPayment = StateContainer.PropertyMonthlyPayment;
+            newPropertyRent = StateContainer.PropertyMonthlyRent;
+
+            interestRate = StateContainer.interestRate;
+            mortgagePayment = StateContainer.mortgagePayment;
+            propertyTax = StateContainer.propertyTax;
+            homeInsurance = StateContainer.homeInsurance;
+            maintananceFee = StateContainer.maintananceFee;
+            mortagePaymentPeriod = StateContainer.mortagePaymentPeriod;
+
+            citiesValue = StateContainer.City;
+            propertiesValue = StateContainer.PropertyType;
+        }
+        StateHasChanged();
+    }
+
+    private void UpdateSum()
+    {
+        monthlyPayment = mortgagePayment + propertyTax + homeInsurance + maintananceFee;
+
+        StateContainer.PropertyMonthlyPayment = monthlyPayment;
+        StateContainer.PropertyDownpayment = downpayment;
+        StateContainer.PropertyMonthlyRent = newPropertyRent;
+        StateHasChanged();
+    }
+
+    public async Task FillChart()
+    {
+        PropertyPurchaseInfo propertyPurchaseInfo = new PropertyPurchaseInfo
+            {
+                PropertyPrice = houseCost,
+                DownPayment = downpayment,
+                InterestRate = interestRate,
+                MortgageTerm = mortagePaymentPeriod,
+                PropertyMonthlyPayment = mortgagePayment
+            };
+
+        var propertyPredictionDto = await FetchData.GetPropertyPredicionPercent(citiesValue, propertiesValue);
+        var propertyPredictionResult = ProfitCalculations.PropertyPrediction(propertyPredictionDto, propertyPurchaseInfo);
+
+        StateContainer.revenueProperty = new List<ChartDataItem>();
+        StateContainer.revenuePropertyUpperBound = new List<ChartDataItem>();
+        StateContainer.revenuePropertyLowerBound = new List<ChartDataItem>();
+
+        foreach (var item in propertyPredictionResult.ForeCastIndex)
+        {
+            StateContainer.revenueProperty.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value });
+        }
+
+        foreach (var item in propertyPredictionResult.ConfidenceLowerBound)
+        {
+            StateContainer.revenuePropertyLowerBound.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value });
+        }
+
+        foreach (var item in propertyPredictionResult.ConfidenceUpperBound)
+        {
+            StateContainer.revenuePropertyUpperBound.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value });
+        }
+    }
+}

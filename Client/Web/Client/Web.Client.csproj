@@ -25,7 +25,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.1" PrivateAssets="all" />
-    <PackageReference Include="Radzen.Blazor" Version="4.24.2" />
+    <PackageReference Include="Radzen.Blazor" Version="4.24.5" />
     <PackageReference Include="Microsoft.Authentication.WebAssembly.Msal" Version="8.0.1" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
     <PackageReference Include="Texnomic.Blazor.JsonViewer" Version="0.1.0" />
@@ -39,6 +39,7 @@
 	<ItemGroup>
     <ProjectReference Include="..\..\..\Common\Models\Common.Models.csproj" />
     <ProjectReference Include="..\..\Shared\Pages\Shared.Pages.csproj" />
+    <ProjectReference Include="..\..\Shared\Shared.Models\Shared.Models.csproj" />
     <ProjectReference Include="..\Services\Web.Services.csproj" />
   </ItemGroup>
 

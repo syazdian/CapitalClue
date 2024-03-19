@@ -1,19 +1,40 @@
-﻿namespace CapitalClue.Frontend.Shared.ServiceInterfaces;
+﻿using CapitalClue.Frontend.Shared.Models;
+
+namespace CapitalClue.Frontend.Shared.ServiceInterfaces;
 
 public interface IStateContainer
 {
-    public IEnumerable<OnlyInBellDto> bellSources { get; set; }
-    public IEnumerable<OnlyInStaplesDto> staplesSources { get; set; }
-    public IEnumerable<CompareBellStapleDto> compareBellStaple { get; set; }
+    public List<ChartDataItem> revenueProperty { get; set; }
+    public List<ChartDataItem> revenuePropertyUpperBound { get; set; }
+    public List<ChartDataItem> revenuePropertyLowerBound { get; set; }
 
-    public FilterItemDto filterItemDto { get; set; }
+    public Story SelectedStory { get; set; }
+    public int IndexPage { get; set; }
 
-    public string UserId { get; set; }
-    public string UserName { get; set; }
+    public List<ChartDataItem> revenueStock { get; set; }
+    public List<ChartDataItem> revenueStockUpperBound { get; set; }
+    public List<ChartDataItem> revenueStockLowerBound { get; set; }
 
-    public string Enviornment { get; set; }
-    public DateTime? SmallestDateLocalDb { get; set; }
-    public DateTime? LatestDateLocalDb { get; set; }
-    public List<string> StoreNumberDisplay { get; set; }
+    public double PropertyDownpayment { get; set; }
+    public double PropertyMonthlyPayment { get; set; }
+    public double PropertyMonthlyRent { get; set; }
+    public double StockContribution { get; set; }
+    public double StockDownpayment { get; set; }
 
+    public double houseCost { get; set; }
+    public double interestRate { get; set; }
+    public double mortgagePayment { get; set; }
+    public double propertyTax { get; set; }
+    public double homeInsurance { get; set; }
+    public double maintananceFee { get; set; }
+    public int mortagePaymentPeriod { get; set; }
+
+    public string PropertyType { get; set; }
+    public string City { get; set; }
+
+    public bool IsFirstTimeHomeBuyer { get; set; }
+    public string UserFirstName { get; set; }
+    public int YearToRetire { get; set; }
+    public int Age { get; set; }
+    public double Income { get; set; }
 }

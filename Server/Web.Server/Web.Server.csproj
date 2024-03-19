@@ -70,6 +70,11 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Client\Web\Client\Web.Client.csproj" />
     <ProjectReference Include="..\..\Common\Models\Common.Models.csproj" />
+    <ProjectReference Include="..\ML\Property\PropertModelBuilder\PropertyModelBuilder\PropertyModelBuilder.csproj" />
+    <ProjectReference Include="..\ML\Property\PropertyPrediction\PropertyPrediction.csproj" />
+    <ProjectReference Include="..\ML\Stock\StockModelBuiler\StockModelBuiler.csproj" />
+    <ProjectReference Include="..\ML\Stock\StockPrediction\StockPrediction.csproj" />
+    <ProjectReference Include="..\ML\WealthCalculator\WealthCalculator.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -81,6 +86,11 @@
   <ItemGroup>
     <TrimmerRootAssembly Include="Microsoft.Authentication.WebAssembly.Msal" />
     <TrimmerRootAssembly Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Logging\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

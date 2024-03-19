@@ -1,0 +1,24 @@
+﻿@page "/Admin"
+
+@inject DialogService dialogService
+<h3>Capital Clue Admin Panel</h3>
+<RadzenButton Click="OpenUploadPropertyModel" Text="Upload Property CSVs" Icon="account_balance"></RadzenButton>
+<RadzenButton Click="OpenUploadStockModel" Text="Upload Stock CSV" Icon="launch"></RadzenButton>
+
+@code {
+    public void OpenUploadPropertyModel()
+    {
+        dialogService.Open<PropertyUpload>("Upload CSV");
+        // dialogService.OpenAsync<PropertyUpload>(null, null,
+        // new DialogOptions() { ShowTitle = false, Width = "800px", Height = "450px", Left = "calc(50% - 350px)", Top = "calc(50% - 265px)" });
+      
+    }
+
+    public void OpenUploadStockModel()
+    {
+        //dialogService.Open<CsvUpload>("Upload CSV to Bell");
+        dialogService.OpenAsync<StockUpload>(null, null,
+        new DialogOptions() { ShowTitle = false, Width = "800px", Height = "450px", Left = "calc(50% - 350px)", Top = "calc(50% - 265px)" });
+
+    }
+}
