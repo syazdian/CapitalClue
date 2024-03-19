@@ -70,6 +70,8 @@
         {
             StateContainer.revenueStockUpperBound.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value });
         }
+
+        await StepChanged.InvokeAsync(3);
     }
 
 }
