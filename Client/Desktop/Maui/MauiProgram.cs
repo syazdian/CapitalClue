@@ -1,0 +1,94 @@
+﻿using CapitalClue.Common.Models;
+using CapitalClue.Common.Models.Domain;
+using CapitalClue.Frontend.Desktop.Maui.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Radzen;
+using System.Reflection;
+
+namespace CapitalClue.Frontend.Desktop.Maui;
+
+public static class MauiProgram
+{
+    public static MauiApp CreateMauiApp()
+    {
+        var builder = MauiApp.CreateBuilder();
+        var executingAssembly = Assembly.GetExecutingAssembly();
+        builder
+            .UseMauiApp<App>()
+            .ConfigureFonts(fonts =>
+            {
+                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+            });
+
+        //var a = Assembly.GetExecutingAssembly();
+        //using var stream = a.GetManifestResourceStream($"appsettings.json");
+        //var config = new ConfigurationBuilder()
+        //            .AddJsonStream(stream)
+        //            .Build();
+        //builder.Configuration.AddConfiguration(config);
+
+        var config = new ConfigurationBuilder()
+                    .SetBasePath(Path.GetDirectoryName(executingAssembly.Location))
+                    .AddJsonFile($"appsettings.json")
+                    .Build();
+        builder.Configuration.AddConfiguration(config);
+
+        var settings = builder.Configuration.GetRequiredSection("Settings").Get<Settings>(); ;
+
+        string baseaddress = string.Empty;
+
+        //if (builder.HostEnvironment.Environment == "Local")
+        //{
+        baseaddress = settings.baseUrlLocal;
+        //}
+        //else if (builder.HostEnvironment.Environment == "Development")
+        //{
+        //    baseaddress = settings.baseUrlDev;
+        //}
+        //else if (builder.HostEnvironment.Environment == "Staging")
+        //{
+        //    baseaddress = settings.baseUrlStaging;
+        //}
+        //else if (builder.Configuration..Environment == "Production")
+        //{
+        //    baseaddress = settings.baseUrlProduction;
+        //}
+
+        builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseaddress) });
+        builder.Services.AddSingleton(new UrlKeeper() { BaseUrl = baseaddress });
+
+        //builder.Services.AddHttpClient<ISyncData, SyncData>(client =>
+        //{
+        //    client.BaseAddress = new Uri( settings.BaseAddress);
+        //});
+        var filterItems = GetFilterItems(builder);
+        builder.Services.AddSingleton(filterItems);
+
+        builder.Services.AddMauiBlazorWebView();
+        builder.Services.AddRadzenComponents();
+
+#if DEBUG
+        builder.Services.AddBlazorWebViewDeveloperTools();
+        builder.Logging.AddDebug();
+#endif
+
+
+        // builder.Services.AddTransient<IInjectBellSource, InjectBellSource>();
+
+        var app = builder.Build();
+        //app.SeedDatabase();
+        return app;
+    }
+
+    private static FilterItemsDisplay GetFilterItems(MauiAppBuilder builder)
+    {
+        FilterItemsDisplay filterItems = new FilterItemsDisplay();
+        filterItems.StockFilterDisplayObj.Currencies = builder.Configuration.GetSection("Currency").Get<List<string>>();
+        filterItems.StockFilterDisplayObj.Stocks = builder.Configuration.GetSection("Stock").Get<List<string>>();
+        filterItems.PropertyFilterObj.Cities = builder.Configuration.GetSection("City").Get<List<string>>();
+        filterItems.PropertyFilterObj.PropertyType = builder.Configuration.GetSection("PropertyType").Get<List<string>>();
+
+        return filterItems;
+    }
+}

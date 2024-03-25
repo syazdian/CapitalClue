@@ -1,0 +1,96 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <WasmBuildNative>true</WasmBuildNative>
+    <AssemblyName>CapitalClue.$(MSBuildProjectName)</AssemblyName>
+    <RootNamespace>CapitalClue.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+  </PropertyGroup>
+  
+
+  <ItemGroup>
+    <Compile Remove="Data\AzureSqlServer\**" />
+    <Compile Remove="Domain\**" />
+    <Compile Remove="Models\**" />
+    <Compile Remove="Repository\**" />
+    <Content Remove="Data\AzureSqlServer\**" />
+    <Content Remove="Domain\**" />
+    <Content Remove="Models\**" />
+    <Content Remove="Repository\**" />
+    <EmbeddedResource Remove="Data\AzureSqlServer\**" />
+    <EmbeddedResource Remove="Domain\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <EmbeddedResource Remove="Repository\**" />
+    <None Remove="Data\AzureSqlServer\**" />
+    <None Remove="Domain\**" />
+    <None Remove="Models\**" />
+    <None Remove="Repository\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="BellRecRepository.cs" />
+    <Compile Remove="Controllers\LoadDetailController.cs" />
+    <Compile Remove="DatabaseGenerator.cs" />
+    <Compile Remove="Data\StapleSqlServer\BellRecContext - Copy.cs" />
+    <Compile Remove="Data\StapleSqlServer\BellRecContext-sec.cs" />
+    <Compile Remove="Services\DatabaseGenerator.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_WebToolingArtifacts Remove="Properties\serviceDependencies.json" />
+    <_WebToolingArtifacts Remove="Properties\serviceDependencies.local.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Properties\serviceDependencies.json" />
+    <Content Include="Properties\serviceDependencies.local.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Properties\serviceDependencies.local.json.user" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Mapster" Version="7.4.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.1" />
+     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.1" NoWarn="NU1605" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="2.16.1" />
+    <PackageReference Include="Microsoft.Identity.Web.UI" Version="2.16.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Client\Web\Client\Web.Client.csproj" />
+    <ProjectReference Include="..\..\Common\Models\Common.Models.csproj" />
+    <ProjectReference Include="..\ML\Property\PropertModelBuilder\PropertyModelBuilder\PropertyModelBuilder.csproj" />
+    <ProjectReference Include="..\ML\Property\PropertyPrediction\PropertyPrediction.csproj" />
+    <ProjectReference Include="..\ML\Stock\StockModelBuiler\StockModelBuiler.csproj" />
+    <ProjectReference Include="..\ML\Stock\StockPrediction\StockPrediction.csproj" />
+    <ProjectReference Include="..\ML\WealthCalculator\WealthCalculator.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="4164275397.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <TrimmerRootAssembly Include="Microsoft.Authentication.WebAssembly.Msal" />
+    <TrimmerRootAssembly Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Logging\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
+</Project>

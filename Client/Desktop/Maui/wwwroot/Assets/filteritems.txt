@@ -1,0 +1,1 @@
+﻿{"loBs":[{"name":"Wireless","subLoBs":["Wireless","IoT","Mobile Data"]},{"name":"Wireline","subLoBs":["Home Internet","Home Television","Home Phone","SMB Internet"]}],"locations":["Canada"],"brands":["Bell","Virgin","Lucky Mobile"],"rebateTypes":["Commission","DownPayment","Tax"]}

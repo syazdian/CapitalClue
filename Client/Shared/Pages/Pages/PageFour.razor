@@ -1,0 +1,290 @@
+﻿@using System.Globalization
+@using CapitalClue.Common.Models.Enums
+@using CapitalClue.Frontend.Shared.Models
+@using CapitalClue.Frontend.Shared.ServiceInterfaces
+@using System.Web
+@using System.Text.RegularExpressions;
+@inject IFetchData fetchData
+@inject IStateContainer StateContainer
+
+<RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" class="rz-my-6">Predictions Based On your Story and Your Financial Data </RadzenText>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 my-5">
+            <RadzenChart>
+                <RadzenLineSeries Visible="visiblePropery" Smooth="true" Data="@StateContainer.revenuePropertyUpperBound" CategoryProperty="Date" Title="UpperBound" LineType="LineType.Dashed" ValueProperty="Revenue">
+                    <RadzenMarkers Visible="true" MarkerType="MarkerType.Square" />
+                    <RadzenSeriesDataLabels Visible="false" />
+                </RadzenLineSeries>
+                <RadzenLineSeries Visible="visiblePropery" Smooth="true" Data="@StateContainer.revenueProperty" CategoryProperty="Date" Title="Index" ValueProperty="Revenue">
+                    <RadzenMarkers Visible="true" MarkerType="MarkerType.Circle" />
+                    <RadzenSeriesDataLabels Visible="false" />
+                </RadzenLineSeries>
+                <RadzenLineSeries Visible="visiblePropery" Smooth="true" Data="@StateContainer.revenuePropertyLowerBound" CategoryProperty="Date" Title="LowerBound" LineType="LineType.Dotted" ValueProperty="Revenue">
+                    <RadzenMarkers Visible="true" MarkerType="MarkerType.Circle" />
+                    <RadzenSeriesDataLabels Visible="false" />
+                </RadzenLineSeries>
+
+                <RadzenLineSeries Visible="visibleStock" Smooth="true" Data="@StateContainer.revenueStockUpperBound" CategoryProperty="Date" Title="UpperBound" LineType="LineType.Dashed" ValueProperty="Revenue">
+                    <RadzenMarkers Visible="true" MarkerType="MarkerType.Square" />
+                    <RadzenSeriesDataLabels Visible="false" />
+                </RadzenLineSeries>
+                <RadzenLineSeries Visible="visibleStock" Smooth="true" Data="@StateContainer.revenueStock" CategoryProperty="Date" Title="Index" ValueProperty="Revenue">
+                    <RadzenMarkers Visible="true" MarkerType="MarkerType.Circle" />
+                    <RadzenSeriesDataLabels Visible="false" />
+                </RadzenLineSeries>
+                <RadzenLineSeries Visible="visibleStock" Smooth="true" Data="@StateContainer.revenueStockLowerBound" CategoryProperty="Date" Title="LowerBound" LineType="LineType.Dotted" ValueProperty="Revenue">
+                    <RadzenMarkers Visible="true" MarkerType="MarkerType.Circle" />
+                    <RadzenSeriesDataLabels Visible="false" />
+                </RadzenLineSeries>
+
+                <RadzenCategoryAxis Padding="20" />
+                <RadzenValueAxis Formatter="@FormatAsUSD">
+                    <RadzenGridLines Visible="true" />
+                    <RadzenAxisTitle Text="Revenue in USD" />
+                </RadzenValueAxis>
+            </RadzenChart>
+        </div>
+    </div>
+</div>
+<RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" class="rz-my-6">Result</RadzenText>
+
+
+<h3>RESULTS:</h3>
+@if (StateContainer.SelectedStory == Story.Stock)
+{
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Year</th>
+                <th>Stock Revenue</th>
+                <th>Cost</th>
+                <th>Profit</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 1; i <= 5; i++)
+            {
+                var costInYear = StateContainer.StockDownpayment + (StateContainer.StockContribution * i * 12);
+                var profitInYear = StateContainer.revenueStock[i].Revenue - costInYear;
+                <tr>
+                    <td>@i</td>
+                    <td>@StateContainer.revenueStock[i].Revenue</td>
+                    <td>@costInYear</td>
+                    <td>@profitInYear</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div>
+        @((MarkupString)Regex.Replace(
+            HttpUtility.HtmlEncode(@stockResultText), "\r?\n|\r", "<br />"))
+    </div>
+}
+@if (StateContainer.SelectedStory == Story.House)
+{
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Year</th>
+                <th>Property Revenue</th>
+                <th>Property Price</th>
+                <th>Profit</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 1; i <= 5; i++)
+            {
+                double costInYear = StateContainer.PropertyDownpayment + ((StateContainer.mortgagePayment + StateContainer.propertyTax + StateContainer.maintananceFee) * i * 12);
+                var profitInYear = StateContainer.revenueProperty[i].Revenue - costInYear;
+                <tr>
+                    <td>@i</td>
+                    <td>@StateContainer.revenueProperty[i].Revenue</td>
+                    <td>@costInYear</td>
+                    <td>@profitInYear</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div>
+        @((MarkupString)Regex.Replace(
+            HttpUtility.HtmlEncode(@propResultText), "\r?\n|\r", "<br />"))
+    </div>
+}
+@if (StateContainer.SelectedStory == Story.DontKhow)
+{
+    <p>
+      <h3></h3>  You are not sure to purchase stock or a property, we will help you to decide. 
+    </p>
+    <p>
+        If you buy a property:
+    </p>
+       <table class="table">
+        <thead>
+            <tr>
+                <th>Year</th>
+                <th>Property Revenue</th>
+                <th>Property Price</th>
+                <th>Profit</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 1; i <= 5; i++)
+            {
+                double costInYear = StateContainer.PropertyDownpayment + ((StateContainer.mortgagePayment + StateContainer.propertyTax + StateContainer.maintananceFee) * i * 12);
+                var profitInYear = StateContainer.revenueProperty[i].Revenue - costInYear;
+                <tr>
+                    <td>@i</td>
+                    <td>@StateContainer.revenueProperty[i].Revenue</td>
+                    <td>@costInYear</td>
+                    <td>@profitInYear</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div>
+        @((MarkupString)Regex.Replace(
+            HttpUtility.HtmlEncode(@stockResultText), "\r?\n|\r", "<br />"))
+    </div>
+    <p>
+        If you invest in stocks:
+    </p>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Year</th>
+                <th>Stock Revenue</th>
+                <th>Cost</th>
+                <th>Profit</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 1; i <= 5; i++)
+            {
+                var costInYear = StateContainer.StockDownpayment + (StateContainer.StockContribution * i * 12);
+                var profitInYear = StateContainer.revenueStock[i].Revenue - costInYear;
+                <tr>
+                    <td>@i</td>
+                    <td>@StateContainer.revenueStock[i].Revenue</td>
+                    <td>@costInYear</td>
+                    <td>@profitInYear</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div>
+        @((MarkupString)Regex.Replace(
+            HttpUtility.HtmlEncode(@propResultText), "\r?\n|\r", "<br />"))
+    </div>
+    <p>
+        @dontKnowDescription
+    </p>
+}
+@code {
+    bool visibleStock = false;
+    bool visiblePropery = false;
+
+    string stockResultText;
+    string propResultText;
+    string dontKnowDescription;
+    //you purchased a property for $1500000 and paid $8800 monthly with $300000 downpayment";
+
+    protected override async Task OnInitializedAsync()
+    {
+        propResultText = stockResultText = $"Welldone {StateContainer.UserFirstName}! this is your report:\n";
+        visibleStock = (StateContainer.SelectedStory == Story.Stock) || (StateContainer.SelectedStory == Story.DontKhow);
+        visiblePropery = (StateContainer.SelectedStory == Story.House) || (StateContainer.SelectedStory == Story.DontKhow);
+        TextGenerate();
+
+    }
+    string FormatAsUSD(object value)
+    {
+        return ((double)value).ToString("C0", CultureInfo.CreateSpecificCulture("en-US"));
+    }
+
+    void TextGenerate()
+    {
+        if (StateContainer.SelectedStory == Story.Stock)
+        {
+            double costPaidIn5Years = StateContainer.StockDownpayment + (StateContainer.StockContribution * 60);
+            stockResultText += $"You started with ${StateContainer.StockDownpayment} and contributed ${StateContainer.StockContribution} monthly for 5 years\n";
+            stockResultText += $"The total amount you invested is ${costPaidIn5Years} \n";
+            stockResultText += $"Your assets worth ${StateContainer.revenueStock[1].Revenue} in first year \n";
+            stockResultText += $"Your assets worth ${StateContainer.revenueStock[2].Revenue} in second year \n";
+            stockResultText += $"Your assets worth ${StateContainer.revenueStock[3].Revenue} in third year\n";
+            stockResultText += $"Your assets worth ${StateContainer.revenueStock[4].Revenue} in fourth year\n";
+            stockResultText += $"Your assets worth ${StateContainer.revenueStock[5].Revenue} in fifth year\n";
+            stockResultText += $"Your Profit is ${StateContainer.revenueStock[5].Revenue - costPaidIn5Years} in fifth year\n";
+
+
+
+            // resultText = resultText.Replace("\n", "@" + System.Environment.NewLine);
+        }
+        if (StateContainer.SelectedStory == Story.House)
+        {
+            double costPaidIn5Years = StateContainer.PropertyDownpayment + ((StateContainer.mortgagePayment + StateContainer.propertyTax + StateContainer.maintananceFee) * 60);
+            propResultText += $"You purchased a property for ${StateContainer.houseCost} \r\n";
+            propResultText += $"Your downpayment for the property is ${StateContainer.PropertyDownpayment} and paid ${StateContainer.mortgagePayment} monthly for 5 years \n";
+            propResultText += $"The total amount you paid for this property is {costPaidIn5Years} \r\n";
+            propResultText += $"Your property worth ${StateContainer.revenueProperty[1].Revenue} in first year \r\n";
+            propResultText += $"Your property worth ${StateContainer.revenueProperty[2].Revenue} in second year \r\n";
+            propResultText += $"Your property worth ${StateContainer.revenueProperty[3].Revenue} in third year\n";
+            propResultText += $"Your property worth ${StateContainer.revenueProperty[4].Revenue} in fourth year\n";
+            propResultText += $"Your property worth ${StateContainer.revenueProperty[5].Revenue} in fifth year\n";
+            propResultText += $"That means you ${StateContainer.revenueProperty[5].Revenue - StateContainer.houseCost - costPaidIn5Years} in fifth year\n";
+        }
+
+        if (StateContainer.SelectedStory == Story.DontKhow)
+        {
+            // tableDescription += "Year: The number in this column indicates the year you sell your stock and purchase a property.\n";
+            // tableDescription += "SDownpayment: Stock first contribution\n";
+            // tableDescription += "MSContributions: Monthly Stock Contribution\n";
+            // @if (StateContainer.IsFirstTimeHomeBuyer)
+            //     tableDescription += " RPayment: if you are first time home buyer and you are paying rent\n";
+            // else
+            //     tableDescription += " RGained: if you have a property and you purchase an investment property\n";
+            // tableDescription += " PExpences: Property expences in nth year\n";
+            // tableDescription += "PPrice: Property price after nth year \n";
+            // tableDescription += "PProfit: Profit of having property\n";
+            double stockCostPaidIn5Years = StateContainer.StockDownpayment + (StateContainer.StockContribution * 60);
+            double profitStock = StateContainer.revenueStock[5].Revenue - stockCostPaidIn5Years;
+            stockResultText += $"You started with ${StateContainer.StockDownpayment} and contributed ${StateContainer.StockContribution} monthly for 5 years\n";
+            stockResultText += $"The total amount you invested is ${stockCostPaidIn5Years} \n";
+            stockResultText += $"Your assets worth ${StateContainer.revenueStock[1].Revenue} in first year \n";
+            stockResultText += $"Your assets worth ${StateContainer.revenueStock[2].Revenue} in second year \n";
+            stockResultText += $"Your assets worth ${StateContainer.revenueStock[3].Revenue} in third year\n";
+            stockResultText += $"Your assets worth ${StateContainer.revenueStock[4].Revenue} in fourth year\n";
+            stockResultText += $"Your assets worth ${StateContainer.revenueStock[5].Revenue} in fifth year\n";
+            stockResultText += $"Your Profit is ${profitStock} in fifth year\n";
+
+            double propCostPaidIn5Years = StateContainer.PropertyDownpayment + ((StateContainer.mortgagePayment + StateContainer.propertyTax + StateContainer.maintananceFee) * 60);
+            double profitProperty = StateContainer.revenueProperty[5].Revenue - StateContainer.houseCost - propCostPaidIn5Years;
+            propResultText += $"You purchased a property for ${StateContainer.houseCost} \r\n";
+            propResultText += $"Your downpayment for the property is ${StateContainer.PropertyDownpayment} and paid ${StateContainer.mortgagePayment} monthly for 5 years \n";
+            propResultText += $"The total amount you paid for this property is {propCostPaidIn5Years} \r\n";
+            propResultText += $"Your property worth ${StateContainer.revenueProperty[1].Revenue} in first year \r\n";
+            propResultText += $"Your property worth ${StateContainer.revenueProperty[2].Revenue} in second year \r\n";
+            propResultText += $"Your property worth ${StateContainer.revenueProperty[3].Revenue} in third year\n";
+            propResultText += $"Your property worth ${StateContainer.revenueProperty[4].Revenue} in fourth year\n";
+            propResultText += $"Your property worth ${StateContainer.revenueProperty[5].Revenue} in fifth year\n";
+            propResultText += $"That means you ${profitProperty} in fifth year\n";
+
+
+            dontKnowDescription = (profitProperty > profitStock) ?
+            $"If you invest in Property you earn ${profitProperty - profitStock} more after 5 years" :
+            $"If you invest in Stock you earn ${profitStock - profitProperty} more after 5 years";
+
+
+
+
+        }
+
+    }
+
+}
