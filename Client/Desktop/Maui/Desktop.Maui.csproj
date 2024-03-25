@@ -103,7 +103,6 @@
       <ProjectReference Include="..\..\..\Common\Models\Common.Models.csproj" />
       <ProjectReference Include="..\..\Shared\Pages\Shared.Pages.csproj" />
       <ProjectReference Include="..\Desktop.Data\Desktop.Data.csproj" />
-      <ProjectReference Include="..\Services\Desktop.Services.csproj" />
     </ItemGroup>
 
     <ItemGroup>
