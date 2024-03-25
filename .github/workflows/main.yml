@@ -4,8 +4,8 @@ on:
   workflow_dispatch:  
   push:
     branches:
-    - main
-    - master
+    -dev
+    
 
 env:
   AZURE_WEBAPP_NAME: capitalclue
