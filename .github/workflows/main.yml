@@ -29,3 +29,10 @@ jobs:
         
       - name: Publish
         run: dotnet publish ./CapitalClue.sln --configuration Release --no-build
+
+      - name: Deploy to Azure WebApp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.capitalclue }}
+          publish-profile: ${{ ./capitalclue.PublishSettings }}
+          package: ${{ capitalclue.scm.azurewebsites.net:443 }}
