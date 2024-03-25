@@ -7,6 +7,9 @@ on:
     - main
     - master
 
+env:
+  AZURE_WEBAPP_NAME: capitalclue
+  AZURE_WEBAPP_PACKAGE_PATH: "./publish"
 
 jobs:
   publish:
@@ -28,11 +31,11 @@ jobs:
         run: dotnet build ./CapitalClue.sln --configuration Release --no-restore
         
       - name: Publish
-        run: dotnet publish ./CapitalClue.sln --configuration Release --no-build
+        run: dotnet publish ./CapitalClue.sln --configuration Release --no-build --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
 
       - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: capitalclue
-          publish-profile: ./capitalclue.PublishSettings
-          package: capitalclue.scm.azurewebsites.net:443
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+          package: "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
