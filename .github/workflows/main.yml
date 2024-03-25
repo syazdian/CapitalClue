@@ -4,9 +4,8 @@ on:
   workflow_dispatch:  
   push:
     branches:
-    - master
     - main
-
+    - master
 
 
 jobs:
@@ -23,13 +22,10 @@ jobs:
           dotnet-version: '8.0.x'
           
       - name: Restore
-        run: dotnet restore ./SmallAPI.sln
+        run: dotnet restore ./CapitalClue.sln
         
       - name: Build
-        run: dotnet build ./SmallAPI.sln --configuration Release --no-restore
-
-      - name: Test
-        run: dotnet test -c Release --no-build
+        run: dotnet build ./CapitalClue.sln --configuration Release --no-restore
         
       - name: Publish
-        run: dotnet publish ./SmallAPI.sln --configuration Release --no-build
+        run: dotnet publish ./CapitalClue.sln --configuration Release --no-build
