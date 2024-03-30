@@ -18,7 +18,17 @@ public class Program
         builder.RootComponents.Add<HeadOutlet>("head::after");
 
         string baseaddress = string.Empty;
-        baseaddress = builder.Configuration["baseUrlLocal"];
+
+        if (builder.HostEnvironment.Environment == "Local")
+        {
+            baseaddress = builder.Configuration["baseUrlLocal"];
+        }
+        else if (builder.HostEnvironment.Environment == "Development")
+        {
+            baseaddress = builder.Configuration["baseUrlDev"];
+        }
+
+        //  baseaddress = builder.Configuration["baseUrlLocal"];
 
         builder.Services.AddSingleton(new UrlKeeper() { BaseUrl = baseaddress });
         // builder.Services.AddHttpClient();

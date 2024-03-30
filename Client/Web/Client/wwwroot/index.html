@@ -41,21 +41,11 @@
             });
             // document.getElementById('errorui').innerHTML = '<br>it is localhost environment!';
         }
-        else if (window.location.hostname.includes("dev")) {
+        else if (window.location.hostname.includes("capital")) {
             Blazor.start({
                 environment: "Development"
             });
             // document.getElementById('errorui').innerHTML = '<br>it is dev environment!';
-        }
-        else if (window.location.hostname.includes("staging")) {
-            Blazor.start({
-                environment: "Staging"
-            });
-        }
-        else {
-            Blazor.start({
-                environment: "Production"
-            });
         }
     </script>
     <script src="_content/Microsoft.Authentication.WebAssembly.Msal/AuthenticationService.js"></script>
