@@ -6,20 +6,27 @@
 <h3>StockChoice</h3>
 <RadzenCard>
 
-    <RadzenStack Orientation="Orientation.Vertical">
-        <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">how much are you investing in Stock for down payment?</RadzenText>
-        <RadzenNumeric Step="50000" @bind-Value=@downpayment @oninput="Update" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
-    </RadzenStack>
+    <RadzenTemplateForm TItem="Model" Data=@model Submit=@OnStepChange InvalidSubmit=@OnInvalidSubmit>
+        <RadzenStack Orientation="Orientation.Vertical">
+            <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">how much are you investing in Stock for down payment?</RadzenText>
+            <RadzenNumeric Name="Downpayment" Step="50000" @bind-Value=@model.downpayment @oninput="Update" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+            <RadzenRequiredValidator Component="Downpayment" Text="Required" Style="position: absolute" />
+            <RadzenNumericRangeValidator Component="Downpayment" Min="1" Text="This value should be greater than 0" Style="position: absolute" />
 
+        </RadzenStack>
 
-    <RadzenStack Orientation="Orientation.Vertical">
-        <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">how much would you Monthly contribute in stock for next 5 years?</RadzenText>
-        <RadzenNumeric Format="c" Step="50000" @oninput="Update" @bind-Value=@monthlyContribution InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
-    </RadzenStack>
-    <RadzenButton Click=@FillChart Text="Predict" ButtonStyle="ButtonStyle.Primary" />
+        <RadzenStack Orientation="Orientation.Vertical">
+            <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">how much would you Monthly contribute in stock for next 5 years?</RadzenText>
+            <RadzenNumeric Name="MonthlyContribution" Format="c" Step="50000" @oninput="Update" @bind-Value=@model.monthlyContribution InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+            <RadzenRequiredValidator Component="MonthlyContribution" Text="Required" Style="position: absolute" />
+            <RadzenNumericRangeValidator Component="MonthlyContribution" Min="1"  Text="This value should be greater than 0" Style="position: absolute" />
 
+        </RadzenStack>
+
+        <RadzenButton ButtonType="ButtonType.Submit" Text="Next"></RadzenButton>
+    </RadzenTemplateForm>
 </RadzenCard>
-<RadzenButton Text="Next" Click="@OnStepChange" />
+
 
 @code {
     [Parameter]
@@ -28,29 +35,40 @@
     [Parameter]
     public EventCallback<int> StepChanged { get; set; }
 
-    private async Task OnStepChange()
+    class Model
     {
-        StateContainer.StockDownpayment = downpayment;
-        StateContainer.StockContribution = monthlyContribution;
+        public int downpayment;
+        public int monthlyContribution;
+    }
+    Model model = new Model();
+
+    private async Task OnStepChange(Model model)
+    {
+        await FillChart();
+
+        StateContainer.StockDownpayment = model.downpayment;
+        StateContainer.StockContribution = model.monthlyContribution;
         StateHasChanged();
+
         await StepChanged.InvokeAsync(3);
     }
 
-    int downpayment;
-    int monthlyContribution;
-
     private void Update()
     {
-        StateContainer.StockDownpayment = downpayment;
-        StateContainer.StockContribution = monthlyContribution;
+        StateContainer.StockDownpayment = model.downpayment;
+        StateContainer.StockContribution = model.monthlyContribution;
         StateHasChanged();
+    }
+
+    void OnInvalidSubmit(FormInvalidSubmitEventArgs args)
+    {
     }
 
     public async Task FillChart()
     {
 
         var stockPredictionDto = await FetchData.GetStockPredicionPercent();
-        var stockPredictionResult = ProfitCalculations.StockPrediction(stockPredictionDto,downpayment, monthlyContribution);
+        var stockPredictionResult = ProfitCalculations.StockPrediction(stockPredictionDto, model.downpayment, model.monthlyContribution);
 
         StateContainer.revenueStock = new List<ChartDataItem>();
         StateContainer.revenueStockUpperBound = new List<ChartDataItem>();
