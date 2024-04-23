@@ -20,154 +20,175 @@
 </RadzenText>
 
 <RadzenStack Orientation="Orientation.Vertical">
-    <RadzenCard>
-        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4rem" Class="rz-p-4 rz-mb-6 rz-border-radius-1" Style="border: var(--rz-grid-cell-border);">
-            <RadzenStack Orientation="Orientation.Vertical" Gap="4px">
-                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">Where are you purchasing your property?</RadzenText>
-                <RadzenFormField Text="City" Style="flex: 1;">
-                    <RadzenDropDown Data=@cities @bind-Value="@citiesValue" AllowClear=true />
-                </RadzenFormField>
+    <RadzenTemplateForm TItem="Model1" Data=@model1 Submit=@MortgageMonthlyCalc>
+
+        <RadzenCard>
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4rem" Class="rz-p-4 rz-mb-6 rz-border-radius-1" Style="border: var(--rz-grid-cell-border);">
+                <RadzenStack Orientation="Orientation.Vertical" Gap="4px">
+                    <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">Where are you purchasing your property?</RadzenText>
+                    <RadzenFormField Text="City" Style="flex: 1;">
+                        <RadzenDropDown Name="City" Data=@cities @bind-Value="@model1.citiesValue" AllowClear=true />
+                        <RadzenRequiredValidator Component="City" Text="required" Style="position: absolute" />
+                    </RadzenFormField>
+                </RadzenStack>
+                <RadzenStack Orientation="Orientation.Vertical" Gap="4px">
+                    <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">  What type of property are you purchasing?</RadzenText>
+
+                    <RadzenFormField Text="Property Types" Style="flex: 1;">
+                        <RadzenDropDown Name="Property" Data=@properties @bind-Value="@model1.propertiesValue" AllowClear=true />
+                        <RadzenRequiredValidator Component="Property" Text="required" Style="position: absolute" />
+                    </RadzenFormField>
+                </RadzenStack>
             </RadzenStack>
-            <RadzenStack Orientation="Orientation.Vertical" Gap="4px">
-                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">  What type of property are you purchasing?</RadzenText>
+        </RadzenCard>
 
-                <RadzenFormField Text="Property Types" Style="flex: 1;">
-                    <RadzenDropDown Data=@properties @bind-Value="@propertiesValue" AllowClear=true />
-                </RadzenFormField>
+        <RadzenCard class="my-4">
+
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4rem" Class="rz-p-4 rz-mb-6 rz-border-radius-1" Style="border: var(--rz-grid-cell-border);">
+                <RadzenStack Orientation="Orientation.Vertical">
+                    <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">How much is the house you want to buy?</RadzenText>
+                    <RadzenNumeric Name="HouseCost" Min="0" Step="50000" Format="c" @bind-Value=@model1.houseCost Style="width:140px;" />
+                    <RadzenRequiredValidator Component="HouseCost" Text="required" Style="position: absolute" />
+                    <RadzenNumericRangeValidator Component="HouseCost" Min="1" Text="House cost should be more than 0" Style="position: absolute" />
+                </RadzenStack>
+                <RadzenStack Orientation="Orientation.Vertical">
+                    <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">How much downpayment are you paying?</RadzenText>
+                    <RadzenNumeric Name="Downpayment" Min="0" Format="c" Step="50000" Style="width:140px;" @bind-Value=@model1.downpayment InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+                    <RadzenRequiredValidator Component="Downpayment" Text="required" Style="position: absolute" />
+                    <RadzenNumericRangeValidator Component="Downpayment" Min="1" Text="Downpayment should be more than 0" Style="position: absolute" />
+                </RadzenStack>
             </RadzenStack>
-        </RadzenStack>
-    </RadzenCard>
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4rem" Class="rz-p-4 rz-mb-6 rz-border-radius-1" Style="border: var(--rz-grid-cell-border);">
 
-    <RadzenCard class="my-4">
+                <RadzenStack Orientation="Orientation.Vertical">
+                    <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">What is the interest rate?</RadzenText>
+                    <RadzenNumeric Name="InterestRate" Style="width:140px;" TValue="double" Min="0" Max="100" Step="0.005" Format="#.00 %" @bind-Value=@model1.interestRate InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+                    <RadzenRequiredValidator Component="InterestRate" Text="required" Style="position: absolute" />
+                    <RadzenNumericRangeValidator Component="InterestRate" Min="0.00001" Max="100" Text="InterestRate should grater than 0" Style="position: absolute" />
+                </RadzenStack>
 
-        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4rem" Class="rz-p-4 rz-mb-6 rz-border-radius-1" Style="border: var(--rz-grid-cell-border);">
-            <RadzenStack Orientation="Orientation.Vertical">
-                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">How much is the house you want to buy?</RadzenText>
-                <RadzenNumeric Min="0" Step="50000" Format="c" @bind-Value=@houseCost Style="width:140px;" />
+                <RadzenStack Orientation="Orientation.Vertical">
+                    <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">Is your mortgage payment 25 year or 30 year?</RadzenText>
+
+                    <RadzenRadioButtonList Name="MortagePaymentPeriod" @bind-Value=@model1.mortagePaymentPeriod TValue="int" class="mb-5">
+                        <Items>
+                            <RadzenRadioButtonListItem Text="25 year" Value="25" />
+                            <RadzenRadioButtonListItem Text="30 year" Value="30" />
+                        </Items>
+                    </RadzenRadioButtonList>
+                    <RadzenRequiredValidator Component="MortagePaymentPeriod" Text="required" Style="position: absolute" />
+                </RadzenStack>
             </RadzenStack>
-            <RadzenStack Orientation="Orientation.Vertical">
-                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">How much downpayment are you paying?</RadzenText>
-                <RadzenNumeric Min="0" Format="c" Step="50000" Style="width:140px;" @bind-Value=@downpayment InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
-            </RadzenStack>
-        </RadzenStack>
-        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4rem" Class="rz-p-4 rz-mb-6 rz-border-radius-1" Style="border: var(--rz-grid-cell-border);">
 
-            <RadzenStack Orientation="Orientation.Vertical">
-                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">What is the interest rate?</RadzenText>
-                <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Max="100" Step="0.005" Format="#.00 %" @bind-Value=@interestRate InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
-            </RadzenStack>
+            <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Secondary" Text="Calculate Monthly Mortgage payment"></RadzenButton>
+        </RadzenCard>
 
-            <RadzenStack Orientation="Orientation.Vertical">
-                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">Is your mortgage payment 25 year or 30 year?</RadzenText>
+    </RadzenTemplateForm>
 
-                <RadzenRadioButtonList @bind-Value=@mortagePaymentPeriod TValue="int" class="mb-5">
-                    <Items>
-                        <RadzenRadioButtonListItem Text="25 year" Value="25" />
-                        <RadzenRadioButtonListItem Text="30 year" Value="30" />
-                    </Items>
-                </RadzenRadioButtonList>
-            </RadzenStack>
-        </RadzenStack>
-
-        <RadzenButton ButtonStyle="ButtonStyle.Secondary" Text="Calculate Monthly Mortgage payment" Click="MortgageMonthlyCalc"></RadzenButton>
-    </RadzenCard>
-    <RadzenCard class="my-4">
+    <RadzenTemplateForm Visible="visibleModel2" TItem="Model2" Data=@model2 Submit=@OnStepChange>
+        <RadzenCard class="my-4">
         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4rem" Class="rz-p-4 rz-mb-6 rz-border-radius-1" Style="border: var(--rz-grid-cell-border);">
             <RadzenStack Orientation="Orientation.Vertical">
                 <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">Principal & Interest monthly Mortgage payment:</RadzenText>
-                <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" @bind-Value=@mortgagePayment onchange="UpdateSum" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+                <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" @bind-Value=@model2.mortgagePayment onchange="UpdateSum" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
             </RadzenStack>
             <RadzenStack Orientation="Orientation.Vertical">
                 <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">Property tax monthly payment:</RadzenText>
-                <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" @bind-Value=@propertyTax onchange="UpdateSum" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+                <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" @bind-Value=@model2.propertyTax onchange="UpdateSum" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
             </RadzenStack>
         </RadzenStack>
         <RadzenStack Orientation="Orientation.Vertical">
             <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">Homeowners Insurance payment:</RadzenText>
-            <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" @bind-Value=@homeInsurance oninput="UpdateSum" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+            <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" @bind-Value=@model2.homeInsurance oninput="UpdateSum" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
         </RadzenStack>
         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4rem" Class="rz-p-4 rz-mb-6 rz-border-radius-1" Style="border: var(--rz-grid-cell-border);">
             <RadzenStack Orientation="Orientation.Vertical">
                 <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">Estimation of Maintanance fee:</RadzenText>
-                <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" @bind-Value=@homeInsurance oninput="UpdateSum" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+                <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" @bind-Value=@model2.maintananceFee oninput="UpdateSum" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
             </RadzenStack>
             <RadzenStack Orientation="Orientation.Vertical">
                 <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">Total Monthly payment:</RadzenText>
-                <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" @bind-Value=@monthlyPayment InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+                <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" @bind-Value=@model2.monthlyPayment InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
             </RadzenStack>
         </RadzenStack>
 
         <RadzenStack Orientation="Orientation.Vertical">
             <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">How much would be the rent of the same property?</RadzenText>
-            <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" @bind-Value=@newPropertyRent InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+            <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" @bind-Value=@model2.newPropertyRent InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
         </RadzenStack>
     </RadzenCard>
-    <RadzenButton Click=@FillChart Text="Predict" ButtonStyle="ButtonStyle.Primary" />
+        <RadzenButton ButtonType="ButtonType.Submit" Text="Predict" ButtonStyle="ButtonStyle.Primary" />
+    </RadzenTemplateForm>
 </RadzenStack>
-<RadzenButton Text="Next" Click="@OnStepChange" />
 
 @code {
-      [Parameter]
+    class Model1
+    {
+        public string citiesValue;
+        public string propertiesValue;
+
+        public double houseCost;
+        public double downpayment;
+        public double interestRate;
+        public int mortagePaymentPeriod;
+    }
+    Model1 model1 = new Model1();
+
+    class Model2
+    {
+        public double mortgagePayment;
+        public double propertyTax;
+        public double homeInsurance;
+        public double maintananceFee;
+        public double monthlyPayment;
+        public double newPropertyRent;
+    }
+    Model2 model2 = new Model2();
+
+    double rentPayment;
+
+    List<string> cities = new();
+    List<string> properties = new();
+    FilterItemsDisplay filterItems = new();
+
+    bool visibleModel2 = false;
+
+    [Parameter]
     public int SelectedIndex { get; set; }
 
     [Parameter]
     public EventCallback<int> StepChanged { get; set; }
 
-    private async Task OnStepChange()
-    {
-       
-        await StepChanged.InvokeAsync(3);
-    }
-
-    double houseCost;
-    double downpayment;
-    double monthlyPayment;
-    double newPropertyRent;
-    double rentPayment;
-
-    double interestRate;
-    double mortgagePayment;
-    double propertyTax;
-    double homeInsurance;
-    double maintananceFee;
-    int mortagePaymentPeriod;
-
-    string citiesValue;
-    List<string> cities = new();
-
-    string propertiesValue;
-    List<string> properties = new();
-
-    FilterItemsDisplay filterItems = new();
-
-    private void MortgageMonthlyCalc()
+    private async Task MortgageMonthlyCalc(Model1 model1)
     {
         double returnPayment = 0;
-        double monthlyInterestRate = interestRate / 12;
-        double loanAmount = houseCost - downpayment;
-        int numberOfPayments = mortagePaymentPeriod * 12;
+        double monthlyInterestRate = model1.interestRate / 12;
+        double loanAmount = model1.houseCost - model1.downpayment;
+        int numberOfPayments = model1.mortagePaymentPeriod * 12;
 
-        mortgagePayment = loanAmount * monthlyInterestRate / (1 - Math.Pow(1 + monthlyInterestRate, -numberOfPayments));
-        propertyTax = (houseCost * 0.007) / 12;
-        homeInsurance = (houseCost * 0.001) / 12;
-        newPropertyRent = (houseCost * 0.04) / 12;
-        maintananceFee = (houseCost * 0.01) / 12;
-        monthlyPayment = mortgagePayment + propertyTax + homeInsurance + maintananceFee;
+        model2.mortgagePayment = loanAmount * monthlyInterestRate / (1 - Math.Pow(1 + monthlyInterestRate, -numberOfPayments));
+        model2.propertyTax = (model1.houseCost * 0.007) / 12;
+        model2.homeInsurance = (model1.houseCost * 0.001) / 12;
+        model2.newPropertyRent = (model1.houseCost * 0.04) / 12;
+        model2.maintananceFee = (model1.houseCost * 0.01) / 12;
+        model2.monthlyPayment = model2.mortgagePayment + model2.propertyTax + model2.homeInsurance + model2.maintananceFee;
 
-        StateContainer.houseCost = houseCost;
-        StateContainer.PropertyDownpayment = downpayment;
-        StateContainer.PropertyMonthlyPayment = monthlyPayment;
-        StateContainer.PropertyMonthlyRent = newPropertyRent;
+        StateContainer.houseCost = model1.houseCost;
+        StateContainer.PropertyDownpayment = model1.downpayment;
+        StateContainer.PropertyMonthlyPayment = model2.monthlyPayment;
+        StateContainer.PropertyMonthlyRent = model2.newPropertyRent;
 
-        StateContainer.interestRate = interestRate;
-        StateContainer.mortgagePayment = mortgagePayment;
-        StateContainer.propertyTax = propertyTax;
-        StateContainer.homeInsurance = homeInsurance;
-        StateContainer.maintananceFee = maintananceFee;
-        StateContainer.mortagePaymentPeriod = mortagePaymentPeriod;
+        StateContainer.interestRate = model1.interestRate;
+        StateContainer.mortgagePayment = model2.mortgagePayment;
+        StateContainer.propertyTax = model2.propertyTax;
+        StateContainer.homeInsurance = model2.homeInsurance;
+        StateContainer.maintananceFee = model2.maintananceFee;
+        StateContainer.mortagePaymentPeriod = model1.mortagePaymentPeriod;
 
-        StateContainer.City = citiesValue;
-        StateContainer.PropertyType = propertiesValue;
+        StateContainer.City = model1.citiesValue;
+        StateContainer.PropertyType = model1.propertiesValue;
+        
+        visibleModel2 = true;
 
         StateHasChanged();
     }
@@ -180,46 +201,53 @@
 
         if (StateContainer.houseCost > 0)
         {
-            houseCost = StateContainer.houseCost;
-            downpayment = StateContainer.PropertyDownpayment;
-            monthlyPayment = StateContainer.PropertyMonthlyPayment;
-            newPropertyRent = StateContainer.PropertyMonthlyRent;
+            model1.houseCost = StateContainer.houseCost;
+            model1.downpayment = StateContainer.PropertyDownpayment;
+            model2.monthlyPayment = StateContainer.PropertyMonthlyPayment;
+            model2.newPropertyRent = StateContainer.PropertyMonthlyRent;
 
-            interestRate = StateContainer.interestRate;
-            mortgagePayment = StateContainer.mortgagePayment;
-            propertyTax = StateContainer.propertyTax;
-            homeInsurance = StateContainer.homeInsurance;
-            maintananceFee = StateContainer.maintananceFee;
-            mortagePaymentPeriod = StateContainer.mortagePaymentPeriod;
+            model1.interestRate = StateContainer.interestRate;
+            model2.mortgagePayment = StateContainer.mortgagePayment;
+            model2.propertyTax = StateContainer.propertyTax;
+            model2.homeInsurance = StateContainer.homeInsurance;
+            model2.maintananceFee = StateContainer.maintananceFee;
+            model1.mortagePaymentPeriod = StateContainer.mortagePaymentPeriod;
 
-            citiesValue = StateContainer.City;
-            propertiesValue = StateContainer.PropertyType;
+            model1.citiesValue = StateContainer.City;
+            model1.propertiesValue = StateContainer.PropertyType;
         }
         StateHasChanged();
     }
 
     private void UpdateSum()
     {
-        monthlyPayment = mortgagePayment + propertyTax + homeInsurance + maintananceFee;
+        model2.monthlyPayment = model2.mortgagePayment + model2.propertyTax + model2.homeInsurance + model2.maintananceFee;
 
-        StateContainer.PropertyMonthlyPayment = monthlyPayment;
-        StateContainer.PropertyDownpayment = downpayment;
-        StateContainer.PropertyMonthlyRent = newPropertyRent;
+        StateContainer.PropertyMonthlyPayment = model2.monthlyPayment;
+        StateContainer.PropertyDownpayment = model1.downpayment;
+        StateContainer.PropertyMonthlyRent = model2.newPropertyRent;
         StateHasChanged();
+    }
+
+    private async Task OnStepChange(Model2 model)
+    {
+        await FillChart();
+
+        await StepChanged.InvokeAsync(3);
     }
 
     public async Task FillChart()
     {
         PropertyPurchaseInfo propertyPurchaseInfo = new PropertyPurchaseInfo
             {
-                PropertyPrice = houseCost,
-                DownPayment = downpayment,
-                InterestRate = interestRate,
-                MortgageTerm = mortagePaymentPeriod,
-                PropertyMonthlyPayment = mortgagePayment
+                PropertyPrice = model1.houseCost,
+                DownPayment = model1.downpayment,
+                InterestRate = model1.interestRate,
+                MortgageTerm = model1.mortagePaymentPeriod,
+                PropertyMonthlyPayment = model2.mortgagePayment
             };
 
-        var propertyPredictionDto = await FetchData.GetPropertyPredicionPercent(citiesValue, propertiesValue);
+        var propertyPredictionDto = await FetchData.GetPropertyPredicionPercent(model1.citiesValue, model1.propertiesValue);
         var propertyPredictionResult = ProfitCalculations.PropertyPrediction(propertyPredictionDto, propertyPurchaseInfo);
 
         StateContainer.revenueProperty = new List<ChartDataItem>();
@@ -239,6 +267,28 @@
         foreach (var item in propertyPredictionResult.ConfidenceUpperBound)
         {
             StateContainer.revenuePropertyUpperBound.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value });
+        }
+
+        var stockPredictionDto = await FetchData.GetStockPredicionPercent();
+        var stockPredictionResult = ProfitCalculations.StockPrediction(stockPredictionDto, model1.downpayment, model2.monthlyPayment);
+
+        StateContainer.revenueStock = new List<ChartDataItem>();
+        StateContainer.revenueStockUpperBound = new List<ChartDataItem>();
+        StateContainer.revenueStockLowerBound = new List<ChartDataItem>();
+
+        foreach (var item in stockPredictionResult.ForeCastIndex)
+        {
+            StateContainer.revenueStock.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value });
+        }
+
+        foreach (var item in stockPredictionResult.ConfidenceLowerBound)
+        {
+            StateContainer.revenueStockLowerBound.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value });
+        }
+
+        foreach (var item in stockPredictionResult.ConfidenceUpperBound)
+        {
+            StateContainer.revenueStockUpperBound.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value });
         }
     }
 }
