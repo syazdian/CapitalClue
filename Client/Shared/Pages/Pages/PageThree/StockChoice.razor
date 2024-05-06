@@ -1,12 +1,24 @@
+@using CapitalClue.Common.Models.Domain
 @using CapitalClue.Frontend.Shared.ServiceInterfaces
 @inject IStateContainer StateContainer
 @inject IFetchData FetchData;
 @inject IProfitCalculations ProfitCalculations;
+@inject IFilterService filterService
 
 <h3>StockChoice</h3>
 <RadzenCard>
 
     <RadzenTemplateForm TItem="Model" Data=@model Submit=@OnStepChange InvalidSubmit=@OnInvalidSubmit>
+        <RadzenStack Orientation="Orientation.Vertical" Gap="4px">
+            <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">  Stock Type </RadzenText>
+
+            <RadzenFormField Text="Stock Types" Style="flex: 1;">
+                <RadzenDropDown Name="Stock" Data=@stocks @bind-Value="@model.stocksValue" AllowClear=true />
+                <RadzenRequiredValidator Component="Stock" Text="required" Style="position: absolute" />
+
+            </RadzenFormField>
+        </RadzenStack>
+
         <RadzenStack Orientation="Orientation.Vertical">
             <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">how much are you investing in Stock for down payment?</RadzenText>
             <RadzenNumeric Name="Downpayment" Step="50000" @bind-Value=@model.downpayment @oninput="Update" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
@@ -37,10 +49,19 @@
 
     class Model
     {
+        public string stocksValue;
         public int downpayment;
         public int monthlyContribution;
     }
     Model model = new Model();
+
+    List<string> stocks = new();
+    FilterItemsDisplay filterItems = new();
+    protected override async Task OnInitializedAsync()
+    {
+        filterItems = await filterService.GetFilterItems();
+        stocks = filterItems.StockFilterDisplayObj.Stocks;
+    }
 
     private async Task OnStepChange(Model model)
     {
@@ -67,7 +88,7 @@
     public async Task FillChart()
     {
 
-        var stockPredictionDto = await FetchData.GetStockPredicionPercent();
+        var stockPredictionDto = await FetchData.GetStockPredicionPercent(model.stocksValue);
         var stockPredictionResult = ProfitCalculations.StockPrediction(stockPredictionDto, model.downpayment, model.monthlyContribution);
 
         StateContainer.revenueStock = new List<ChartDataItem>();
