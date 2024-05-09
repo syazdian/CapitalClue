@@ -36,7 +36,7 @@ public class PropertyPrediction
         var ForeCastEngein = trainedModel.CreateTimeSeriesEngine<PropertyValueIndex, PropertyPredictionEntity>(context);
         var result = ForeCastEngein.Predict();
 
-        int CurrentYear = DateTime.Now.Year;
+        int CurrentYear = 2019;// DateTime.Now.Year;
         PropertyPredictionDto propertyPredictionDto = new PropertyPredictionDto();
 
         propertyPredictionDto.ConfidenceLowerBound.Add(CurrentYear , 0);
