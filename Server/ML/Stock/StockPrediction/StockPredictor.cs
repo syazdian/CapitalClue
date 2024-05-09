@@ -35,7 +35,7 @@ public class StockPredictor
         var ForeCastEngein = trainedModel.CreateTimeSeriesEngine<StockValueIndex, StockPredictionEntiy>(context);
         var result = ForeCastEngein.Predict();
 
-        int CurrentYear = DateTime.Now.Year;
+        int CurrentYear = 2019;// DateTime.Now.Year;
         StockPredictionDto stockPredictionDto = new StockPredictionDto();
 
         stockPredictionDto.ConfidenceLowerBound.Add(CurrentYear, 0);
