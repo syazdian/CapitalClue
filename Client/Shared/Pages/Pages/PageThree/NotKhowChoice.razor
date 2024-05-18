@@ -104,7 +104,7 @@
     </RadzenCard>
     <RadzenButton Click=@FillChart Text="Predict" ButtonStyle="ButtonStyle.Primary" />
 </RadzenStack>
-<RadzenButton Text="Next" Click="@OnStepChange" />
+@* <RadzenButton Text="Next" Click="@OnStepChange" /> *@
 
 @code {
       [Parameter]
@@ -240,5 +240,6 @@
         {
             StateContainer.revenuePropertyUpperBound.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value });
         }
+        await StepChanged.InvokeAsync(3);
     }
 }

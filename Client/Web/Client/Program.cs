@@ -19,16 +19,17 @@ public class Program
 
         string baseaddress = string.Empty;
 
-        if (builder.HostEnvironment.Environment == "Local")
-        {
-            baseaddress = builder.Configuration["baseUrlLocal"];
-        }
-        else if (builder.HostEnvironment.Environment == "Development")
-        {
-            baseaddress = builder.Configuration["baseUrlDev"];
-        }
+        //if (builder.HostEnvironment.Environment == "Local")
+        //{
+        //    baseaddress = builder.Configuration["baseUrlLocal"];
+        //}
+        //else if (builder.HostEnvironment.Environment == "Development")
+        //{
+        //    baseaddress = builder.Configuration["baseUrlDev"];
+        //}
+        baseaddress = builder.Configuration["baseUrlLocal"];
 
-        //  baseaddress = builder.Configuration["baseUrlLocal"];
+        //baseaddress = builder.Configuration["baseUrlDev"];
 
         builder.Services.AddSingleton(new UrlKeeper() { BaseUrl = baseaddress });
         // builder.Services.AddHttpClient();

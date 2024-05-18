@@ -25,9 +25,12 @@ public class Program
         builder.Services.AddControllersWithViews();
         builder.Services.AddRazorPages();
 
-
-
         var app = builder.Build();
+        app.UseCors(x => x
+          .AllowAnyMethod()
+          .AllowAnyHeader()
+          .SetIsOriginAllowed(origin => true) // allow any origin
+          .AllowCredentials());
 
         var lf = app.Services.GetRequiredService<ILoggerFactory>();
 
