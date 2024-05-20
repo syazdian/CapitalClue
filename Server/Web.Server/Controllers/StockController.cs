@@ -1,6 +1,5 @@
-﻿using CapitalClue.Web.Server.Ml.Property.PropertyPrediction;
-using CapitalClue.Web.Server.Ml.Stock.ModelBuilder;
-using CapitalClue.Web.Server.Ml.Stock.StockPrediction;
+﻿using Newtonsoft.Json;
+using System.Text;
 
 namespace CapitalClue.Web.Server.Controllers;
 
@@ -8,35 +7,40 @@ namespace CapitalClue.Web.Server.Controllers;
 [Route("api/[controller]")]
 public class StockController : Controller
 {
-    [HttpPost("TrainAndCreateModel")]
-    public async Task<IActionResult> TrainAndCreateModel(StockModelDto stockModelDto)
-    {
-        try
-        {
-            var modelBulder = new StockModelBuilder(stockModelDto);
-            modelBulder.Build();
-            return Ok();
-        }
-        catch (Exception ex)
-        {
-            //_logger.LogError($"TrainAndMakeModelStock : {ex.Message}");
-            throw;
-        }
-    }
+    //[HttpPost("TrainAndCreateModel")]
+    //public async Task<IActionResult> TrainAndCreateModel(StockModelDto stockModelDto)
+    //{
+    //    try
+    //    {
+    //        var modelBulder = new StockModelBuilder(stockModelDto);
+    //        modelBulder.Build();
+    //        return Ok();
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        //_logger.LogError($"TrainAndMakeModelStock : {ex.Message}");
+    //        throw;
+    //    }
+    //}
 
     [HttpGet("PredictYearByYear/{StockName}/{Currency}")]
     public async Task<IActionResult> PredictYearByYear([FromRoute] string StockName, string Currency)
     {
-        try
+        var predictor = new StockModelDto() { Currency = Currency, StockName = StockName };
+        var jsonContent = JsonConvert.SerializeObject(predictor);
+        var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+        using (var client = new HttpClient())
         {
-            var predictor = new StockPredictor(StockName, Currency);
-            var result = predictor.GetPredictionYearByYear();
-            return Ok(result);
-        }
-        catch (Exception ex)
-        {
-            //_logger.LogError($"PredictStock : {ex.Message}");
-            throw;
+            var apiUrl = "http://localhost:7085/api/StockPredict"; // Your Azure Function URL
+            var response = await client.PostAsync(apiUrl, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest(response);
         }
     }
 }
