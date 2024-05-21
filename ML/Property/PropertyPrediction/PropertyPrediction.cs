@@ -3,6 +3,7 @@ using Microsoft.ML.Transforms.TimeSeries;
 using CapitalClue.Common.Models;
 using System.Security.Cryptography.X509Certificates;
 using CapitalClue.Web.Server.ML.Entities;
+using System.Reflection;
 
 namespace CapitalClue.Web.Server.Ml.Property.PropertyPrediction;
 
@@ -19,7 +20,8 @@ public class PropertyPrediction
         DataViewSchema modelSchema;
 
         ModelFileName = string.Format("{0}-{1}-{2}", City, PropertyType, ModelFileName);
-        trainedModel = context.Model.Load($"../../../{Directory}/{ModelFileName}", out modelSchema);
+        var binDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        trainedModel = context.Model.Load($"{binDirectory}/{Directory}/{ModelFileName}", out modelSchema);
     }
 
     public PropertyPredictionEntity GetPrediction()

@@ -2,6 +2,7 @@
 using Microsoft.ML.Transforms.TimeSeries;
 using CapitalClue.Common.Models;
 using CapitalClue.Web.Server.ML.Entities;
+using System.Reflection;
 
 namespace CapitalClue.Web.Server.Ml.Stock.StockPrediction;
 
@@ -18,7 +19,9 @@ public class StockPredictor
         DataViewSchema modelSchema;
 
         ModelFileName = string.Format("{0}-{1}-{2}", StockName, Currency, ModelFileName);
-        trainedModel = context.Model.Load($"../../../{Directory}/{ModelFileName}", out modelSchema);
+        var binDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+        trainedModel = context.Model.Load($"{binDirectory}/{Directory}/{ModelFileName}", out modelSchema);
     }
 
     public StockPredictionEntiy GetPrediction()
