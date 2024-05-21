@@ -18,25 +18,32 @@ namespace CapitalClue_AzF
         }
 
         [Function("PropertyPredict")]
-        public IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
+        public async Task<IActionResult> RunAsync([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
         {
-            string requestBody;
-            using (StreamReader reader = new StreamReader(req.Body))
+            try
             {
-                requestBody = reader.ReadToEnd();
+                string requestBody;
+                using (StreamReader reader = new StreamReader(req.Body))
+                {
+                    requestBody = await reader.ReadToEndAsync();
+                }
+
+                var propertyModel = JsonConvert.DeserializeObject<PropertyModelDto>(requestBody);
+
+                if (propertyModel is null || propertyModel.City is null || propertyModel.PropertyType is null)
+                {
+                    return new BadRequestObjectResult(propertyModel);
+                }
+
+                var predictor = new PropertyPrediction(propertyModel.City, propertyModel.PropertyType);
+
+                var result = predictor.GetPredictionYearByYear();
+                return new OkObjectResult(result);
             }
-
-            var propertyModel = JsonConvert.DeserializeObject<PropertyModelDto>(requestBody);
-
-            if (propertyModel is null || propertyModel.City is null || propertyModel.PropertyType is null)
+            catch (Exception ex)
             {
-                return new BadRequestObjectResult(propertyModel);
+                throw;
             }
-
-            var predictor = new PropertyPrediction(propertyModel.City, propertyModel.PropertyType);
-
-            var result = predictor.GetPredictionYearByYear();
-            return new OkObjectResult(result);
         }
     }
 }

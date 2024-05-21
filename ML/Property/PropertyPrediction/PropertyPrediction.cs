@@ -8,10 +8,10 @@ namespace CapitalClue.Web.Server.Ml.Property.PropertyPrediction;
 
 public class PropertyPrediction
 {
-    string ModelFileName = "PropertyModel.zip";
-    string Directory = "TrainedModels";
-    ITransformer trainedModel;
-    MLContext context;
+    private string ModelFileName = "PropertyModel.zip";
+    private string Directory = "TrainedModels";
+    private ITransformer trainedModel;
+    private MLContext context;
 
     public PropertyPrediction(string City, string PropertyType)
     {
@@ -19,7 +19,7 @@ public class PropertyPrediction
         DataViewSchema modelSchema;
 
         ModelFileName = string.Format("{0}-{1}-{2}", City, PropertyType, ModelFileName);
-        trainedModel = context.Model.Load(Directory + "/" + ModelFileName, out modelSchema);
+        trainedModel = context.Model.Load($"../../../{Directory}/{ModelFileName}", out modelSchema);
     }
 
     public PropertyPredictionEntity GetPrediction()
@@ -28,7 +28,6 @@ public class PropertyPrediction
         var result = ForeCastEngein.Predict();
 
         return result;
-
     }
 
     public PropertyPredictionDto GetPredictionYearByYear()
@@ -39,9 +38,9 @@ public class PropertyPrediction
         int CurrentYear = DateTime.Now.Year;
         PropertyPredictionDto propertyPredictionDto = new PropertyPredictionDto();
 
-        propertyPredictionDto.ConfidenceLowerBound.Add(CurrentYear , 0);
-        propertyPredictionDto.ConfidenceUpperBound.Add(CurrentYear , 0);
-        propertyPredictionDto.ForeCastIndex.Add(CurrentYear , 0);
+        propertyPredictionDto.ConfidenceLowerBound.Add(CurrentYear, 0);
+        propertyPredictionDto.ConfidenceUpperBound.Add(CurrentYear, 0);
+        propertyPredictionDto.ForeCastIndex.Add(CurrentYear, 0);
         for (int i = 1; i <= 5; i++)
         {
             var lowerboundPercent = (result.ConfidenceLowerBound[28 * i - 1] - result.ConfidenceLowerBound[28 * (i - 1)]) / result.ConfidenceLowerBound[28 * i - 1];
@@ -54,6 +53,5 @@ public class PropertyPrediction
         }
 
         return propertyPredictionDto;
-
     }
 }

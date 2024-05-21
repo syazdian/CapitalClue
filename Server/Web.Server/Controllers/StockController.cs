@@ -37,7 +37,8 @@ public class StockController : Controller
 
             if (response.IsSuccessStatusCode)
             {
-                return Ok(response);
+                var responseContent = await response.Content.ReadAsStringAsync();
+                return Ok(responseContent);
             }
 
             return BadRequest(response);

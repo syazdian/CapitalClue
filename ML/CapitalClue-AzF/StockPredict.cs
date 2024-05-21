@@ -18,25 +18,32 @@ namespace CapitalClue_AzF
         }
 
         [Function("StockPredict")]
-        public IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
+        public async Task<IActionResult> RunAsync([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
         {
-            string requestBody;
-            using (StreamReader reader = new StreamReader(req.Body))
+            try
             {
-                requestBody = reader.ReadToEnd();
+                string requestBody;
+                using (StreamReader reader = new StreamReader(req.Body))
+                {
+                    requestBody = await reader.ReadToEndAsync();
+                }
+
+                var stockModel = JsonConvert.DeserializeObject<StockModelDto>(requestBody);
+
+                if (stockModel is null || stockModel.Currency is null || stockModel.StockName is null)
+                {
+                    return new BadRequestObjectResult(stockModel);
+                }
+
+                var predictor = new StockPredictor(stockModel.StockName, stockModel.Currency);
+                var result = predictor.GetPredictionYearByYear();
+
+                return new OkObjectResult(result);
             }
-
-            var stockModel = JsonConvert.DeserializeObject<StockModelDto>(requestBody);
-
-            if (stockModel is null || stockModel.Currency is null || stockModel.StockName is null)
+            catch (Exception ex)
             {
-                return new BadRequestObjectResult(stockModel);
+                throw;
             }
-
-            var predictor = new StockPredictor(stockModel.StockName, stockModel.Currency);
-            var result = predictor.GetPredictionYearByYear();
-
-            return new OkObjectResult(result);
         }
     }
 }

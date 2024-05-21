@@ -215,12 +215,12 @@
             double costPaidIn5Years = StateContainer.StockDownpayment + (StateContainer.StockContribution * 60);
             stockResultText += $"You started with ${StateContainer.StockDownpayment} and contributed ${StateContainer.StockContribution} monthly for 5 years\n";
             stockResultText += $"The total amount you invested is ${costPaidIn5Years} \n";
-            stockResultText += $"Your assets worth ${StateContainer.revenueStock[1].Revenue} in first year \n";
-            stockResultText += $"Your assets worth ${StateContainer.revenueStock[2].Revenue} in second year \n";
-            stockResultText += $"Your assets worth ${StateContainer.revenueStock[3].Revenue} in third year\n";
-            stockResultText += $"Your assets worth ${StateContainer.revenueStock[4].Revenue} in fourth year\n";
-            stockResultText += $"Your assets worth ${StateContainer.revenueStock[5].Revenue} in fifth year\n";
-            stockResultText += $"Your Profit is ${StateContainer.revenueStock[5].Revenue - costPaidIn5Years} in fifth year\n";
+            stockResultText += $"Your assets worth ${StateContainer?.revenueStock[1]?.Revenue} in first year \n";
+            stockResultText += $"Your assets worth ${StateContainer?.revenueStock[2]?.Revenue} in second year \n";
+            stockResultText += $"Your assets worth ${StateContainer?.revenueStock[3]?.Revenue} in third year\n";
+            stockResultText += $"Your assets worth ${StateContainer?.revenueStock[4]?.Revenue} in fourth year\n";
+            stockResultText += $"Your assets worth ${StateContainer?.revenueStock[5]?.Revenue} in fifth year\n";
+            stockResultText += $"Your Profit is ${StateContainer?.revenueStock[5]?.Revenue - costPaidIn5Years} in fifth year\n";
 
 
 
