@@ -18,14 +18,14 @@ namespace CapitalClue_AzF
         }
 
         [Function("PropertyTrainCreateModel")]
-        public IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
+        public async Task<IActionResult> RunAsync([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
         {
             try
             {
                 string requestBody;
                 using (StreamReader reader = new StreamReader(req.Body))
                 {
-                    requestBody = reader.ReadToEnd();
+                    requestBody = await reader.ReadToEndAsync();
                 }
 
                 var propertyModel = JsonConvert.DeserializeObject<PropertyModelDto>(requestBody);

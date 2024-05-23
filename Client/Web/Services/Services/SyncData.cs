@@ -28,14 +28,46 @@ public class SyncData : ISyncData
 
     public async Task SendPropertyDto(PropertyModelDto property)
     {
-        var jsn = property.ToJson();
+        var jsonContent = property.ToJson();
         //  await _httpClient.PostAsJsonAsync($"{baseAddress}api/Property/TrainAndCreateModel", property);
-        await _httpClient.PostAsJsonAsync($"{baseAddress}api/Property/TrainAndCreateModel", property);
+        //  await _httpClient.PostAsJsonAsync($"{baseAddress}api/Property/TrainAndCreateModel", property);
+
+        var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+        using (var client = new HttpClient())
+        {
+            //var apiUrl = $"{baseAddress}api/StockTrainCreateModel/{code}";
+            var apiUrl = $"http://localhost:7085/api/PropertyTrainCreateModel";
+            var response = await client.PostAsync(apiUrl, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+            }
+        }
+
+        //public async Task SendStockDto(StockModelDto stock)
+        //{
+        //    var jsn = stock.ToJson();
+        //    await _httpClient.PostAsJsonAsync($"{baseAddress}api/Stock/TrainAndCreateModel", stock);
+        //}
     }
 
     public async Task SendStockDto(StockModelDto stock)
     {
-        var jsn = stock.ToJson();
-        await _httpClient.PostAsJsonAsync($"{baseAddress}api/Stock/TrainAndCreateModel", stock);
+        var jsonContent = stock.ToJson();
+        var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+        using (var client = new HttpClient())
+        {
+            //var apiUrl = $"{baseAddress}api/StockTrainCreateModel/{code}";
+            var apiUrl = $"http://localhost:7085/api/StockTrainCreateModel";
+            var response = await client.PostAsync(apiUrl, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+            }
+        }
     }
 }

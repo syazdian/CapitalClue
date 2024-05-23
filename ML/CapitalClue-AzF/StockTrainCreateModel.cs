@@ -19,14 +19,14 @@ namespace CapitalClue_AzF
         }
 
         [Function("StockTrainCreateModel")]
-        public IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
+        public async Task<IActionResult> RunAsync([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
         {
             try
             {
                 string requestBody;
                 using (StreamReader reader = new StreamReader(req.Body))
                 {
-                    requestBody = reader.ReadToEnd();
+                    requestBody = await reader.ReadToEndAsync();
                 }
 
                 var stockModel = JsonConvert.DeserializeObject<StockModelDto>(requestBody);
