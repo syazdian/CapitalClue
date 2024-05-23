@@ -7,6 +7,15 @@ namespace CapitalClue.Web.Server.Controllers;
 [Route("api/[controller]")]
 public class StockController : Controller
 {
+    private string baseAddress;
+    private string code;
+
+    public StockController(UrlKeeper url)
+    {
+        baseAddress = url.BaseUrl;
+        code = url.code;
+    }
+
     //[HttpPost("TrainAndCreateModel")]
     //public async Task<IActionResult> TrainAndCreateModel(StockModelDto stockModelDto)
     //{
@@ -32,7 +41,7 @@ public class StockController : Controller
 
         using (var client = new HttpClient())
         {
-            var apiUrl = "http://localhost:7085/api/StockPredict"; // Your Azure Function URL
+            var apiUrl = $"{baseAddress}api/StockPredict/{code}";
             var response = await client.PostAsync(apiUrl, content);
 
             if (response.IsSuccessStatusCode)

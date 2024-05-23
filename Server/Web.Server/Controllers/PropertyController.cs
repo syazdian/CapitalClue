@@ -9,6 +9,15 @@ namespace CapitalClue.Web.Server.Controllers;
 [Route("api/[controller]")]
 public class PropertyController : Controller
 {
+    private string baseAddress;
+    private string code;
+
+    public PropertyController(UrlKeeper url)
+    {
+        baseAddress = url.BaseUrl;
+        code = url.code;
+    }
+
     //[HttpPost("TrainAndCreateModel")]
     //public async Task<IActionResult> TrainAndCreateModel(PropertyModelDto propertyModelDto)
     //{
@@ -36,7 +45,10 @@ public class PropertyController : Controller
 
             using (var client = new HttpClient())
             {
-                var apiUrl = "http://localhost:7085/api/PropertyPredict"; // Your Azure Function URL
+                var apiUrl = $"{baseAddress}api/PropertyPredict/{code}";
+
+                //  var apiUrl = "http://localhost:7085/api/PropertyPredict"; // Your Azure Function URL
+                //var apiUrl = "http://https://capitalclue-azf.azurewebsites.net/api/PropertyPredict"; // Your Azure Function URL
                 var response = await client.PostAsync(apiUrl, content);
 
                 if (response.IsSuccessStatusCode)

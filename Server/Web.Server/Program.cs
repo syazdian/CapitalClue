@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web;
 using System.Reflection;
@@ -21,6 +22,10 @@ public class Program
         //         options.RequireHttpsMetadata = false;
         //     })
         //    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"), "AzureAd", "BearerAzureAd");
+
+        var baseAddress = builder.Configuration.GetSection("DetailApiBaseAddress").Value;
+        var code = builder.Configuration.GetSection("code").Value;
+        builder.Services.AddSingleton(new UrlKeeper() { BaseUrl = baseAddress.ToString(), code = code.ToString() });
 
         builder.Services.AddControllersWithViews();
         builder.Services.AddRazorPages();
