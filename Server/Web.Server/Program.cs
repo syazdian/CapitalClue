@@ -23,8 +23,11 @@ public class Program
         //     })
         //    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"), "AzureAd", "BearerAzureAd");
 
-        var baseAddress = builder.Configuration.GetSection("DetailApiBaseAddress").Value;
-        var code = builder.Configuration.GetSection("code").Value;
+        //  var baseAddress = builder.Configuration.GetSection("DetailApiBaseAddress").Value;
+        var baseAddress = "https://capitalclue-azf.azurewebsites.net/";
+
+        // var code = builder.Configuration.GetSection("code").Value;
+        var code = "?code=hVR7ybsKYTm54u89Fe8R99xN4Avhw5zpf8jRpNUnAD0qAzFuhtUiGQ%3D%3D";
         builder.Services.AddSingleton(new UrlKeeper() { BaseUrl = baseAddress.ToString(), code = code.ToString() });
 
         builder.Services.AddControllersWithViews();

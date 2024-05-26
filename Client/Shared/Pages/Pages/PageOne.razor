@@ -33,7 +33,7 @@
         </RadzenStack>
         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4rem" Class="rz-p-4 rz-mb-6 rz-border-radius-1" Style="border: var(--rz-grid-cell-border);">
             <RadzenStack Orientation="Orientation.Vertical">
-                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">What should we call you??</RadzenText>
+                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">What should we call you?</RadzenText>
                 <RadzenTextBox @bind-Value=@userFirstName Style="width:140px;" />
             </RadzenStack>
             <RadzenStack Orientation="Orientation.Vertical">
@@ -44,11 +44,11 @@
 
         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4rem" Class="rz-p-4 rz-mb-6 rz-border-radius-1" Style="border: var(--rz-grid-cell-border);">
             <RadzenStack Orientation="Orientation.Vertical">
-                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">How old are you??</RadzenText>
+                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">How old are you?</RadzenText>
                 <RadzenNumeric Min="18" Max="100"  Step="1" Style="width:140px;" @bind-Value=@age InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
             </RadzenStack>
             <RadzenStack Orientation="Orientation.Vertical">
-                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">When are you planning to get retired??</RadzenText>
+                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">When are you planning to get retired?</RadzenText>
                 <RadzenNumeric Style="width:140px;" TValue="int" Min="@(DateTime.Now.Year)" Max="2074" Step="1" @bind-Value=@yearToRetire InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
             </RadzenStack>
         </RadzenStack>

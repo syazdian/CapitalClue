@@ -34,7 +34,7 @@
         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4rem" Class="rz-p-4 rz-mb-6 rz-border-radius-1" Style="border: var(--rz-grid-cell-border);">
             <RadzenStack Orientation="Orientation.Vertical">
                 <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">How much is the house you want to buy?</RadzenText>
-                <RadzenNumeric Min="0" Step="50000" Format="c" @bind-Value=@houseCost Style="width:140px;" />
+                <RadzenNumeric Min="0" Step="100000" Format="c" @bind-Value=@houseCost Style="width:140px;" />
             </RadzenStack>
             <RadzenStack Orientation="Orientation.Vertical">
                 <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">How much downpayment are you paying?</RadzenText>
@@ -66,21 +66,21 @@
         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4rem" Class="rz-p-4 rz-mb-6 rz-border-radius-1" Style="border: var(--rz-grid-cell-border);">
             <RadzenStack Orientation="Orientation.Vertical">
                 <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">Principal & Interest monthly Mortgage payment:</RadzenText>
-                <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" @bind-Value=@mortgagePayment onchange="UpdateSum" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+                <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" Step="100" @bind-Value=@mortgagePayment Change="UpdateSum" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
             </RadzenStack>
             <RadzenStack Orientation="Orientation.Vertical">
                 <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">Property tax monthly payment:</RadzenText>
-                <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" @bind-Value=@propertyTax onchange="UpdateSum" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+                <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" Step="50" @bind-Value=@propertyTax Change="UpdateSum" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
             </RadzenStack>
         </RadzenStack>
         <RadzenStack Orientation="Orientation.Vertical">
             <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">Homeowners Insurance payment:</RadzenText>
-            <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" @bind-Value=@homeInsurance oninput="UpdateSum" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+            <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" Step="50" @bind-Value=@homeInsurance Change="UpdateSum" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
         </RadzenStack>
         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4rem" Class="rz-p-4 rz-mb-6 rz-border-radius-1" Style="border: var(--rz-grid-cell-border);">
             <RadzenStack Orientation="Orientation.Vertical">
                 <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">Estimation of Maintanance fee:</RadzenText>
-                <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" @bind-Value=@homeInsurance oninput="UpdateSum" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+                <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" Step="50"  @bind-Value=@maintananceFee Change="UpdateSum" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
             </RadzenStack>
             <RadzenStack Orientation="Orientation.Vertical">
                 <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">Total Monthly payment:</RadzenText>
@@ -90,7 +90,7 @@
 
         <RadzenStack Orientation="Orientation.Vertical">
             <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">How much would be the rent of the same property?</RadzenText>
-            <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" @bind-Value=@rentPayment InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+            <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" Step="100"  @bind-Value=@rentPayment InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
         </RadzenStack>
     </RadzenCard>
     <RadzenButton Click=@FillChart Text="Predict" ButtonStyle="ButtonStyle.Primary" />
@@ -230,4 +230,5 @@
 
         await StepChanged.InvokeAsync(3);
     }
+
 }

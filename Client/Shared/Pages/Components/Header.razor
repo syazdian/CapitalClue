@@ -26,26 +26,14 @@
             <RadzenColumn class="rz-p-1">
             </RadzenColumn>
             <RadzenColumn class="rz-p-2">
-                @if (IsOnline && ShowSyncChanges)
-                {
-                    <RadzenMenu>
+                 <RadzenMenu>
                         <RadzenMenuItem Text="" Icon="settings">
 
                             <RadzenMenuItem Click="OpenConfig" Text="Upload CSV" Icon="open_in_browser"></RadzenMenuItem>
-                         @*    <RadzenMenuItem Click="SyncChanges" Text="Sync Changes" Icon="sync"></RadzenMenuItem>
-                            <RadzenMenuItem Click="OpenFetchDataDialog" Text="Fetch Data" Icon="construction"></RadzenMenuItem>
-                            <RadzenMenuItem Click="RedirectToError" Text="ErrorsLog Page" Icon="alarm_off"></RadzenMenuItem> *@
                         </RadzenMenuItem>
                     </RadzenMenu>
-                }
-                else if (IsOnline && !ShowSyncChanges)
-                {
-                    <RadzenButton ButtonStyle="ButtonStyle.Secondary" Text="Fetch Data from Server" Click="OpenFetchDataDialog" Icon="get_app"></RadzenButton>
-                }
-                else
-                {
-                    <span>You are offline!</span>
-                }
+
+           
             </RadzenColumn>
 
             <hr />

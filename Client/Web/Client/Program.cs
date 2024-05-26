@@ -27,9 +27,9 @@ public class Program
         //{
         //    baseaddress = builder.Configuration["baseUrlDev"];
         //}
-        baseaddress = builder.Configuration["baseUrlLocal"];
+        // baseaddress = builder.Configuration["baseUrlLocal"];
 
-        //baseaddress = builder.Configuration["baseUrlDev"];
+        baseaddress = builder.Configuration["baseUrlDev"];
 
         builder.Services.AddSingleton(new UrlKeeper() { BaseUrl = baseaddress });
         // builder.Services.AddHttpClient();
