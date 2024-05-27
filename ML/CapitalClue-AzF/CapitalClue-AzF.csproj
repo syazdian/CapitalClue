@@ -83,7 +83,7 @@
     <None Update="TrainedModels\RichmondHill-Freehold Townhouses-PropertyModel.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TrainedModels\SP500-US-StockModel.zip">
+    <None Update="TrainedModels\S&amp;P500-US-StockModel.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="TrainedModels\Toronto-Condo Townhouses-PropertyModel.zip">
