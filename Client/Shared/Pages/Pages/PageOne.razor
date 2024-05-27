@@ -3,70 +3,78 @@
 @inject IFetchData fetchData
 @inject IStateContainer StateContainer
 
-<RadzenStack Orientation="Orientation.Horizontal" Wrap="FlexWrap.Wrap" JustifyContent="JustifyContent.Center" >
+<RadzenStack Orientation="Orientation.Horizontal" Wrap="FlexWrap.Wrap" JustifyContent="JustifyContent.Center">
     <RadzenCard Class="rz-border-danger my-4">
-    <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" class="rz-my-6">
-        We hate when others collect our data!
-    </RadzenText>
-    <RadzenText class="rz-my-6">
-        So, we don't do yours. All the information you enter in this app would remain on your browser and would be calculated in your machine thanks to our latest technology Blazor Client side, and ML.net AI platform.
-    </RadzenText>
-    </RadzenCard >
+        <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" class="rz-my-6">
+            We hate when others collect our data!
+        </RadzenText>
+        <RadzenText class="rz-my-6">
+            So, we don't do yours. All the information you enter in this app would remain on your browser and would be calculated in your machine thanks to our latest technology Blazor Client side, and ML.net AI platform.
+        </RadzenText>
+    </RadzenCard>
 </RadzenStack>
 
 
 
 
 <RadzenStack Orientation="Orientation.Vertical">
-    
 
-    <RadzenCard class="my-4">
-        <RadzenStack Orientation="Orientation.Vertical">
-            <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">Do you own a House?</RadzenText>
+    <RadzenTemplateForm TItem="Model" Data=@model Submit=@OnStepChange InvalidSubmit=@OnInvalidSubmit>
+        <RadzenCard class="my-4">
+            <RadzenStack Orientation="Orientation.Vertical">
+                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">Do you own a House?</RadzenText>
 
-            <RadzenRadioButtonList @bind-Value=@isFirstTimeHomeBuyer TValue="bool" class="mb-5">
-                <Items>
-                    <RadzenRadioButtonListItem Text="I am first time home buyer" Value="true" />
-                    <RadzenRadioButtonListItem Text="I have a property" Value="false" />
-                </Items>
-            </RadzenRadioButtonList>
-        </RadzenStack>
-        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4rem" Class="rz-p-4 rz-mb-6 rz-border-radius-1" Style="border: var(--rz-grid-cell-border);">
-            <RadzenStack Orientation="Orientation.Vertical">
-                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">What should we call you?</RadzenText>
-                <RadzenTextBox @bind-Value=@userFirstName Style="width:140px;" />
+                <RadzenRadioButtonList @bind-Value=@model.isFirstTimeHomeBuyer TValue="bool" class="mb-5">
+                    <Items>
+                        <RadzenRadioButtonListItem Text="I am first time home buyer" Value="true" />
+                        <RadzenRadioButtonListItem Text="I have a property" Value="false" />
+                    </Items>
+                </RadzenRadioButtonList>
             </RadzenStack>
-            <RadzenStack Orientation="Orientation.Vertical">
-                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">How much is your house hold income?</RadzenText>
-                <RadzenNumeric Min="20000" Max="1000000" Format="c" Step="10000" Style="width:140px;" @bind-Value=@income InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
-            </RadzenStack>
-        </RadzenStack>
 
-        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4rem" Class="rz-p-4 rz-mb-6 rz-border-radius-1" Style="border: var(--rz-grid-cell-border);">
-            <RadzenStack Orientation="Orientation.Vertical">
-                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">How old are you?</RadzenText>
-                <RadzenNumeric Min="18" Max="100"  Step="1" Style="width:140px;" @bind-Value=@age InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4rem" Class="rz-p-4 rz-mb-6 rz-border-radius-1" Style="border: var(--rz-grid-cell-border);">
+                <RadzenStack Orientation="Orientation.Vertical">
+                    <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">What should we call you?</RadzenText>
+                    <RadzenTextBox Name="CustomerName" @bind-Value=@model.userFirstName Style="width:140px;" />
+                    <RadzenRequiredValidator Component="CustomerName" Text="Dont worry, Give your name" Style="position: absolute" />
+                </RadzenStack>
+                <RadzenStack Orientation="Orientation.Vertical">
+                    <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">How much is your house hold income?</RadzenText>
+                    <RadzenNumeric Min="20000" Max="1000000" Format="c" Step="10000" Style="width:140px;" @bind-Value=@model.income InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+                </RadzenStack>
             </RadzenStack>
-            <RadzenStack Orientation="Orientation.Vertical">
-                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">When are you planning to get retired?</RadzenText>
-                <RadzenNumeric Style="width:140px;" TValue="int" Min="@(DateTime.Now.Year)" Max="2074" Step="1" @bind-Value=@yearToRetire InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
-            </RadzenStack>
-        </RadzenStack>
 
-    </RadzenCard>
-    
-   
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4rem" Class="rz-p-4 rz-mb-6 rz-border-radius-1" Style="border: var(--rz-grid-cell-border);">
+                <RadzenStack Orientation="Orientation.Vertical">
+                    <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">How old are you?</RadzenText>
+                    <RadzenNumeric Min="18" Max="100" Step="1" Style="width:140px;" @bind-Value=@model.age InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+                </RadzenStack>
+                <RadzenStack Orientation="Orientation.Vertical">
+                    <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">When are you planning to get retired?</RadzenText>
+                    <RadzenNumeric Style="width:140px;" TValue="int" Min="@(DateTime.Now.Year)" Max="2074" Step="1" @bind-Value=@model.yearToRetire InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+                </RadzenStack>
+            </RadzenStack>
+
+        </RadzenCard>
+        <RadzenButton ButtonType="ButtonType.Submit" Text="Next"></RadzenButton>
+    </RadzenTemplateForm>
+
+
 </RadzenStack>
 
-<RadzenButton Text="Next" Click="@OnStepChange" />
+
 
 
 @code {
-    private bool isFirstTimeHomeBuyer { get; set; } = false;
-    private string  userFirstName { get; set; } 
-    private int yearToRetire { get; set; } = 2024;
-    private int age { get; set; } = 18;
-    private double income { get; set; } = 10000;
+    class Model
+    {
+        public bool isFirstTimeHomeBuyer { get; set; } = false;
+        public string userFirstName { get; set; }
+        public int yearToRetire { get; set; } = 2024;
+        public int age { get; set; } = 18;
+        public double income { get; set; } = 10000;
+    }
+    Model model = new Model();
 
     [Parameter]
     public int SelectedIndex { get; set; }
@@ -74,13 +82,17 @@
     [Parameter]
     public EventCallback<int> StepChanged { get; set; }
 
-    private async Task OnStepChange()
+    void OnInvalidSubmit(FormInvalidSubmitEventArgs args)
     {
-        StateContainer.Age = age;
-        StateContainer.IsFirstTimeHomeBuyer = isFirstTimeHomeBuyer ;
-        StateContainer.UserFirstName = userFirstName;
-        StateContainer.YearToRetire =yearToRetire;
-        StateContainer.Income = income;
+    }
+
+    private async Task OnStepChange(Model model)
+    {
+        StateContainer.Age = model.age;
+        StateContainer.IsFirstTimeHomeBuyer = model.isFirstTimeHomeBuyer;
+        StateContainer.UserFirstName = model.userFirstName;
+        StateContainer.YearToRetire = model.yearToRetire;
+        StateContainer.Income = model.income;
 
         await StepChanged.InvokeAsync(1);
     }
