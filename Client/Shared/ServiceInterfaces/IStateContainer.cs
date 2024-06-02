@@ -33,8 +33,10 @@ public interface IStateContainer
     public string City { get; set; }
 
     public bool IsFirstTimeHomeBuyer { get; set; }
+    public bool IsMarried { get; set; }
     public string UserFirstName { get; set; }
     public int YearToRetire { get; set; }
     public int Age { get; set; }
+    public int ChildCount { get; set; }
     public double Income { get; set; }
 }

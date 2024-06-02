@@ -71,6 +71,9 @@
     <None Update="TrainedModels\Mississauga-Freehold Townhouses-PropertyModel.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="TrainedModels\MLModel1.mlnet">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="TrainedModels\RichmondHill-Condo Townhouses-PropertyModel.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
