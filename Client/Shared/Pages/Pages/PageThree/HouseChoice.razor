@@ -18,7 +18,7 @@
                     <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">Where are you purchasing your property?</RadzenText>
                     <RadzenFormField Text="City" Style="flex: 1;">
                         <RadzenDropDown Name="City" Data=@cities @bind-Value="@model1.citiesValue" AllowClear=true />
-                        <RadzenRequiredValidator Component="City" Text="required" Style="position: absolute" />
+                        <RadzenRequiredValidator Component="City" Text="required" Style="position: relative" />
 
                     </RadzenFormField>
                 </RadzenStack>
@@ -27,7 +27,7 @@
 
                     <RadzenFormField Text="Property Types" Style="flex: 1;">
                         <RadzenDropDown Name="Property" Data=@properties @bind-Value="@model1.propertiesValue" AllowClear=true />
-                        <RadzenRequiredValidator Component="Property" Text="required" Style="position: absolute" />
+                        <RadzenRequiredValidator Component="Property" Text="required" Style="position: relative" />
 
                     </RadzenFormField>
                 </RadzenStack>
@@ -40,14 +40,14 @@
                 <RadzenStack Orientation="Orientation.Vertical">
                     <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">How much is the house you want to buy?</RadzenText>
                     <RadzenNumeric Name="HouseCost" Min="0" Step="100000" Format="c" @bind-Value=@model1.houseCost Style="width:140px;" />
-                    <RadzenRequiredValidator Component="HouseCost" Text="required" Style="position: absolute" />
-                    <RadzenNumericRangeValidator Component="HouseCost" Min="1" Text="House cost should be more than 0" Style="position: absolute" />
+                    <RadzenRequiredValidator Component="HouseCost" Text="required" Style="position: relative" />
+                    <RadzenNumericRangeValidator Component="HouseCost" Min="1" Text="House cost should be more than 0" Style="position: relative" />
                 </RadzenStack>
                 <RadzenStack Orientation="Orientation.Vertical">
                     <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">How much downpayment are you paying?</RadzenText>
                     <RadzenNumeric Min="0" Name="Downpayment" Format="c" Step="50000" Style="width:140px;" @bind-Value=@model1.downpayment InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
-                    <RadzenRequiredValidator Component="Downpayment" Text="required" Style="position: absolute" />
-                    <RadzenNumericRangeValidator Component="Downpayment" Min="1" Text="Downpayment should be more than 0" Style="position: absolute" />
+                    <RadzenRequiredValidator Component="Downpayment" Text="required" Style="position: relative" />
+                    <RadzenNumericRangeValidator Component="Downpayment" Min="1" Text="Downpayment should be more than 0" Style="position: relative" />
                 </RadzenStack>
             </RadzenStack>
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4rem" Class="rz-p-4 rz-mb-6 rz-border-radius-1" Style="border: var(--rz-grid-cell-border);">
@@ -55,8 +55,8 @@
                 <RadzenStack Orientation="Orientation.Vertical">
                     <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">What is the interest rate?</RadzenText>
                     <RadzenNumeric Name="InterestRate" Style="width:140px;" TValue="double" Min="0" Max="100" Step="0.005" Format="#.00 %" @bind-Value=@model1.interestRate InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
-                    <RadzenRequiredValidator Component="InterestRate" Text="required" Style="position: absolute" />
-                    <RadzenNumericRangeValidator Component="InterestRate" Min="0.00001" Max="100" Text="InterestRate should grater than 0" Style="position: absolute" />
+                    <RadzenRequiredValidator Component="InterestRate" Text="required" Style="position: relative" />
+                    <RadzenNumericRangeValidator Component="InterestRate" Min="0.00001" Max="100" Text="InterestRate should grater than 0" Style="position: relative" />
                 </RadzenStack>
 
                 <RadzenStack Orientation="Orientation.Vertical">
@@ -68,7 +68,7 @@
                             <RadzenRadioButtonListItem Text="30 year" Value="30" />
                         </Items>
                     </RadzenRadioButtonList>
-                    <RadzenRequiredValidator Component="MortagePaymentPeriod" Text="required" Style="position: absolute" />
+                    <RadzenRequiredValidator Component="MortagePaymentPeriod" Text="required" Style="position: relative" />
                 </RadzenStack>
             </RadzenStack>
 

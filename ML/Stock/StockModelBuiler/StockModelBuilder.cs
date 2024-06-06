@@ -1,15 +1,17 @@
 ﻿using CapitalClue.Common.Models;
 using CapitalClue.Web.Server.ML.Entities;
 using Microsoft.ML;
+using Microsoft.ML.Transforms.TimeSeries;
 
 namespace CapitalClue.Web.Server.Ml.Stock.ModelBuilder;
 
 public class StockModelBuilder
 {
-    string ModelFileName = "StockModel.zip";
-    string Directory = "TrainedModels";
-    MLContext context;
-    IDataView data;
+    private string ModelFileName = "StockModel.mlnet2";
+    private string Directory = "TrainedModels";
+    private MLContext context;
+    private IDataView data;
+
     public StockModelBuilder(StockModelDto stockData)
     {
         context = new MLContext();
@@ -26,13 +28,15 @@ public class StockModelBuilder
                 confidenceLevel: 0.95F,
                 confidenceLowerBoundColumn: nameof(StockPredictionEntiy.ConfidenceLowerBound),
                 confidenceUpperBoundColumn: nameof(StockPredictionEntiy.ConfidenceUpperBound),
-                windowSize: 250,
-        seriesLength: 250 * 10,
-                trainSize: 250 * 10,
-                horizon: 250*5);
+                windowSize: 252,
+                seriesLength: 252 * 10,
+                trainSize: 252 * 10,
+                horizon: 252 * 5
+                //     rankSelectionMethod: RankSelectionMethod.
+
+                );
 
         var model = pipline.Fit(data);
-        context.Model.Save(model, data.Schema, Directory +"/"+ ModelFileName);
+        context.Model.Save(model, data.Schema, Directory + "/" + ModelFileName);
     }
-
 }

@@ -29,7 +29,8 @@
                  <RadzenMenu>
                         <RadzenMenuItem Text="" Icon="settings">
 
-                            <RadzenMenuItem Click="OpenConfig" Text="Upload CSV" Icon="open_in_browser"></RadzenMenuItem>
+                        <RadzenMenuItem Click="OpenPropertyConfig" Text="Upload Property CSV" Icon="open_in_browser"></RadzenMenuItem>
+                        <RadzenMenuItem Click="OpenStockConfig" Text="Upload Stock CSV" Icon="open_in_browser"></RadzenMenuItem>
                         </RadzenMenuItem>
                     </RadzenMenu>
 
@@ -84,7 +85,7 @@
         _jsRuntime.InvokeAsync<object>("open", $"{url.BaseUrl}ErrorLog", "_blank");
     }
 
-    public void OpenConfig()
+    public void OpenPropertyConfig()
     {
         //dialogService.Open<CsvUpload>("Upload CSV to Bell");
         dialogService.OpenAsync<PropertyUpload>(null, null,
@@ -92,6 +93,15 @@
     //     dialogService.OpenAsync<CsvUpload>("Upload CSV to Bell", null,
     // new DialogOptions() { Width = "800px", Height = "530px", });
       //  await InvokeAsync(() => { StateHasChanged(); });
+    }
+    public void OpenStockConfig()
+    {
+        //dialogService.Open<CsvUpload>("Upload CSV to Bell");
+        dialogService.OpenAsync<StockUpload>(null, null,
+    new DialogOptions() { ShowTitle = false, Width = "800px", Height = "450px", Left = "calc(50% - 350px)", Top = "calc(50% - 265px)" });
+        //     dialogService.OpenAsync<CsvUpload>("Upload CSV to Bell", null,
+        // new DialogOptions() { Width = "800px", Height = "530px", });
+        //  await InvokeAsync(() => { StateHasChanged(); });
     }
 
 

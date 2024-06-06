@@ -14,7 +14,7 @@
 
             <RadzenFormField Text="Stock Types" Style="flex: 1;">
                 <RadzenDropDown Name="Stock" Data=@stocks @bind-Value="@model.stocksValue" AllowClear=true />
-                <RadzenRequiredValidator Component="Stock" Text="required" Style="position: absolute" />
+                <RadzenRequiredValidator Component="Stock" Text="Choose Stock Type" Style="position: relative" />
 
             </RadzenFormField>
         </RadzenStack>
@@ -22,17 +22,15 @@
         <RadzenStack Orientation="Orientation.Vertical">
             <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">how much are you investing in Stock for down payment?</RadzenText>
             <RadzenNumeric Name="Downpayment" Format="c" Step="5000" @bind-Value=@model.downpayment @oninput="Update" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
-            <RadzenRequiredValidator Component="Downpayment" Text="Required" Style="position: absolute" />
-            <RadzenNumericRangeValidator Component="Downpayment" Min="1" Text="This value should be greater than 0" Style="position: absolute" />
-
+            <RadzenRequiredValidator Component="Downpayment" Text="Required" Style="position: relative" />
+            <RadzenNumericRangeValidator Component="Downpayment" Min="1" Text="Downpayment should be greater than $0" Style="position: relative" />
         </RadzenStack>
 
         <RadzenStack Orientation="Orientation.Vertical">
             <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">how much would you Monthly contribute in stock for next 5 years?</RadzenText>
             <RadzenNumeric Name="MonthlyContribution" Format="c" Step="500" @oninput="Update" @bind-Value=@model.monthlyContribution InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
-            <RadzenRequiredValidator Component="MonthlyContribution" Text="Required" Style="position: absolute" />
-            <RadzenNumericRangeValidator Component="MonthlyContribution" Min="1" Text="This value should be greater than 0" Style="position: absolute" />
-
+            <RadzenRequiredValidator Component="MonthlyContribution" Text="Required" Style="position: relative" />
+            <RadzenNumericRangeValidator Component="MonthlyContribution" Min="1" Text="Monthly Contribution should be greater than $0" Style="position: relative" />
         </RadzenStack>
 
         <RadzenButton ButtonType="ButtonType.Submit" Text="Next"></RadzenButton>

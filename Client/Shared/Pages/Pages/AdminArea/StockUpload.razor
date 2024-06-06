@@ -131,8 +131,8 @@
             stckModel.StockValueIndices = await ReadCSVFile(csvString);
             var stckCurrnecy = fileName.Replace(".csv","").Split('-');
 
-            stckModel.StockName = "SP500";// stckCurrnecy[0];
-            stckModel.Currency = "USD";// stckCurrnecy[1];
+            stckModel.StockName = stckCurrnecy[0];
+            stckModel.Currency =  stckCurrnecy[1];
 
             showloading = false;
             st2AskToUpload = true;
