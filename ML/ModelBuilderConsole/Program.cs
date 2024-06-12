@@ -3,6 +3,7 @@ using CapitalClue.Common.Utilities;
 using CapitalClue.Web.Server.ML.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.ML;
+using Microsoft.ML.Transforms.TimeSeries;
 using System.IO;
 using System.Text;
 
@@ -14,7 +15,7 @@ namespace PropertyModelBuilderConsole
         {
             //1- Read list of CSV files
             //Read CSV Files:
-            string readFolderPath = @"C:\csv"; // Replace with your folder path
+            string readFolderPath = @"C:\csv\2019"; // Replace with your folder path
             List<string> csvFiles = new List<string>(Directory.EnumerateFiles(readFolderPath, "*.csv", SearchOption.AllDirectories));
 
             //2- Read each CSV file
@@ -34,7 +35,7 @@ namespace PropertyModelBuilderConsole
                     var cityPropery = fileName.Replace(".csv", "").Split('-');
 
                     propertyModelDto.City = cityPropery[0];
-                    propertyModelDto.PropertyType = cityPropery[1].Replace("homes", "houses");
+                    propertyModelDto.PropertyType = cityPropery[1];
 
                     //3-Send to Model Builder
 
@@ -123,7 +124,7 @@ namespace PropertyModelBuilderConsole
         public static async Task BuildPropertyModel(PropertyModelDto property)
         {
             string ExportModelFileName = "PropertyModel.zip";
-            string ExportDirectory = "C:/TrainedModels2";
+            string ExportDirectory = "C:/TrainedModels/IsAdaptiveTrue";
             MLContext context;
             IDataView data;
 
@@ -137,10 +138,19 @@ namespace PropertyModelBuilderConsole
              confidenceLevel: 0.95F,
              confidenceLowerBoundColumn: nameof(PropertyPredictionEntity.ConfidenceLowerBound),
              confidenceUpperBoundColumn: nameof(PropertyPredictionEntity.ConfidenceUpperBound),
-             windowSize: 28,
-             seriesLength: 28 * 24,
-             trainSize: 28 * 24,
-             horizon: 28 * 5);
+              windowSize: 29,
+               seriesLength: 562,
+               trainSize: 562,
+               horizon: 112,
+
+            //isAdaptive: true
+             discountFactor: 0.98f,
+             rankSelectionMethod: RankSelectionMethod.,
+             //rank: 10,
+             //maxRank: 20,
+             //shouldStabilize: true,
+             //shouldMaintainInfo: true
+             );
 
             var model = pipline.Fit(data);
 

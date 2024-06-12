@@ -37,7 +37,7 @@ namespace CapitalClue_AzF
 
                 var predictor = new PropertyPrediction(propertyModel.City, propertyModel.PropertyType);
 
-                var result = predictor.GetPredictionYearByYear();
+                PropertyPredictionDto result = predictor.GetPredictionYearByYear();
                 return new OkObjectResult(result);
             }
             catch (Exception ex)
