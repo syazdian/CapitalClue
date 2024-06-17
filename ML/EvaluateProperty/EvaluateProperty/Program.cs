@@ -12,10 +12,14 @@ namespace EvaluateProperty
     {
         public static void Main(string[] args)
         {
-            string readModelFolderPath = @"C:/TrainedModels/IsAdaptiveTrue"; // Replace with your folder path
-            string readCSVSourcePath = @"C:/csv"; // Replace with your folder path
-            string compareResult = @"C:\csv\Compare\IsAdaptiveTrue.csv";
-            string totalCompareResultsTxt = @"C:\csv\Compare\totalCompare.txt";
+            string nameVariableFile = "tessst2";
+            // string readCSVSourcePath = @"C:/csv"; // Replace with your folder path
+            string readCSVSourcePath = @"C:\CapitalClueData\csv\csvshort"; // Replace with your folder path
+            string readModelFolderPath = $"C:\\CapitalClueData\\TrainedModels\\{nameVariableFile}"; // Replace with your folder path
+            string compareResultOutput = $"C:\\CapitalClueData\\csv\\Compare\\{nameVariableFile}.csv";
+            if (!File.Exists(compareResultOutput)) File.Create(compareResultOutput);
+
+            string totalCompareResultsTxt = @"C:\CapitalClueData\csv\Compare\totalCompare.txt";
             //Create a loop to read city + property Type
             //Read Model Files:
             List<string> zipFiles = new List<string>(Directory.EnumerateFiles(readModelFolderPath, "*.zip", SearchOption.AllDirectories));
@@ -26,7 +30,7 @@ namespace EvaluateProperty
             List<float> ErrorMainList = new List<float>();
             List<float> ErrorLowerList = new List<float>();
             List<float> ErrorHigherList = new List<float>();
-            using (StreamWriter writer = new StreamWriter(compareResult))
+            using (StreamWriter writer = new StreamWriter(compareResultOutput))
             {
                 writer.WriteLine($"CityProperty, Real Number, ForeCastIndex,Error,ErrorPercent, LowerBound, ErrorLower,LowerPercent, HigherBound,ErrorHigher, HigherPercent");
                 foreach (string file in zipFiles)
@@ -73,7 +77,7 @@ namespace EvaluateProperty
             float MAE_higher = ErrorHigherList.Average(); // Mean Absolute Error
             double RMSE_higher = Math.Sqrt(ErrorHigherList.Average(error => Math.Pow(error, 2))); // Root Mean Squared Error
 
-            File.AppendAllText(totalCompareResultsTxt, $"{Environment.NewLine}{Path.GetFileNameWithoutExtension(compareResult)}{Environment.NewLine}");
+            File.AppendAllText(totalCompareResultsTxt, $"{Environment.NewLine}{Path.GetFileNameWithoutExtension(compareResultOutput)}{Environment.NewLine}");
 
             File.AppendAllText(totalCompareResultsTxt, $"MAE_main:{MAE_main.ToString("0.00")}{Environment.NewLine}");
             File.AppendAllText(totalCompareResultsTxt, $"RMSE_main:{RMSE_main.ToString("0.00")}{Environment.NewLine}");
