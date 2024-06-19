@@ -39,7 +39,10 @@
             }
         </RadzenStepsItem>
         <RadzenStepsItem Text="Prediction" >
-            <PageFour></PageFour>
+            <PageFour StepChanged="(e)=>IndexChanged(e)"></PageFour>
+        </RadzenStepsItem>
+        <RadzenStepsItem Text="Brief">
+            <PageFive></PageFive>
         </RadzenStepsItem>
     </Steps>
 </RadzenSteps>

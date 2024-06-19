@@ -186,7 +186,15 @@
         @dontKnowDescription
     </p>
 }
+<RadzenButton Click="OnStepChange" Text="Next"></RadzenButton>
+
 @code {
+    [Parameter]
+    public int SelectedIndex { get; set; }
+
+    [Parameter]
+    public EventCallback<int> StepChanged { get; set; }
+
     bool visibleStock = false;
     bool visiblePropery = false;
 
@@ -287,4 +295,8 @@
 
     }
 
+    private async Task OnStepChange()
+    {
+        await StepChanged.InvokeAsync(4);
+    }
 }

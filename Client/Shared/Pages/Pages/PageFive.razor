@@ -1,0 +1,129 @@
+﻿@page "/p5"
+
+@using System.Globalization
+@using CapitalClue.Common.Models.Enums
+@using CapitalClue.Frontend.Shared.Models
+@using CapitalClue.Frontend.Shared.ServiceInterfaces
+@using System.Web
+@using System.Text.RegularExpressions;
+@inject IFetchData fetchData
+@inject IStateContainer StateContainer
+
+<div Class="rz-p-0 rz-p-md-12">
+    <RadzenStack Orientation="Orientation.Horizontal" FlexWrap="FlexWrap.Wrap" Gap="1rem" Class="rz-p-4 rz-mb-6">
+
+         <RadzenStack>
+             <RadzenLabel Text="Property Renvenue in 5 years"></RadzenLabel>
+            <RadzenTimeline Orientation="Orientation.Vertical" LinePosition="LinePosition.Top" 
+                        style="--rz-timeline-line-width: 30px;
+                   --rz-timeline-line-color: var(--rz-info);
+                   --rz-timeline-axis-size: 202px;
+                   max-width: 600px;
+                   margin: 0 auto;">
+            <Items>
+                <RadzenTimelineItem PointSize="PointSize.Small" PointStyle="PointStyle.Primary">
+                    <LabelContent>
+                        <RadzenText TextStyle="TextStyle.Subtitle2" Class="rz-m-0 rz-color-primary">@StateContainer.revenueProperty[0].Date</RadzenText>
+                    </LabelContent>
+                    <ChildContent>
+                            @Math.Round(StateContainer.revenueProperty[0].Revenue).ToString("N0")
+                    </ChildContent>
+                </RadzenTimelineItem>
+                <RadzenTimelineItem PointSize="PointSize.Small">
+                    <LabelContent>
+                        <RadzenText TextStyle="TextStyle.Subtitle2" Class="rz-m-0 rz-color-primary">@StateContainer.revenueProperty[1].Date</RadzenText>
+                    </LabelContent>
+                    <ChildContent>
+                            @Math.Round(StateContainer.revenueProperty[1].Revenue).ToString("N0")
+                    </ChildContent>
+                </RadzenTimelineItem>
+                <RadzenTimelineItem PointSize="PointSize.Small">
+                    <LabelContent>
+                        <RadzenText TextStyle="TextStyle.Subtitle2" Class="rz-m-0 rz-color-primary">@StateContainer.revenueProperty[2].Date</RadzenText>
+                    </LabelContent>
+                    <ChildContent>
+                            @Math.Round(StateContainer.revenueProperty[2].Revenue).ToString("N0")
+                    </ChildContent>
+                </RadzenTimelineItem>
+                <RadzenTimelineItem PointVariant="Variant.Outlined" PointSize="PointSize.Medium" PointStyle="PointStyle.Info">
+                    <LabelContent>
+                        <RadzenText TextStyle="TextStyle.Subtitle2" Class="rz-m-0 rz-color-primary">@StateContainer.revenueProperty[3].Date</RadzenText>
+                    </LabelContent>
+                    <ChildContent>
+                            @Math.Round(StateContainer.revenueProperty[3].Revenue).ToString("N0")
+                    </ChildContent>
+                </RadzenTimelineItem>
+                <RadzenTimelineItem PointVariant="Variant.Outlined" PointSize="PointSize.Large" PointStyle="PointStyle.Info">
+                    <LabelContent>
+                        <RadzenText TextStyle="TextStyle.Subtitle2" Class="rz-m-0 rz-color-primary">@StateContainer.revenueProperty[4].Date</RadzenText>
+                    </LabelContent>
+                    <ChildContent>
+                            @Math.Round(StateContainer.revenueProperty[4].Revenue).ToString("N0")
+                    </ChildContent>
+                </RadzenTimelineItem>
+            </Items>
+        </RadzenTimeline>
+        </RadzenStack>
+
+        <RadzenStack>
+            <RadzenLabel Text="Stock Renvenue in 5 years"></RadzenLabel>
+            <RadzenTimeline Orientation="Orientation.Vertical" LinePosition="LinePosition.Top"
+                            style="--rz-timeline-line-width: 30px;
+                   --rz-timeline-line-color: var(--rz-info);
+                   --rz-timeline-axis-size: 202px;
+                   max-width: 600px;
+                   margin: 0 auto;">
+                <Items>
+                    <RadzenTimelineItem PointSize="PointSize.Small" PointStyle="PointStyle.Primary">
+                        <LabelContent>
+                            <RadzenText TextStyle="TextStyle.Subtitle2" Class="rz-m-0 rz-color-primary">@StateContainer.revenueStock[0].Date</RadzenText>
+                            </LabelContent>
+                            <ChildContent>
+                                @Math.Round(StateContainer.revenueStock[0].Revenue).ToString("N0")
+                        </ChildContent>
+                    </RadzenTimelineItem>
+                    <RadzenTimelineItem PointSize="PointSize.Small">
+                        <LabelContent>
+                            <RadzenText TextStyle="TextStyle.Subtitle2" Class="rz-m-0 rz-color-primary">@StateContainer.revenueStock[1].Date</RadzenText>
+                            </LabelContent>
+                            <ChildContent>
+                                @Math.Round(StateContainer.revenueStock[1].Revenue).ToString("N0")
+                        </ChildContent>
+                    </RadzenTimelineItem>
+                    <RadzenTimelineItem PointSize="PointSize.Small">
+                        <LabelContent>
+                            <RadzenText TextStyle="TextStyle.Subtitle2" Class="rz-m-0 rz-color-primary">@StateContainer.revenueStock[2].Date</RadzenText>
+                            </LabelContent>
+                            <ChildContent>
+                                @Math.Round(StateContainer.revenueStock[2].Revenue).ToString("N0")
+                        </ChildContent>
+                    </RadzenTimelineItem>
+                    <RadzenTimelineItem PointVariant="Variant.Outlined" PointSize="PointSize.Medium" PointStyle="PointStyle.Info">
+                        <LabelContent>
+                            <RadzenText TextStyle="TextStyle.Subtitle2" Class="rz-m-0 rz-color-primary">@StateContainer.revenueStock[3].Date</RadzenText>
+                            </LabelContent>
+                            <ChildContent>
+                                @Math.Round(StateContainer.revenueStock[3].Revenue).ToString("N0")
+                        </ChildContent>
+                    </RadzenTimelineItem>
+                    <RadzenTimelineItem PointVariant="Variant.Outlined" PointSize="PointSize.Large" PointStyle="PointStyle.Info">
+                        <LabelContent>
+                            <RadzenText TextStyle="TextStyle.Subtitle2" Class="rz-m-0 rz-color-primary">@StateContainer.revenueStock[4].Date</RadzenText>
+                            </LabelContent>
+                            <ChildContent>
+                                @Math.Round(StateContainer.revenueStock[4].Revenue).ToString("N0")
+                        </ChildContent>
+                    </RadzenTimelineItem>
+                </Items>
+            </RadzenTimeline>
+        </RadzenStack>
+    </RadzenStack>
+</div>
+
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+}
