@@ -36,8 +36,9 @@ public class StateContainer : IStateContainer
     public string City { get; set; }
 
     public bool IsFirstTimeHomeBuyer { get; set; }
+    public bool IsMarried { get; set; }
+    public bool? IsMale { get; set; } = null;
+    public int ChildCount { get; set; } = 0;
     public string UserFirstName { get; set; }
-    public int YearToRetire { get; set; }
-    public int Age { get; set; }
-    public double Income { get; set; }
+    public int UserAge { get; set; }
 }

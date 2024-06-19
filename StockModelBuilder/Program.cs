@@ -23,10 +23,10 @@ namespace StockModelBuilderConsole
             List<string> csvFiles = new List<string>(Directory.EnumerateFiles(csv2019Folder, "*.csv", SearchOption.AllDirectories));
 
             //2- Read each CSV file
-            for (int counterRun = 1; counterRun < 250; counterRun += 10)
+            for (int counterRun = 1; counterRun < 11; counterRun += 1)
             {
                 Console.WriteLine($"----------Create Model:{counterRun}----------");
-                string modelCreatedFolderName = $"Stock_rankFix_{counterRun}";
+                string modelCreatedFolderName = $"Stock_trainsize128_{counterRun}";
 
                 foreach (string file in csvFiles)
                 {
@@ -154,24 +154,27 @@ namespace StockModelBuilderConsole
              confidenceLevel: 0.95F,
              confidenceLowerBoundColumn: nameof(PropertyPredictionEntity.ConfidenceLowerBound),
              confidenceUpperBoundColumn: nameof(PropertyPredictionEntity.ConfidenceUpperBound),
+
               windowSize: 250,
                seriesLength: 5059,
-               trainSize: 5059,
+               trainSize: 6500,
                  horizon: 1258,
-             //  horizon: 29,
-
-             //  isAdaptive: true,
-             //   discountFactor: (counterRun * 0.1f),
              rankSelectionMethod: RankSelectionMethod.Fixed,
-              // // rankSelectionMethod: RankSelectionMethod.Exact,
-              // //rankSelectionMethod: RankSelectionMethod.Fast,
-              rank: counterRun
+              rank: 93,
+               // rankSelectionMethod: RankSelectionMethod.Exact,
+               // //rankSelectionMethod: RankSelectionMethod.Fast,
 
-             //   maxRank: 28
-             //shouldStabilize: true,
-             //shouldMaintainInfo: true,
+               //   maxRank: 28
+               //  horizon: 29,
+
+               //  isAdaptive: true,
+               discountFactor: 0.5f// (counterRun * 0.1f)
+                                   //shouldStabilize: true,
+                                   //shouldMaintainInfo: true,
+                                   // maxGrowth: new GrowthRatio() { Growth = 1.2, TimeSpan = 29 }
+
+             // Example value
              //  maxGrowth: new Microsoft.ML.Transforms.TimeSeries.GrowthRatio?() {CancellationTokenRegistration     Ratio = 1.1}
-             //  maxGrowth: new GrowthRatio() { Growth = 1.2, TimeSpan = 29 } // Example value
 
              );
 
@@ -246,7 +249,6 @@ namespace StockModelBuilderConsole
             float MAE_higher = ErrorHigherList.Average(); // Mean Absolute Error
             double RMSE_higher = Math.Sqrt(ErrorHigherList.Average(error => Math.Pow(error, 2))); // Root Mean Squared Error
 
-            File.AppendAllText(summaryCompareCSV, $"{modelFolderName}, {MAE_main.ToString("0.00")}, {RMSE_main.ToString("0.00")}, {MAE_lower.ToString("0.00")}, {RMSE_lower.ToString("0.00")},  {MAE_higher.ToString("0.00")},{RMSE_higher.ToString("0.00")} {Environment.NewLine}");
             File.AppendAllText(summaryCompareTxt, $"{Environment.NewLine}{Path.GetFileNameWithoutExtension(csvCompareResultOutput)}{Environment.NewLine}");
 
             File.AppendAllText(summaryCompareTxt, $"MAE_main:{MAE_main.ToString("0.00")}{Environment.NewLine}");
@@ -257,6 +259,7 @@ namespace StockModelBuilderConsole
             File.AppendAllText(summaryCompareTxt, $"RMSE_higher:{RMSE_higher.ToString("0.00")}{Environment.NewLine}");
             File.AppendAllText(summaryCompareTxt, $"-------------------------------");
 
+            File.AppendAllText(summaryCompareCSV, $"{modelFolderName}, {MAE_main.ToString("0.00")}, {RMSE_main.ToString("0.00")}, {MAE_lower.ToString("0.00")}, {RMSE_lower.ToString("0.00")},  {MAE_higher.ToString("0.00")},{RMSE_higher.ToString("0.00")} {Environment.NewLine}");
             ErrorMainList.Clear();
             ErrorLowerList.Clear();
             ErrorHigherList.Clear();
