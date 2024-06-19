@@ -18,15 +18,15 @@ namespace PropertyModelBuilderConsole
             //1- Read list of CSV files
             //Read CSV Files:
 
-            string csv2019Folder = @"C:\CapitalClueData\csv\2019"; // Replace with your folder path
+            string csv2019Folder = @"C:\CapitalClueData\csv"; // Replace with your folder path
 
             List<string> csvFiles = new List<string>(Directory.EnumerateFiles(csv2019Folder, "*.csv", SearchOption.AllDirectories));
 
             //2- Read each CSV file
-            for (int counterRun = 1; counterRun < 5; counterRun += 1)
+            for (int counterRun = 1; counterRun < 2; counterRun += 1)
             {
                 Console.WriteLine($"----------Create Model:{counterRun * 0.1}----------");
-                string modelCreatedFolderName = $"Property_discountFactor_{counterRun * 0.1}";
+                string modelCreatedFolderName = $"Property_2024_{counterRun}";
 
                 foreach (string file in csvFiles)
                 {
@@ -57,8 +57,8 @@ namespace PropertyModelBuilderConsole
                 }
                 Console.WriteLine($"----------Evaluate:{counterRun * 0.1}----------");
 
-                await Evaluate(modelCreatedFolderName);
-                Console.WriteLine($"----------Done:{counterRun * 0.1}----------");
+                //await Evaluate(modelCreatedFolderName);
+                //Console.WriteLine($"----------Done:{counterRun * 0.1}----------");
             }
 
             //3- EVALUATE
@@ -157,17 +157,17 @@ namespace PropertyModelBuilderConsole
              confidenceLowerBoundColumn: nameof(PropertyPredictionEntity.ConfidenceLowerBound),
              confidenceUpperBoundColumn: nameof(PropertyPredictionEntity.ConfidenceUpperBound),
               windowSize: 29,
-               seriesLength: 562,
-               trainSize: 562,
+               seriesLength: 673,
+               trainSize: 673,
                  horizon: 112,
-                  //  horizon: 29,
+                 //  horizon: 29,
 
-                  //  isAdaptive: true,
-                  discountFactor: (counterRun * 0.1f),
-                  //rankSelectionMethod: RankSelectionMethod.Fixed,
-                  // // rankSelectionMethod: RankSelectionMethod.Exact,
-                  // //rankSelectionMethod: RankSelectionMethod.Fast,
-                  // rank: counterRun,
+                 //  isAdaptive: true,
+                 // discountFactor: (counterRun * 0.1f),
+                 rankSelectionMethod: RankSelectionMethod.Fixed,
+                   // // rankSelectionMethod: RankSelectionMethod.Exact,
+                   // //rankSelectionMethod: RankSelectionMethod.Fast,
+                   rank: 1,
 
                   maxRank: 28
              //shouldStabilize: true,

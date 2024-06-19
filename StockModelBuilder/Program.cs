@@ -18,7 +18,7 @@ namespace StockModelBuilderConsole
             //1- Read list of CSV files
             //Read CSV Files:
 
-            string csv2019Folder = @"C:\\CapitalClueStockData\csv\2019"; // Replace with your folder path
+            string csv2019Folder = @"C:\\CapitalClueStockData\csv"; // Replace with your folder path
 
             List<string> csvFiles = new List<string>(Directory.EnumerateFiles(csv2019Folder, "*.csv", SearchOption.AllDirectories));
 
@@ -26,7 +26,7 @@ namespace StockModelBuilderConsole
             for (int counterRun = 1; counterRun < 11; counterRun += 1)
             {
                 Console.WriteLine($"----------Create Model:{counterRun}----------");
-                string modelCreatedFolderName = $"Stock_trainsize128_{counterRun}";
+                string modelCreatedFolderName = $"Stock_trainsize2024_{counterRun}";
 
                 foreach (string file in csvFiles)
                 {
@@ -156,9 +156,10 @@ namespace StockModelBuilderConsole
              confidenceUpperBoundColumn: nameof(PropertyPredictionEntity.ConfidenceUpperBound),
 
               windowSize: 250,
-               seriesLength: 5059,
-               trainSize: 6500,
-                 horizon: 1258,
+   seriesLength: 6316,
+   trainSize: 6316,
+     horizon: 1258,
+
              rankSelectionMethod: RankSelectionMethod.Fixed,
               rank: 93,
                // rankSelectionMethod: RankSelectionMethod.Exact,
