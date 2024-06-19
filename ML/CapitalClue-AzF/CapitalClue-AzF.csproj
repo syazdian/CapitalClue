@@ -10,6 +10,9 @@
 
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="TrainedModels\Brampton-Condo Townhouse-PropertyModel.zip" />
+  </ItemGroup>
+  <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker" Version="1.21.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="3.1.0" />
@@ -17,6 +20,11 @@
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" Version="1.17.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.WorkerService" Version="2.22.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker.ApplicationInsights" Version="1.2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="TrainedModels\Brampton-Condo Townhouse-PropertyModel.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Models\Common.Models.csproj" />
@@ -44,7 +52,13 @@
     <None Update="TrainedModels\Brampton-Detached Homes-PropertyModel.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="TrainedModels\Brampton-Freehold Townhouse-PropertyModel.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="TrainedModels\Brampton-Freehold Townhouses-PropertyModel.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TrainedModels\Markham-Condo Townhouse-PropertyModel.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="TrainedModels\Markham-Condo Townhouses-PropertyModel.zip">
@@ -56,7 +70,13 @@
     <None Update="TrainedModels\Markham-Detached Homes-PropertyModel.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="TrainedModels\Markham-Freehold Townhouse-PropertyModel.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="TrainedModels\Markham-Freehold Townhouses-PropertyModel.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TrainedModels\Mississauga-Condo Townhouse-PropertyModel.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="TrainedModels\Mississauga-Condo Townhouses-PropertyModel.zip">
@@ -68,13 +88,22 @@
     <None Update="TrainedModels\Mississauga-Detached Homes-PropertyModel.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="TrainedModels\Mississauga-Freehold Townhouse-PropertyModel.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="TrainedModels\Mississauga-Freehold Townhouses-PropertyModel.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="TrainedModels\Nasdaq-US-StockModel.mlnet">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="TrainedModels\NASDAQ-US-StockModel.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="TrainedModels\NYSE-US-StockModel.mlnet">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TrainedModels\RichmondHill-Condo Townhouse-PropertyModel.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="TrainedModels\RichmondHill-Condo Townhouses-PropertyModel.zip">
@@ -84,6 +113,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="TrainedModels\RichmondHill-Detached Homes-PropertyModel.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TrainedModels\RichmondHill-Freehold Townhouse-PropertyModel.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="TrainedModels\RichmondHill-Freehold Townhouses-PropertyModel.zip">
@@ -101,7 +133,13 @@
     <None Update="TrainedModels\SPY-US-StockModel.mlnet">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="TrainedModels\SPY-US-StockModel.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="TrainedModels\spy.mlnet">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TrainedModels\Toronto-Condo Townhouse-PropertyModel.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="TrainedModels\Toronto-Condo Townhouses-PropertyModel.zip">
@@ -113,7 +151,13 @@
     <None Update="TrainedModels\Toronto-Detached Homes-PropertyModel.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="TrainedModels\Toronto-Freehold Townhouse-PropertyModel.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="TrainedModels\Toronto-Freehold Townhouses-PropertyModel.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TrainedModels\Vaughan-Condo Townhouse-PropertyModel.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="TrainedModels\Vaughan-Condo Townhouses-PropertyModel.zip">
@@ -123,6 +167,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="TrainedModels\Vaughan-Detached Homes-PropertyModel.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TrainedModels\Vaughan-Freehold Townhouse-PropertyModel.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="TrainedModels\Vaughan-Freehold Townhouses-PropertyModel.zip">
