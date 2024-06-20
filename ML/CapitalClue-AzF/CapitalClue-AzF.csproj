@@ -97,7 +97,7 @@
     <None Update="TrainedModels\Nasdaq-US-StockModel.mlnet">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TrainedModels\NASDAQ-US-StockModel.zip">
+    <None Update="TrainedModels\Nasdaq-US-StockModel.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="TrainedModels\NYSE-US-StockModel.mlnet">
@@ -133,7 +133,7 @@
     <None Update="TrainedModels\SPY-US-StockModel.mlnet">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TrainedModels\SPY-US-StockModel.zip">
+    <None Update="TrainedModels\NYSE-US-StockModel.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="TrainedModels\spy.mlnet">

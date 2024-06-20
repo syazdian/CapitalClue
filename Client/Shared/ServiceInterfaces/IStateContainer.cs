@@ -33,9 +33,10 @@ public interface IStateContainer
     public string City { get; set; }
 
     public bool IsFirstTimeHomeBuyer { get; set; }
-    public bool IsMarried { get; set; }
+    public bool? IsMarried { get; set; }
     public bool? IsMale { get; set; }
     public int ChildCount { get; set; }
     public string UserFirstName { get; set; }
     public int UserAge { get; set; }
+    public float RiskFactor { get; set; }
 }

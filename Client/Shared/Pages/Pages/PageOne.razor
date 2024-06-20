@@ -49,10 +49,11 @@
             <RadzenStack Orientation="Orientation.Vertical">
                 <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">Marrital status?</RadzenText>
 
-                <RadzenRadioButtonList @bind-Value=@model.IsMarried TValue="bool" class="mb-5">
+                <RadzenRadioButtonList @bind-Value=@model.IsMarried TValue="int" class="mb-5">
                     <Items>
-                        <RadzenRadioButtonListItem Text="I'm Married" Value="true" />
-                        <RadzenRadioButtonListItem Text="I'm Single" Value="false" />
+                        <RadzenRadioButtonListItem Text="I'm Married" Value=1 />
+                        <RadzenRadioButtonListItem Text="I'm Single" Value=2 />
+                        <RadzenRadioButtonListItem Text="I'm Widowed/Divorced" Value=3 />
                     </Items>
                 </RadzenRadioButtonList>
                 <RadzenStack Orientation="Orientation.Vertical">
@@ -93,7 +94,7 @@
         public int userAge { get; set; } = 18;
 
         public bool IsFirstTimeHomeBuyer;
-        public bool IsMarried;
+        public int IsMarried;
         public int IsMale;
         public int ChildCount;
     }
@@ -111,15 +112,38 @@
 
     private async Task OnStepChange(Model model)
     {
+        StateContainer.RiskFactor = CalculateRiskRewardPercent(model);
         StateContainer.UserAge = model.userAge;
         StateContainer.IsFirstTimeHomeBuyer = model.isFirstTimeHomeBuyer;
         StateContainer.UserFirstName = model.userFirstName;
-        StateContainer.IsMarried = model.IsMarried;
+        StateContainer.IsMarried = model.IsMarried == 1 ? true : model.IsMarried == 2 ? false : null;
         StateContainer.IsMale = model.IsMale == 1 ? true : model.IsMale == 2 ? false : null;
-      
+
         StateContainer.ChildCount = model.ChildCount;
 
         await StepChanged.InvokeAsync(1);
+    }
+
+    private float CalculateRiskRewardPercent(Model model)
+    {
+        int riskpoints = 0;
+        if (model.userAge <= 30) riskpoints += 5;
+        else if (30 < model.userAge && model.userAge <= 40) riskpoints += 4;
+        else if (40 < model.userAge && model.userAge <= 50) riskpoints += 3;
+        else if (50 < model.userAge && model.userAge <= 60) riskpoints += 2;
+        else if (60 < model.userAge ) riskpoints += 1;
+
+        if (model.IsMarried == 1) riskpoints += 3;
+        else if (model.IsMarried == 2) riskpoints += 5;
+        else if (model.IsMarried == 3) riskpoints += 4;
+
+        if (model.ChildCount == 0) riskpoints += 5;
+        else if (model.ChildCount == 1 && model.ChildCount == 2) riskpoints += 4;
+        else if (model.ChildCount == 3 && model.ChildCount == 4) riskpoints += 2;
+        else if (5 <= model.ChildCount ) riskpoints +=1;
+
+
+        return (float)(riskpoints* 0.01 / 3);
     }
 
 

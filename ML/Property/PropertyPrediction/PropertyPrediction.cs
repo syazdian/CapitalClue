@@ -45,9 +45,9 @@ public class PropertyPrediction
         propertyPredictionDto.ForeCastIndex.Add(CurrentYear, 0);
         for (int i = 1; i <= 5; i++)
         {
-            var lowerboundPercent = (result.ConfidenceLowerBound[28 * i - 1] - result.ConfidenceLowerBound[28 * (i - 1)]) / result.ConfidenceLowerBound[28 * i - 1];
-            var upperBoundPercent = (result.ConfidenceUpperBound[28 * i - 1] - result.ConfidenceUpperBound[28 * (i - 1)]) / result.ConfidenceUpperBound[28 * i - 1];
-            var indexPercent = (result.ForeCastIndex[28 * i - 1] - result.ForeCastIndex[28 * (i - 1)]) / result.ForeCastIndex[28 * i - 1];
+            var lowerboundPercent = (result.ConfidenceLowerBound[22 * i - 1] - result.ConfidenceLowerBound[22 * (i - 1)]) / result.ConfidenceLowerBound[22 * i - 1];
+            var upperBoundPercent = (result.ConfidenceUpperBound[22 * i - 1] - result.ConfidenceUpperBound[22 * (i - 1)]) / result.ConfidenceUpperBound[22 * i - 1];
+            var indexPercent = (result.ForeCastIndex[22 * i - 1] - result.ForeCastIndex[22 * (i - 1)]) / result.ForeCastIndex[22 * i - 1];
 
             propertyPredictionDto.ConfidenceLowerBound.Add(CurrentYear + i, lowerboundPercent);
             propertyPredictionDto.ConfidenceUpperBound.Add(CurrentYear + i, upperBoundPercent);

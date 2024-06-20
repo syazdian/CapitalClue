@@ -39,7 +39,7 @@ public class FetchData : IFetchData
 
     public async Task<StockPredictionDto> GetStockPredicionPercent()
     {
-        string StockName = "S&P500";
+        string StockName = "Nasdaq";
         string Currency = "US";
         var url = $"{baseAddress}api/Stock/PredictYearByYear/{StockName}/{Currency}";
 

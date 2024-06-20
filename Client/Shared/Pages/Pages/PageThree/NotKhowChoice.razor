@@ -6,14 +6,14 @@
 @inject IFilterService filterService
 @inject IProfitCalculations ProfitCalculations;
 
-@if (StateContainer.IsFirstTimeHomeBuyer)
+@* @if (StateContainer.IsFirstTimeHomeBuyer)
 {
     <RadzenStack Orientation="Orientation.Vertical">
         <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">How much are you paing rent?</RadzenText>
         <RadzenNumeric Style="width:140px;" TValue="double" Min="0" Format="c" @bind-Value=@rentPayment InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
     </RadzenStack>
 }
-
+ *@
 
 <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" class="rz-my-6">
     If you want to purchase a property, how would it be?
@@ -275,20 +275,20 @@
         StateContainer.revenueStock = new List<ChartDataItem>();
         StateContainer.revenueStockUpperBound = new List<ChartDataItem>();
         StateContainer.revenueStockLowerBound = new List<ChartDataItem>();
-
+        var riskFactor = StateContainer.RiskFactor;
         foreach (var item in stockPredictionResult.ForeCastIndex)
         {
-            StateContainer.revenueStock.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value });
+            StateContainer.revenueStock.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value * (1 + riskFactor) });
         }
 
-        foreach (var item in stockPredictionResult.ConfidenceLowerBound)
-        {
-            StateContainer.revenueStockLowerBound.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value });
-        }
+        // foreach (var item in stockPredictionResult.ConfidenceLowerBound)
+        // {
+        //     StateContainer.revenueStockLowerBound.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value });
+        // }
 
-        foreach (var item in stockPredictionResult.ConfidenceUpperBound)
-        {
-            StateContainer.revenueStockUpperBound.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value });
-        }
+        // foreach (var item in stockPredictionResult.ConfidenceUpperBound)
+        // {
+        //     StateContainer.revenueStockUpperBound.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value });
+        // }
     }
 }

@@ -21,14 +21,14 @@
 
         <RadzenStack Orientation="Orientation.Vertical">
             <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">how much are you investing in Stock for down payment?</RadzenText>
-            <RadzenNumeric Name="Downpayment" Format="c" Step="5000" @bind-Value=@model.downpayment @oninput="Update" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+            <RadzenNumeric Name="Downpayment" Format="c" Step="5000" @bind-Value=@model.downpayment InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
             <RadzenRequiredValidator Component="Downpayment" Text="Required" Style="position: relative" />
             <RadzenNumericRangeValidator Component="Downpayment" Min="1" Text="Downpayment should be greater than $0" Style="position: relative" />
         </RadzenStack>
 
         <RadzenStack Orientation="Orientation.Vertical">
             <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3" class="rz-my-6">how much would you Monthly contribute in stock for next 5 years?</RadzenText>
-            <RadzenNumeric Name="MonthlyContribution" Format="c" Step="500" @oninput="Update" @bind-Value=@model.monthlyContribution InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+            <RadzenNumeric Name="MonthlyContribution" Format="c" Step="500" @bind-Value=@model.monthlyContribution InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
             <RadzenRequiredValidator Component="MonthlyContribution" Text="Required" Style="position: relative" />
             <RadzenNumericRangeValidator Component="MonthlyContribution" Min="1" Text="Monthly Contribution should be greater than $0" Style="position: relative" />
         </RadzenStack>
@@ -63,11 +63,12 @@
 
     private async Task OnStepChange(Model model)
     {
+        Update();
         await FillChart();
 
-        StateContainer.StockDownpayment = model.downpayment;
-        StateContainer.StockContribution = model.monthlyContribution;
-        StateHasChanged();
+        // StateContainer.StockDownpayment = model.downpayment;
+        // StateContainer.StockContribution = model.monthlyContribution;
+        // StateHasChanged();
 
         await StepChanged.InvokeAsync(3);
     }
@@ -92,21 +93,21 @@
         StateContainer.revenueStock = new List<ChartDataItem>();
         StateContainer.revenueStockUpperBound = new List<ChartDataItem>();
         StateContainer.revenueStockLowerBound = new List<ChartDataItem>();
-
+        var riskFactor = StateContainer.RiskFactor;
         foreach (var item in stockPredictionResult.ForeCastIndex)
         {
-            StateContainer.revenueStock.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value });
+            StateContainer.revenueStock.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value * (1 + riskFactor) });
         }
 
-        foreach (var item in stockPredictionResult.ConfidenceLowerBound)
-        {
-            StateContainer.revenueStockLowerBound.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value });
-        }
+        // foreach (var item in stockPredictionResult.ConfidenceLowerBound)
+        // {
+        //     StateContainer.revenueStockLowerBound.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value });
+        // }
 
-        foreach (var item in stockPredictionResult.ConfidenceUpperBound)
-        {
-            StateContainer.revenueStockUpperBound.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value });
-        }
+        // foreach (var item in stockPredictionResult.ConfidenceUpperBound)
+        // {
+        //     StateContainer.revenueStockUpperBound.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value });
+        // }
 
         await StepChanged.InvokeAsync(3);
     }

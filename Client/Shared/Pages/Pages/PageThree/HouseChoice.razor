@@ -226,6 +226,7 @@
 
     public async Task FillChart()
     {
+        var riskFactor = StateContainer.RiskFactor;
         PropertyPurchaseInfo propertyPurchaseInfo = new PropertyPurchaseInfo
             {
                 PropertyPrice = model1.houseCost,
@@ -244,18 +245,20 @@
 
         foreach (var item in propertyPredictionResult.ForeCastIndex)
         {
-            StateContainer.revenueProperty.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value });
+            StateContainer.revenueProperty.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value * (1+ riskFactor) });
         }
 
-        foreach (var item in propertyPredictionResult.ConfidenceLowerBound)
-        {
-            StateContainer.revenuePropertyLowerBound.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value });
-        }
+        // foreach (var item in propertyPredictionResult.ConfidenceLowerBound)
+        // {
+        //     StateContainer.revenuePropertyLowerBound.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value * (1 - riskFactor) });
+        // }
 
-        foreach (var item in propertyPredictionResult.ConfidenceUpperBound)
-        {
-            StateContainer.revenuePropertyUpperBound.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value });
-        }
+        // foreach (var item in propertyPredictionResult.ConfidenceUpperBound)
+        // {
+        //     StateContainer.revenuePropertyUpperBound.Add(new ChartDataItem { Date = item.Key.ToString(), Revenue = item.Value * (1 - riskFactor) });
+        // }
     }
+
+  
 
 }
